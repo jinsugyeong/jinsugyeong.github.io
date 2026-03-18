@@ -2,7 +2,8 @@ backend:
   name: github
   repo: jinsugyeong/jinsugyeong.github.io
   branch: source # 소스 코드가 있는 브랜치
-  base_url: https://my-decap-proxy.vercel.app/api
+  base_url: https://my-decap-proxy.vercel.app
+  auth_endpoint: /api/callback
 
 media_folder: "source/images" # 이미지 저장 경로
 public_folder: "/images"

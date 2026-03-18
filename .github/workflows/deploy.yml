@@ -36,6 +36,6 @@ jobs:
         run: |
           git config --global user.name "jinsugyeong"
           git config --global user.email "apr15th@naver.com"
-          git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
           npx hexo clean
           npx hexo generate --deploy

@@ -34,5 +34,8 @@ jobs:
           # _config.yml에 설정된 GITHUB_TOKEN을 Actions의 기본 토큰으로 설정
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config --global user.name "jinsugyeong"
+          git config --global user.email "apr15th@naver.com"
+          git config --global url."https://${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
           npx hexo clean
           npx hexo generate --deploy

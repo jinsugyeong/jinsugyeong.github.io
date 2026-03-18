@@ -1,0 +1,201 @@
+// Pretendard font
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css")
+
+// Custom Korean fonts
+@font-face
+  font-family 'NoonnuBasicGothic'
+  src url("https://cdn.jsdelivr.net/gh/projectnoonnu/noon-2410@1.0/NoonnuBasicGothicRegular.woff2") format('woff2')
+  font-weight normal
+  font-display swap
+
+@font-face
+  font-family 'D2Coding'
+  src url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/D2Coding.woff") format('woff')
+  font-weight normal
+  font-display swap
+
+// Override theme variables before Bulma imports
+$family-sans-serif = 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+$primary = #6ac1f9
+$desktop = 1280px
+$widescreen = 1440px
+$fullhd = 1920px
+$pagination-color = #6ac1f9
+$pagination-current-background-color = #6ac1f9
+
+@import 'style'
+
+// ==============================
+// Custom overrides from original blog
+// ==============================
+
+// GitHub follow button
+#github-followLink-btn
+  color: #6ac1f9
+  border-color: #6ac1f9
+  padding: calc(1.25em)
+  font-weight: bold
+  transition: background-color 0.2s ease 0.1s, color 0.2s ease 0.1s
+  &:hover
+    color: #fff
+    background: #6ac1f9
+
+// Article "read more" button
+.article-more
+  padding: 1.25rem 3rem
+
+// Breadcrumb links
+.breadcrumb a
+  color: #f14668
+.breadcrumb a.hover
+  color: #6ac1f9 !important
+
+// Tag font-size
+.tag
+  font-size: 0.9rem !important
+
+// Category link color
+.category-link
+  color: #f14668
+
+// Title div spacing
+.title-div
+  margin-bottom: 0.25rem
+
+// Details/Summary accordion
+details
+  padding: 0 2rem
+  background-color: rgba(255,234,170,0.29)
+  border: 1px solid #e6bb6f
+  border-radius: 0.5rem
+  margin-bottom: 1rem
+  &:last-child
+    margin-bottom: 0
+  p
+    padding-bottom: 2rem
+
+details[open] summary::after
+  display: none
+
+summary::-webkit-details-marker
+  display: none
+
+summary
+  display: block
+  padding: 2rem 3rem 2rem 0
+  font-weight: 600
+  cursor: pointer
+  position: relative
+  &::before,
+  &::after
+    content: ""
+    position: absolute
+    width: 1rem
+    height: 2px
+    background-color: #222
+    right: 1rem
+    top: 2.5rem
+  &::after
+    transform: rotateZ(90deg)
+
+// Article content link color (override Bulma default #3273dc)
+article.article .content a:not(.button):not(.copy)
+  color: #6ac1f9
+  transition: color 0.2s ease
+  &:hover
+    color: #a8d8f0
+
+// Article preview text (index page)
+article.article .content.preview-text
+  color: #808080 !important
+  h1, h2, h3, h4, h5, h6, strong, a
+    color: #808080 !important
+
+// Navbar icon size (match footer icon size)
+.navbar-end .navbar-item i
+  font-size: 1.5rem
+
+// Navbar customizations
+.navbar-main
+  .navbar-item:focus,
+  .navbar-link:focus,
+  a.navbar-item:focus-within,
+  .navbar-link:focus-within,
+  a.navbar-item:hover,
+  .navbar-link:hover
+    color: #6ac1f9 !important
+
++desktop()
+  .navbar-start
+    margin-left: 10px
+
+// Footer link color
+footer.footer a
+  color: #cf7f3a
+
+// Profile counter (post/category/tag numbers)
+[data-type="profile"] .level.is-mobile
+  a > .title
+    color: #808080
+    transition: color 0.2s ease 0.1s
+  a:hover > .title
+    color: #6ac1f9
+  .heading
+    margin-bottom: 3px
+
+// Menu list active color
+.menu-list a.is-active
+  color: #6ac1f9
+
+// Categories page grid layout (2 columns on desktop, 1 on mobile)
+.categories-page
+  display: grid
+  grid-template-columns: repeat(2, 1fr)
+  column-gap: 1rem
+  row-gap: 0
+  padding-left: 1rem
+
+  +mobile()
+    grid-template-columns: 1fr
+    padding-left: 0
+
+  a
+    color: #363636
+    transition: color 0.2s ease
+    padding-right: 5px
+    &:hover
+      color: #6ac1f9
+
+  .category-section
+    margin-bottom: 1.5rem
+    overflow: hidden
+    min-width: 0
+
+  .category-children
+    padding-left: 2rem
+    padding-top: 2rem
+
+  .category-post-item
+    display: flex
+    align-items: baseline
+    gap: 0.5rem
+    margin-bottom: 0.5rem
+    min-width: 0
+    padding-left: 0.5rem
+
+    a
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      min-width: 0
+      flex-shrink: 1
+
+    span
+      white-space: nowrap
+      flex-shrink: 0
+
+// Code highlight adjustments
+figure.highlight .gutter
+  color: #717171 !important
+figure.highlight figcaption span
+  color: #504f4f

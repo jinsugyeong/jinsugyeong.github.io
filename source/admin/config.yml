@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: jinsugyeong/jinsugyeong.github.io
+  branch: source # 소스 코드가 있는 브랜치
+
+media_folder: "source/images" # 이미지 저장 경로
+public_folder: "/images"
+
+collections:
+  - name: "post"
+    label: "Post"
+    folder: "source/_posts"
+    create: true
+    slug: "{{slug}}"
+    media_folder: "{{dirname}}/{{slug}}"
+    public_folder: ""
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Publish Date", name: "date", widget: "datetime"}
+      - {label: "Author", name: "author", widget: "string", default: "jinsugyeong"}
+      - {label: "Cover Image", name: "cover", widget: "image", required: false, media_folder: "source/gallery/cover", public_folder: "/gallery/cover"}
+      - {label: "Categories", name: "categories", widget: "list", required: false}
+      - {label: "Tags", name: "tags", widget: "list", required: false}
+      - {label: "Body", name: "body", widget: "markdown"}

@@ -2,7 +2,7 @@ backend:
   name: github
   repo: jinsugyeong/jinsugyeong.github.io
   branch: source # 소스 코드가 있는 브랜치
-  base_url: https://grand-starburst-4c71fa.netlify.app
+  base_url: https://my-decap-proxy.vercel.app/api
 
 media_folder: "source/images" # 이미지 저장 경로
 public_folder: "/images"

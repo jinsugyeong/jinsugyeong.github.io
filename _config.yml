@@ -111,3 +111,4 @@ deploy:
   type: git
   repo: https://github.com/jinsugyeong/jinsugyeong.github.io.git
   branch: master
+  force: false

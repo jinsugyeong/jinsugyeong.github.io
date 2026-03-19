@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
+    if: "!startsWith(github.event.head_commit.message, 'Draft:')" # 커밋 메시지가 'Draft:'로 시작하지 않는 경우에만 실행
     runs-on: ubuntu-latest # 실행 환경
     permissions:
       contents: write # master 브랜치에 배포(push)하기 위해 쓰기 권한을 부여합니다.

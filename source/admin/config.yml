@@ -16,7 +16,7 @@ collections:
     folder: "source/_posts"
     create: true
     slug: "{{slug}}"
-    media_folder: "{{dirname}}/{{slug}}"
+    media_folder: "source/_posts/{{slug}}"
     public_folder: ""
     fields:
       - {label: "Title", name: "title", widget: "string"}
@@ -26,4 +26,3 @@ collections:
       - {label: "Categories", name: "categories", widget: "list", required: false}
       - {label: "Tags", name: "tags", widget: "list", required: false}
       - {label: "Body", name: "body", widget: "markdown", default: "\n\n<!-- more -->\n\n"}
-      - {label: "Body (Toast)", name: "body_toast", widget: "toast-editor", default: "\n\n<!-- more -->\n\n"}

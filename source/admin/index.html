@@ -5,52 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Train.Jin() - 글쓰기</title>
   <link rel="icon" href="/img/favicon.svg" />
-  <!-- Toast UI Editor CSS -->
-  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 </head>
 <body>
-  <!-- Toast UI Editor JS -->
-  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
-    var ToastEditorWidget = createClass({
-      getInitialState: function() {
-        return { value: this.props.value || '' };
-      },
-
-      componentDidMount: function() {
-        var self = this;
-        this.editor = new toastui.Editor({
-          el: this.editorRef,
-          height: '600px',
-          initialEditType: 'markdown',
-          previewStyle: 'vertical',
-          initialValue: this.props.value || '',
-          events: {
-            change: function() {
-              var markdown = self.editor.getMarkdown();
-              self.setState({ value: markdown });
-              self.props.onChange(markdown);
-            }
-          }
-        });
-      },
-
-      componentDidUpdate: function(prevProps) {
-        if (prevProps.value !== this.props.value && this.props.value !== this.state.value) {
-          this.editor.setMarkdown(this.props.value || '');
-        }
-      },
-
-      render: function() {
-        var self = this;
-        return h('div', {
-          ref: function(ref) { self.editorRef = ref; }
-        });
-      }
-    });
-
-    CMS.registerWidget('toast-editor', ToastEditorWidget);
-  </script>
 </body>
 </html>

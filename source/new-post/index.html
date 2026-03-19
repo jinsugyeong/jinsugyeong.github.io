@@ -562,6 +562,18 @@
           tagMatch[1].match(/  - (.+)/g)?.forEach(t => tags.push(t.replace('  - ', '').trim()));
           renderChips('tag-wrap', tags, 'tag-input');
         }
+        const coverMatch = fm.match(/^cover:\s*(.+)$/m);
+        if (coverMatch) {
+          const coverPath = coverMatch[1].trim();
+          document.getElementById('cover-name').textContent = coverPath.split('/').pop();
+          document.getElementById('cover-remove-btn').style.display = 'inline-block';
+          // base64로 다시 불러와서 coverBase64에 저장
+          const rawUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/source${coverPath}`;
+          const imgRes = await fetch(rawUrl);
+          const imgBlob = await imgRes.blob();
+          coverBase64 = await blobToBase64(imgBlob);
+          coverFile = { name: coverPath.split('/').pop() };
+        }
         // 이미지 파일명 → GitHub raw URL로 교체해서 에디터에서 보이게
         const slug = path.replace('source/_drafts/', '').replace('.md', '');
         const bodyWithUrls = body.replace(

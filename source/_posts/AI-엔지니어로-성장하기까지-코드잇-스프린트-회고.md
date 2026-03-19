@@ -5,8 +5,6 @@ categories:
   - 기록
 date: 2026-02-10 21:02:04
 tags:
-  - 코드잇스프린트
-  - 코드잇스프린트후기
 cover: /gallery/cover/AI-엔지니어로-성장하기까지-코드잇-스프린트-회고.png
 ---
 

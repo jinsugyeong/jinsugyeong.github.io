@@ -6,10 +6,10 @@ cover: /gallery/cover/decap-로그인.png
 categories:
   - Infra
 tags:
+  - Github
   - Github Actions
   - Hexo
   - Decab CMS
-  - ""
 ---
 현재 hexo로 깃허브 블로그를 쓰고있는데 항상 로컬에서 vscode 켜서 글을 쓰다보니 접근성이 너무 떨어지고 부트캠프 끝나고 맥북에서 윈도우 노트북으로 옮기면서 테마 관련 + 게시글 소스 코드들이 다 날라갔던 경험이 있어서 다른 블로그 플랫폼들처럼 바로 웹브라우저나 다른 기기에서도 쉽게 작성하고 배포할 수 없나?라는 생각이 들었다.
 
@@ -50,7 +50,7 @@ tags:
 
 - `node_modules/`: 모듈 파일들. (GitHub Actions가 package.json을 보고 npm install 명령어로 알아서 다운로드함)
 - `public/`: Hexo가 빌드해서 만들어낸 최종 HTML 결과물 폴더
-- `.deploy_git/`: hexo deploy 시 배포를 위해 생성되는 임시 폴더
+- `.deploy_git/`: hexo deploy시 배포를 위해 생성되는 임시 폴더
 - `db.json`: 로컬 빌드 캐시 파일
 
 ---
@@ -60,6 +60,7 @@ tags:
 ## 2.1. `.github/workflows/deploy.yml` 작성
 
 Hexo 소스 코드가 있는 최상위 경로에 코드 작성
+
 ```yaml .github/workflows/deploy.yml
 name: Deploy Hexo Blog
 
@@ -102,7 +103,7 @@ jobs:
       # 5. GitHub Pages에 배포
       - name: Deploy to GitHub Pages
         env:
-          # _config.yml에 설정된 GITHUB_TOKEN을 Actions의 기본 토큰으로 설정
+          # GitHub이 Actions 실행할 때마다 자동으로 발급해주는 임시 토큰
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "깃허브이름"
@@ -119,25 +120,7 @@ jobs:
 ```
 
 
-## 2.2. `_config.yml` 수정
-
-> 참고: _config.yml의 deploy 설정 중 repo URL을 https://${GITHUB_TOKEN}@github.com/jinsugyeong/jinsugyeong.github.io.git 형태로 변경해야 Actions에서 권한 오류 없이 푸시할 수 있습니다.
-
-라고 해서 북치기박치기 자동배포때처럼 `GITHUB_TOKEN` 발급받아서 Actions에 secret key로 등록할려했는데 *Secret names must not start with GITHUB_* 에러가 났다. 깃허브에서 자체적으로 자동 생성해서 제공하는 "예약된 특수 토큰"이기 때문에 직접 Secrets 메뉴에 들어가서 만들 필요가 없고 알아서 Actions가 실행될 대마다 임시로 발급해주기때문에 꺼내 쓰기만 하면 된다고 한다. 
-
-공식 플러그인(hexo-deployer-git)이 권장하는 방식으로 수정해주기만 하면 된다.
-
-```yaml
-deploy:
-  type: git
-  repo: https://github.com/jinsugyeong/jinsugyeong.github.io.git
-  token: $GITHUB_TOKEN
-  branch: master
-```
-
-이렇게 하면 `deploy.yml` 워크플로우에 있던 ` env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` 이 코드가 자동으로 연동된다.
-
-## 2.3. GitHub Actions에 쓰기 권한 부여하기
+## 2.2. GitHub Actions에 쓰기 권한 부여하기
 
 직접 토큰을 발급받지 않고 기본 `GITHUB_TOKEN`을 사용할 때 가장 흔하게 발생하는 에러가 **권한 부족(Permission denied)** 이다. 기본 토큰이 레포지토리에 푸시(Push)할 수 있도록 권한을 열어주어야 한다.
 
@@ -146,6 +129,7 @@ deploy:
 3. 스크롤을 맨 아래로 내려서 Workflow permissions 섹션에서
 4. Read and write permissions를 선택하고 [Save] 버튼 클릭
 
+---
 
 # 3.웹 기반 CMS(관리자 페이지) 연동하기
 
@@ -320,7 +304,26 @@ backend:
 
 # Troubleshooting
 
-## (1) Icarus 테마의 엄격한 버전 체크 기능
+
+## (1) `GITHUB_TOKEN` 설정 관련
+
+> 참고: _config.yml의 deploy 설정 중 repo URL을 https://${GITHUB_TOKEN}@github.com/jinsugyeong/jinsugyeong.github.io.git 형태로 변경해야 Actions에서 권한 오류 없이 푸시할 수 있습니다.
+
+라고 해서 북치기박치기 자동배포때처럼 `GITHUB_TOKEN` 발급받아서 Actions에 secret key로 등록할려했는데 *Secret names must not start with GITHUB_* 에러가 났다. 깃허브에서 자체적으로 자동 생성해서 제공하는 "예약된 특수 토큰"이기 때문에 직접 Secrets 메뉴에 들어가서 만들 필요가 없고 알아서 Actions가 실행될 대마다 임시로 발급해주기때문에 꺼내 쓰기만 하면 된다고 한다. 
+
+공식 플러그인(hexo-deployer-git)이 권장하는 방식으로 수정해주기만 하면 된다.
+
+```yaml
+deploy:
+  type: git
+  repo: https://github.com/jinsugyeong/jinsugyeong.github.io.git
+  token: $GITHUB_TOKEN
+  branch: master
+```
+
+이렇게 하면 `deploy.yml` 워크플로우에 있던 ` env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}` 이 코드가 자동으로 연동된다.
+
+## (2) Icarus 테마의 엄격한 버전 체크 기능
 
 ```bash
 ERROR Package hexo's version (8.1.1) does not satisfy the required version (^7.1.1).
@@ -338,7 +341,7 @@ Error: Process completed with exit code 255.
 - 문제를 해결하기위해 프로젝트 설정 파일인 `package.json`에서 버전을 Icarus 테마가 요구하는 안전한 버전으로 낮춰주고, 누락된 패키지들을 추가해줌
 
 
-## (2) Git author identity unknown 에러
+## (3) Git author identity unknown 에러
 
 ```bash
 *** Please tell me who you are.
@@ -364,7 +367,7 @@ Error: Process completed with exit code 2.
 - GitHub Actions 스크립트(deploy.yml) 안에서 배포 명령어를 실행하기 직전에 이름과 이메일을 알려주도록 두 줄 추가
 
 
-## (3) 배포 인증(Token) 오류
+## (4) 배포 인증(Token) 오류
 
 ```bash
 fatal: could not read Username for 'https://github.com': No such device or address FATAL Something's wrong. Maybe you can find the solution here: https://hexo.io/docs/troubleshooting.html 
@@ -384,7 +387,7 @@ run: |
           git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
 ```
 
-## (4) 토큰 설정 오류
+## (5) 토큰 설정 오류
 
 - 깃허브 서버가 토큰(***로 가려진 부분)을 비밀번호가 아닌 '사용자 아이디'로 착각해서 "비밀번호를 입력하라"고 요구하고 있는 상황
 - GitHub Actions 환경에서는 비밀번호를 입력할 수 없으므로 에러가 발생하며 멈추게 됨
@@ -405,7 +408,7 @@ run: |
 
 
 
-## (5) 브라우저가 admin/config.yml 파일을 찾지 못하는 문제
+## (6) 브라우저가 admin/config.yml 파일을 찾지 못하는 문제
 
 - Hexo가 블로그를 배포(생성)할 때 .yml 확장자 파일을 "단순 설정 파일"로 오해하고 최종 결과물(public/ 폴더)에 복사하지 않고 빼버렸기 때문
 
@@ -415,12 +418,12 @@ run: |
 
 
 
-## (6) Token 객체 undefined
+## (7) Token 객체 undefined
 하하하하... OAUTH_CLIENT_SECRETS로 설정해뒀던거다...하하하하하!!! 하하하!!
 
 
 
-## (7) opener 참조 끊김 문제
+## (8) opener 참조 끊김 문제
 ```
 console.log(window.opener)
 null
@@ -455,7 +458,7 @@ res.send(`...`);
 
 
 
-## (8) hexo deploy force push로 인한 commit 초기화 문제
+## (9) hexo deploy force push로 인한 commit 초기화 문제
 
 원래 `hexo g -d`로 배포할땐 잘만 쌓이던 배포 커밋들이 계속 사라지고 force 옵션이 붙어서 2개의 커밋이 쌓이는 문제 발생
 안그래도 하루에 fix:커밋 메세지로인한 진한 잔디밭으로 변하는 것에 스트레스 받아서(아무 의미없다...) 여러 해결을 해볼려고 노력..

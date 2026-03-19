@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>AWS와 Vercel로 서비스 실제 배포해보기 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="목차 AWS EC2로 백엔드 배포하기 AWS 서비스 생성 및 연결하기 (RDS &amp;amp; OpenSearch) 프론트엔드(Vercel) 배포 및 연결 도메인 및 HTTPS 적용"><meta property="og:type" content="article"><meta property="og:title" content="AWS와 Vercel로 서비스 실제 배포해보기"><meta property="og:url" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="목차 AWS EC2로 백엔드 배포하기 AWS 서비스 생성 및 연결하기 (RDS &amp;amp; OpenSearch) 프론트엔드(Vercel) 배포 및 연결 도메인 및 HTTPS 적용"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-1.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-2.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-3.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-4.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-5.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-6.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-7.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-8.png"><meta property="og:image" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-9.png"><meta property="article:published_time" content="2026-03-10T14:59:33.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.387Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="AWS"><meta property="article:tag" content="EC2"><meta property="article:tag" content="RDS"><meta property="article:tag" content="PostgreSQL"><meta property="article:tag" content="OpenSearch"><meta property="article:tag" content="Vercel"><meta property="article:tag" content="Docker"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/"},"headline":"AWS와 Vercel로 서비스 실제 배포해보기","image":["https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-1.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-2.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-3.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-4.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-5.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-6.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-7.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-8.png","https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-9.png"],"datePublished":"2026-03-10T14:59:33.000Z","dateModified":"2026-03-19T14:10:15.387Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"목차 AWS EC2로 백엔드 배포하기 AWS 서비스 생성 및 연결하기 (RDS &amp; OpenSearch) 프론트엔드(Vercel) 배포 및 연결 도메인 및 HTTPS 적용"}</script><link rel="canonical" href="https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">AWS와 Vercel로 서비스 실제 배포해보기</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2026-03-10 23:59 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Infra/">Infra</a></span></div></div><div class="content"><h1 id="목차"><a href="#목차" class="headerlink" title="목차"></a>목차</h1><ol>
+<li><a href="#1-AWS-EC2%EB%A1%9C-%EB%B0%B1%EC%97%94%EB%93%9C-%EB%B0%B0%ED%8F%AC%ED%95%98%EA%B8%B0">AWS EC2로 백엔드 배포하기</a></li>
+<li><a href="#2-AWS-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%83%9D%EC%84%B1-%EB%B0%8F-%EC%97%B0%EA%B2%B0%ED%95%98%EA%B8%B0-RDS-OpenSearch">AWS 서비스 생성 및 연결하기 (RDS &amp; OpenSearch)</a></li>
+<li><a href="#3-%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-Vercel-%EB%B0%B0%ED%8F%AC-%EB%B0%8F-%EC%97%B0%EA%B2%B0">프론트엔드(Vercel) 배포 및 연결</a></li>
+<li><a href="#4-%EB%8F%84%EB%A9%94%EC%9D%B8-%EB%B0%8F-HTTPS-%EC%A0%81%EC%9A%A9">도메인 및 HTTPS 적용</a></li>
+</ol>
+<span id="more"></span>
+
+
+<h2 id="현재-서비스-배포-구조"><a href="#현재-서비스-배포-구조" class="headerlink" title="현재 서비스 배포 구조"></a>현재 서비스 배포 구조</h2><ul>
+<li>Docker Compose (개발)</li>
+<li>AWS EC2 + RDS + OpenSearch &#x2F; Vercel (프론트)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Vercel (Frontend)</span><br><span class="line">        ↓</span><br><span class="line">EC2 (FastAPI + Docker)</span><br><span class="line">        ↓</span><br><span class="line">RDS (Postgres)</span><br><span class="line">        ↓</span><br><span class="line">OpenSearch</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="1-AWS-EC2로-백엔드-배포하기"><a href="#1-AWS-EC2로-백엔드-배포하기" class="headerlink" title="1. AWS EC2로 백엔드 배포하기"></a>1. AWS EC2로 백엔드 배포하기</h1><p><a target="_blank" rel="noopener" href="https://aws.amazon.com/ko/free/">AWS 프리티어</a> 가입부터 해주기</p>
+<p>로그인하면 콘솔 홈에 들어가게 되는데</p>
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image.png" class="" title="alt text">
+
+<p>여기가 서울로 잡혀있어야함! 나는 처음에 시드니로 잡혀있어서 인스턴스 만들었다가 삭제하고 다시 만들었다…</p>
+<h2 id="1-1-AWS-서버-생성"><a href="#1-1-AWS-서버-생성" class="headerlink" title="1.1 AWS 서버 생성"></a>1.1 AWS 서버 생성</h2><h3 id="1-AWS-콘솔-들어가기"><a href="#1-AWS-콘솔-들어가기" class="headerlink" title="(1) AWS 콘솔 들어가기"></a>(1) AWS 콘솔 들어가기</h3><ol>
+<li>Amazon Web Services 로그인</li>
+<li>상단 검색창에 <strong>EC2</strong> 검색</li>
+<li><strong>EC2 Dashboard</strong> 클릭</li>
+</ol>
+<h3 id="2-서버-생성"><a href="#2-서버-생성" class="headerlink" title="(2) 서버 생성"></a>(2) 서버 생성</h3><p>왼쪽 메뉴에서</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Instances → Launch instances</span><br></pre></td></tr></table></figure>
+
+<p>클릭</p>
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-1.png" class="" title="alt text">
+
+
+<h3 id="3-기본-설정"><a href="#3-기본-설정" class="headerlink" title="(3) 기본 설정"></a>(3) 기본 설정</h3><h4 id="이름"><a href="#이름" class="headerlink" title="이름"></a>이름</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">프로젝트 이름</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="OS-선택"><a href="#OS-선택" class="headerlink" title="OS 선택"></a>OS 선택</h4><p><strong>Ubuntu 선택</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Ubuntu Server 22.04 LTS</span><br></pre></td></tr></table></figure>
+
+<p>이게 제일 무난</p>
+<h4 id="인스턴스-타입"><a href="#인스턴스-타입" class="headerlink" title="인스턴스 타입"></a>인스턴스 타입</h4><p>무료티어면</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t3.micro or t3.small</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="4-Key-pair-생성-SSH-접속용"><a href="#4-Key-pair-생성-SSH-접속용" class="headerlink" title="(4) Key pair 생성 (SSH 접속용)"></a>(4) Key pair 생성 (SSH 접속용)</h3><p><code>Create new key pair</code></p>
+<p>설정</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Name: 프로젝트명-key</span><br><span class="line">Type: RSA</span><br><span class="line">Format: .pem</span><br></pre></td></tr></table></figure>
+
+<p>다운로드됨.</p>
+<p>⚠️ 이 파일 <strong>절대 잃어버리면 안됨</strong></p>
+<h3 id="5-네트워크-설정-포트-열기"><a href="#5-네트워크-설정-포트-열기" class="headerlink" title="(5) 네트워크 설정 (포트 열기)"></a>(5) 네트워크 설정 (포트 열기)</h3><p>Security Group에서 다음 추가</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SSH   22   My IP</span><br><span class="line">HTTP  80   Anywhere</span><br><span class="line">HTTPS 443  Anywhere</span><br><span class="line">Custom 8000 Anywhere</span><br></pre></td></tr></table></figure>
+<p>(8000은 FastAPI 같은 서버용)</p>
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-2.png" class="" title="alt text">
+<p>이렇게 설정하고</p>
+<p>우측 상단에 편집 버튼 눌러서</p>
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-3.png" class="" title="alt text">
+
+<p>이런식으로 추가해주기</p>
+<h3 id="6-스토리지"><a href="#6-스토리지" class="headerlink" title="(6) 스토리지"></a>(6) 스토리지</h3><p>기본값 그대로</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">8GB</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="7-Launch-Instance"><a href="#7-Launch-Instance" class="headerlink" title="(7) Launch Instance"></a>(7) Launch Instance</h3><p>버튼 누르면 서버 생성됨</p>
+<h3 id="8-서버-IP-확인"><a href="#8-서버-IP-확인" class="headerlink" title="(8) 서버 IP 확인"></a>(8) 서버 IP 확인</h3><p>생성된 인스턴스 클릭하면</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Public IPv4 address</span><br></pre></td></tr></table></figure>
+
+<p>예</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">43.201.xxx.xxx</span><br></pre></td></tr></table></figure>
+
+<p>이게 <strong>서버 주소</strong>다.</p>
+<hr>
+<h2 id="1-2-AWS-서버-접속-및-세팅"><a href="#1-2-AWS-서버-접속-및-세팅" class="headerlink" title="1.2 AWS 서버 접속 및 세팅"></a>1.2 AWS 서버 접속 및 세팅</h2><h3 id="1-서버-접속-로컬에서"><a href="#1-서버-접속-로컬에서" class="headerlink" title="(1) 서버 접속 (로컬에서)"></a>(1) 서버 접속 (로컬에서)</h3><p>윈도우 기준</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i bookchiki-key.pem ubuntu@43.201.xxx.xxx</span><br></pre></td></tr></table></figure>
+
+<p>key.pem 파일이 권한때문에 실패한다면</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">icacls <span class="string">&quot;key.pem&quot;</span> /inheritance:<span class="built_in">r</span></span><br><span class="line">icacls <span class="string">&quot;key.pem&quot;</span> /remove <span class="string">&quot;Users&quot;</span></span><br><span class="line">icacls <span class="string">&quot;key.pem&quot;</span> /grant:<span class="built_in">r</span> <span class="string">&quot;<span class="variable">$</span>(<span class="variable">$env:USERNAME</span>):R&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>접속 성공</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-xxx:~$</span><br></pre></td></tr></table></figure>
+
+<p>여기부터 <strong>리눅스 서버</strong></p>
+<h3 id="2-리눅스-서버-세팅"><a href="#2-리눅스-서버-세팅" class="headerlink" title="(2) 리눅스 서버 세팅"></a>(2) 리눅스 서버 세팅</h3><p>패키지 업데이트.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt upgrade -y</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-Docker-설치"><a href="#3-Docker-설치" class="headerlink" title="(3) Docker 설치"></a>(3) Docker 설치</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y docker.io</span><br></pre></td></tr></table></figure>
+
+<p>설치 확인</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker --version</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-Docker-실행"><a href="#4-Docker-실행" class="headerlink" title="(4) Docker 실행"></a>(4) Docker 실행</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl start docker</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> docker</span><br></pre></td></tr></table></figure>
+
+<p>확인</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status docker</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-sudo-없이-docker-쓰기-중요"><a href="#5-sudo-없이-docker-쓰기-중요" class="headerlink" title="(5) sudo 없이 docker 쓰기 (중요)"></a>(5) sudo 없이 docker 쓰기 (중요)</h3><p>지금 상태는 docker 실행할 때마다 sudo 붙어야 한다. 귀찮다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> usermod -aG docker <span class="variable">$USER</span></span><br></pre></td></tr></table></figure>
+
+<p>그 다음 <strong>SSH 다시 접속</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<p>그리고 로컬에서 다시</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i key.pem ubuntu@ip-xxx</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-Docker-정상-작동-확인"><a href="#6-Docker-정상-작동-확인" class="headerlink" title="(6) Docker 정상 작동 확인"></a>(6) Docker 정상 작동 확인</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<p>이 메시지 나오면 성공</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello from Docker!</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="1-3-서버에-코드-가져오기"><a href="#1-3-서버에-코드-가져오기" class="headerlink" title="1.3 서버에 코드 가져오기"></a>1.3 서버에 코드 가져오기</h2><p>백엔드 코드를 EC2로 가져와야 한다.</p>
+<h3 id="방법-A-GitHub에서-clone"><a href="#방법-A-GitHub에서-clone" class="headerlink" title="방법 A: GitHub에서 clone"></a>방법 A: GitHub에서 clone</h3><p>서버에서 실행:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install -y git</span><br></pre></td></tr></table></figure>
+
+<p>그 다음</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/아이디/레포.git</span><br></pre></td></tr></table></figure>
+
+<p>예</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/jinsugyeong/bookchiki.git</span><br></pre></td></tr></table></figure>
+
+<p>그리고 이동</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> bookchiki</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="방법-B-로컬-코드-업로드"><a href="#방법-B-로컬-코드-업로드" class="headerlink" title="방법 B: 로컬 코드 업로드"></a>방법 B: 로컬 코드 업로드</h3><p>만약 GitHub 없으면 <strong>scp로 업로드</strong>한다.</p>
+<p>로컬에서 실행:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -i bookchiki-key.pem -r C:/JSG/bookchiki ubuntu@ip-xxx:~</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>이제 파일을 수정해야하는데 터미널에서 vim이나 nano를 사용해도 되지만 빠른 설정과 편리함을 위해 vscode에서 remote-ssh extention을 사용했다.<br>설정 방법은 아래의 블로그 글 참고</p>
+<p><a target="_blank" rel="noopener" href="https://tyoon9781.tistory.com/entry/aws-ec2-vscode-setting-2023">AWS - EC2 초 간단 생성 + vscode 원격연결</a></p>
+<h2 id="1-4-배포용으로-코드-수정하기"><a href="#1-4-배포용으로-코드-수정하기" class="headerlink" title="1.4 배포용으로 코드 수정하기"></a>1.4 배포용으로 코드 수정하기</h2><p>현재 개발용 Docker 파일들이 <code>backend + postgres + opensearch</code>가 묶여있기 때문에 <code>backend only</code>로 수정해줘야한다.</p>
+<h3 id="1-docker-compose-yaml-수정"><a href="#1-docker-compose-yaml-수정" class="headerlink" title="(1) docker-compose.yaml 수정"></a>(1) docker-compose.yaml 수정</h3><figure class="highlight yaml"><figcaption><span>docker-compose.yaml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">backend:</span> </span><br><span class="line">  <span class="attr">postgres:</span> </span><br><span class="line">  <span class="attr">opensearch:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br></pre></td></tr></table></figure>
+<p>였던 걸 아래의 코드로 수정</p>
+<figure class="highlight yaml"><figcaption><span>docker-compose.prod.yaml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">backend:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">./backend</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8000:8000&quot;</span></span><br><span class="line">    <span class="attr">env_file:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">.env</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="💡-단일-컨테이너라도-docker-compose-yml을-두는-이유"><a href="#💡-단일-컨테이너라도-docker-compose-yml을-두는-이유" class="headerlink" title="💡 단일 컨테이너라도 docker-compose.yml을 두는 이유"></a>💡 단일 컨테이너라도 <code>docker-compose.yml</code>을 두는 이유</h4><ol>
+<li><strong>설정의 문서화</strong> (Configuration as Code):</li>
+</ol>
+<ul>
+<li>docker run 명령어의 옵션(-p, –env-file, –restart 등)을 매번 기억하거나 메모장에 적어둘 필요가 없다. <code>docker-compose.yml</code> 파일 자체가 실행 명세서가 된다.</li>
+</ul>
+<ol start="2">
+<li><strong>배포 명령어의 단순화</strong> :</li>
+</ol>
+<ul>
+<li>초기 배포든, 업데이트 배포든 명령어 하나면 끝난다.</li>
+<li><code>docker-compose -f docker-compose.prod.yml up -d --build</code></li>
+<li>이 명령어가 알아서 ‘기존 컨테이너 정지 -&gt; 삭제 -&gt; 이미지 빌드 -&gt; 새 컨테이너 실행’을 수행한다.</li>
+</ul>
+<ol start="3">
+<li><strong>확장성</strong> :</li>
+</ol>
+<ul>
+<li>나중에 SSL 적용을 위해 Nginx를 앞단에 붙이거나, 로그 수집기 등을 추가해야 할 때 <code>docker-compose.yml</code>에 몇 줄만 추가하면 된다.</li>
+</ul>
+<h3 id="2-DockerFile-수정"><a href="#2-DockerFile-수정" class="headerlink" title="(2) DockerFile 수정"></a>(2) DockerFile 수정</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># --- Stage 1: Builder ---</span></span><br><span class="line"><span class="comment"># 의존성을 설치하는 빌드 단계</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.11</span>-slim as builder</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> PYTHONDONTWRITEBYTECODE <span class="number">1</span></span><br><span class="line"><span class="keyword">ENV</span> PYTHONUNBUFFERED <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./requirements.txt .</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> pip wheel --no-cache-dir --wheel-dir /app/wheels -r requirements.txt</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># --- Stage 2: Final ---</span></span><br><span class="line"><span class="comment"># 실제 애플리케이션을 실행하는 최종 이미지</span></span><br><span class="line"><span class="keyword">FROM</span> python:<span class="number">3.11</span>-slim</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 보안을 위해 non-root 유저 생성 및 사용</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> useradd --create-home appuser</span></span><br><span class="line"><span class="keyword">USER</span> appuser</span><br><span class="line"></span><br><span class="line"><span class="comment"># non-root 유저로 설치된 패키지의 실행 파일 경로를 PATH에 추가</span></span><br><span class="line"><span class="keyword">ENV</span> PATH=<span class="string">&quot;/home/appuser/.local/bin:$&#123;PATH&#125;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=builder /app/wheels /wheels</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> --from=builder /app/requirements.txt .</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> pip install --no-cache /wheels/*</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . .</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8000</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [<span class="string">&quot;bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;python -m alembic upgrade head &amp;&amp; exec uvicorn app.main:app --host 0.0.0.0 --port 8000&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>start bash는 db 마이그레이션과 fastAPI 실행을 위해 설정해둠</li>
+<li>개발과 다르게 배포환경에서는 fastAPI의 reload 옵션을 제거함</li>
+</ul>
+<h3 id="3-env-파일-수정"><a href="#3-env-파일-수정" class="headerlink" title="(3) .env 파일 수정"></a>(3) .env 파일 수정</h3><p>현재 코드 상황</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DATABASE_URL=postgresql://user:pass@postgres:5432/db</span><br></pre></td></tr></table></figure>
+
+<p>여기서 <code>postgres</code>는 내부 hostname이여서<br>AWS를 사용하면 <code>RDS-ENDPOINT</code>로 바뀌게 된다</p>
+<p>opensearch도 마찬가지 하지만 현재 RDS랑 opensearch를 안만들었기 때문에 <code>.env.example</code>만 수정해두고 서버 실행 테스트 진행</p>
+<h2 id="1-5-서버-실행-테스트"><a href="#1-5-서버-실행-테스트" class="headerlink" title="1.5 서버 실행 테스트"></a>1.5 서버 실행 테스트</h2><p>DockerFile<br><code>CMD [&quot;uvicorn&quot;, &quot;app.main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]</code>로 수정해서 진행</p>
+<p>실행</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose -f docker-compose.prod.yml up -d --build</span><br></pre></td></tr></table></figure>
+
+<p>종료</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose -f docker-compose.prod.yml down</span><br></pre></td></tr></table></figure>
+
+<details>
+<summary>docker compose 명령어 오류날때</summary>
+
+<ol>
+<li>필수 패키지 설치 및 GPG 키 추가</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 패키지 인덱스 업데이트 및 필요한 보안 패키지 설치</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get update</span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y ca-certificates curl gnupg</span><br><span class="line"></span><br><span class="line"><span class="comment"># Docker 공식 GPG 키 다운로드 및 저장</span></span><br><span class="line"><span class="built_in">sudo</span> install -m 0755 -d /etc/apt/keyrings</span><br><span class="line">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | <span class="built_in">sudo</span> gpg --dearmor -o /etc/apt/keyrings/docker.gpg</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chmod</span> a+r /etc/apt/keyrings/docker.gpg</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Docker 저장소 추가</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 시스템 아키텍처에 맞는 Docker 저장소를 소스 리스트에 추가</span></span><br><span class="line"><span class="built_in">echo</span> \</span><br><span class="line">  <span class="string">&quot;deb [arch=<span class="subst">$(dpkg --print-architecture)</span> signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \</span></span><br><span class="line"><span class="string">  <span class="subst">$(. /etc/os-release &amp;&amp; echo <span class="string">&quot;<span class="variable">$VERSION_CODENAME</span>&quot;</span>)</span> stable&quot;</span> | \</span><br><span class="line">  <span class="built_in">sudo</span> <span class="built_in">tee</span> /etc/apt/sources.list.d/docker.list &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>다시 업데이트 및 플러그인 설치</li>
+</ol>
+<p>이제 저장소가 추가되었으므로 패키지를 찾을 수 있습니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 저장소 목록 갱신</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment"># Docker Compose 플러그인 설치</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install -y docker-compose-plugin</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>설치 확인 및 배포</li>
+</ol>
+<p>설치가 잘 되었는지 버전을 확인합니다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose version</span><br></pre></td></tr></table></figure>
+
+</details>
+
+
+
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-4.png" class="" title="alt text">
+
+<p>떳당</p>
+<h1 id="2-AWS-서비스-생성-및-연결하기-RDS-OpenSearch"><a href="#2-AWS-서비스-생성-및-연결하기-RDS-OpenSearch" class="headerlink" title="2. AWS 서비스 생성 및 연결하기 (RDS &amp; OpenSearch)"></a>2. AWS 서비스 생성 및 연결하기 (RDS &amp; OpenSearch)</h1><h2 id="2-1-PostgreSQL-AWS-RDS"><a href="#2-1-PostgreSQL-AWS-RDS" class="headerlink" title="2.1 PostgreSQL - AWS RDS"></a>2.1 PostgreSQL - AWS RDS</h2><p>백엔드가 의존하는 데이터베이스 AWS에 생성하기</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Engine: PostgreSQL</span><br><span class="line">Version: 16 (개발했던 버전에 맞춰서)</span><br><span class="line">Instance: db.t3.micro</span><br><span class="line">Storage: 20GB</span><br><span class="line">Public access: Yes  ⭐중요</span><br><span class="line">DB name: dbname </span><br><span class="line">username: dbuser </span><br><span class="line">password: dbpassword</span><br></pre></td></tr></table></figure>
+
+<p>이정도로 설정해주고</p>
+<p>endpoint 나오면 <code>.env</code>에 postgres로 되어있던 <code>RDS-ENDPOINT</code> 수정해주기</p>
+<h2 id="2-2-OpenSearch-EC2-Docker에-포함시키기"><a href="#2-2-OpenSearch-EC2-Docker에-포함시키기" class="headerlink" title="2.2 OpenSearch - EC2 Docker에 포함시키기"></a>2.2 OpenSearch - EC2 Docker에 포함시키기</h2><p>현재 opensearch 서비스 생성이 안돼서 그냥 ec2에 포함시켜서 배포하기로 ㅠ</p>
+<h3 id="docker-compose-yml-수정"><a href="#docker-compose-yml-수정" class="headerlink" title="docker-compose.yml 수정"></a>docker-compose.yml 수정</h3><figure class="highlight yml"><figcaption><span>docker-compose.prod.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3.8&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">backend:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">./backend</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">Dockerfile</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8000:8000&quot;</span></span><br><span class="line">    <span class="attr">env_file:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">.env</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="attr">opensearch:</span></span><br><span class="line">        <span class="attr">condition:</span> <span class="string">service_healthy</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">opensearch:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./opensearch</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">discovery.type=single-node</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">plugins.security.disabled=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">OPENSEARCH_JAVA_OPTS=-Xms512m</span> <span class="string">-Xmx512m</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">OPENSEARCH_INITIAL_ADMIN_PASSWORD=</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9200:9200&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">osdata:/usr/share/opensearch/data</span></span><br><span class="line">    <span class="attr">healthcheck:</span></span><br><span class="line">      <span class="attr">test:</span> [<span class="string">&quot;CMD-SHELL&quot;</span>, <span class="string">&quot;curl -sf http://localhost:9200/_cluster/health || exit 1&quot;</span>]</span><br><span class="line">      <span class="attr">interval:</span> <span class="string">10s</span></span><br><span class="line">      <span class="attr">timeout:</span> <span class="string">5s</span></span><br><span class="line">      <span class="attr">retries:</span> <span class="number">12</span></span><br><span class="line">      <span class="attr">start_period:</span> <span class="string">30s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">osdata:</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="스토리지-확장"><a href="#스토리지-확장" class="headerlink" title="스토리지 확장"></a>스토리지 확장</h3><p>처음 ec2 인스턴스 생성할때 기본인 8GB로 생성했었는데 opensearch까지 같이 올려야하니깐 바로 <code>no space left on device</code> 오류났다..ㅎㅎ</p>
+<p>프리티어는 스토리지 30gb까지 무료라길래 20gb로 늘림 확인해보면</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-1-123:~/bookchiki$ lsblk</span><br><span class="line">NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS</span><br><span class="line">nvme0n1      259:0    0   20G  0 disk </span><br><span class="line">├─nvme0n1p1  259:1    0    7G  0 part /</span><br><span class="line">├─nvme0n1p14 259:2    0    4M  0 part </span><br><span class="line">├─nvme0n1p15 259:3    0  106M  0 part /boot/efi</span><br><span class="line">└─nvme0n1p16 259:4    0  913M  0 part /boot</span><br></pre></td></tr></table></figure>
+
+<br>
+이걸로 끝이 아니라 파티션에 할당해줘야한다
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 파티션 확장</span></span><br><span class="line"><span class="built_in">sudo</span> growpart /dev/nvme0n1 1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 파일시스템 확장</span></span><br><span class="line"><span class="built_in">sudo</span> resize2fs /dev/nvme0n1p1</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>확인</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ubuntu@ip-172-31-1-123:~/bookchiki$ df -h</span><br><span class="line">Filesystem       Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/root         19G  3.9G   15G  22% /</span><br><span class="line">tmpfs            956M     0  956M   0% /dev/shm</span><br><span class="line">tmpfs            383M  928K  382M   1% /run</span><br><span class="line">tmpfs            5.0M     0  5.0M   0% /run/lock</span><br><span class="line">efivarfs         128K  3.6K  120K   3% /sys/firmware/efi/efivars</span><br><span class="line">/dev/nvme0n1p16  881M  161M  659M  20% /boot</span><br><span class="line">/dev/nvme0n1p15  105M  6.2M   99M   6% /boot/efi</span><br><span class="line">tmpfs            192M   12K  192M   1% /run/user/1000</span><br></pre></td></tr></table></figure>
+
+<h3 id="인스턴스-유형-변경"><a href="#인스턴스-유형-변경" class="headerlink" title="인스턴스 유형 변경"></a>인스턴스 유형 변경</h3><p><code>t3.small</code>로 ram 2gb짜리 엿는데 이것도 뻑가길래 <code>m7i-flex.large</code>로 변경…^^ 다행히 이것도 프리티어 가능ㅎㅎ</p>
+<h2 id="2-3-AWS-보안-규칙-추가"><a href="#2-3-AWS-보안-규칙-추가" class="headerlink" title="2.3 AWS 보안 규칙 추가"></a>2.3 AWS 보안 규칙 추가</h2><img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-5.png" class="" title="alt text">
+
+<p>RDS도 EC2 보안 규칙 같이 쓰게 해놔서<br>postgres의 <code>5432</code>포트와 opensearch의 <code>9200</code>포트 추가해줬다</p>
+<hr>
+<h1 id="3-프론트엔드-Vercel-배포-및-연결"><a href="#3-프론트엔드-Vercel-배포-및-연결" class="headerlink" title="3. 프론트엔드(Vercel) 배포 및 연결"></a>3. 프론트엔드(Vercel) 배포 및 연결</h1><h2 id="3-1-Vercel-프로젝트-생성"><a href="#3-1-Vercel-프로젝트-생성" class="headerlink" title="3.1 Vercel 프로젝트 생성"></a>3.1 Vercel 프로젝트 생성</h2><p>GitHub 리포지토리를 Vercel에 연결하여 프론트엔드 프로젝트를 생성.</p>
+<h2 id="3-2-Vercel-환경변수-설정-Environment-Variables"><a href="#3-2-Vercel-환경변수-설정-Environment-Variables" class="headerlink" title="3.2 Vercel 환경변수 설정 (Environment Variables)"></a>3.2 Vercel 환경변수 설정 (Environment Variables)</h2><img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-6.png" class="" title="alt text">
+<ul>
+<li>원래 <code>NEXT_PUBLIC_API_URL</code>은 개발에서 localhost:8000이였고 배포환경에선 AWS EC2 IP:8000으로 해야하지만..! google oauth 이슈로 인해 아래 도메인을 발급받아서 설정해줬다…</li>
+</ul>
+<h2 id="3-3-백엔드-CORS-설정"><a href="#3-3-백엔드-CORS-설정" class="headerlink" title="3.3 백엔드 CORS 설정"></a>3.3 백엔드 CORS 설정</h2><p>EC2 서버의 .env 파일에 있는 FRONTEND_URL을 Vercel 배포 주소로 설정</p>
+<p>이후 백엔드 재시작! 그래야 Vercel에서 보낸 API 요청을 백엔드가 허용함.</p>
+<h2 id="3-4-Google-Oauth-redirect-uri-mismatch-이슈-해결"><a href="#3-4-Google-Oauth-redirect-uri-mismatch-이슈-해결" class="headerlink" title="3.4 Google Oauth redirect_uri_mismatch 이슈 해결"></a>3.4 Google Oauth redirect_uri_mismatch 이슈 해결</h2><p>설정을 제대로 했는데.. 계속 <code>redirect_uri_mismatch</code> 오류가 났다…</p>
+<p>지피티도 제미나이도 계속 나한테 승인된 리디렉션 URI을 설정하라고 하는데 아무리 뒤져봐도 그런게 없는데 </p>
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-7.png" class="" title="alt text">
+
+<p>알고보니 개발환경에서 쓰던 OAuth 클라이언트가 데스크톱 유형이여서 그랬던것… 웹 애플리케이션으로 만들어야 승인된 JavaScript 원본과 승인된 리디렉션 URI을 설정할 수 있다.</p>
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-8.png" class="" title="alt text">
+
+
+
+<hr>
+<h1 id="4-도메인-및-HTTPS-적용"><a href="#4-도메인-및-HTTPS-적용" class="headerlink" title="4. 도메인 및 HTTPS 적용"></a>4. 도메인 및 HTTPS 적용</h1><p>서비스를 정식으로 운영하려면 IP 주소 대신 도메인을 사용하고, 보안을 위해 HTTPS를 적용하는 것이 좋다.</p>
+<h2 id="4-1-도메인-구매-및-EC2-연결"><a href="#4-1-도메인-구매-및-EC2-연결" class="headerlink" title="4.1 도메인 구매 및 EC2 연결"></a>4.1 도메인 구매 및 EC2 연결</h2><p>원하는 도메인을 구매하고, 해당 도메인이 EC2의 IP 주소를 가리키도록 DNS 설정.</p>
+<h2 id="4-2-Nginx-리버스-프록시-설정"><a href="#4-2-Nginx-리버스-프록시-설정" class="headerlink" title="4.2 Nginx 리버스 프록시 설정"></a>4.2 Nginx 리버스 프록시 설정</h2><p>EC2에 Nginx를 설치하여 <a target="_blank" rel="noopener" href="https://your-domain.com/">https://your-domain.com</a> 으로 들어오는 요청을 백엔드 컨테이너의 <a target="_blank" rel="noopener" href="http://localhost:8000/">http://localhost:8000</a> 으로 전달하도록 설정.</p>
+<h2 id="4-3-SSL-인증서-발급"><a href="#4-3-SSL-인증서-발급" class="headerlink" title="4.3 SSL 인증서 발급"></a>4.3 SSL 인증서 발급</h2><p>Certbot을 사용하여 무료 SSL 인증서를 발급받고 Nginx에 적용하여 HTTPS를 활성화하기.</p>
+<br>
+
+<p>위 3단계를 아래의 블로그에서 잘 정리해줬다</p>
+<p><a target="_blank" rel="noopener" href="https://securityinit.tistory.com/243">무료 도메인을 발급받고 Https 적용하기 (nginx, certbot)</a></p>
+<hr>
+<br>
+
+
+
+
+<img src="/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/image-9.png" class="" title="alt text">
+<p><a target="_blank" rel="noopener" href="https://bookchiki.vercel.app/">배포 사이트</a></p>
+<p>아직 오류가 많고 mvp 수준이지만 배포를 우선 해보고 실사용자 후기를 들으면서 디벨롭하는게 더 좋을것 같아서 부랴부랴 밤새가면서 한거라 미흡하지만 뿌듯하다.</p>
+<p>배포하고 보니깐 수정할게 계속 눈에 보여서 더 힘들었던것같다.</p>
+<p>git action으로 CI&#x2F;CD 파이프라인 만들어서 도커 이미지 서버에 배포하는것도 공부해봐야겠다.</p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/AWS/">AWS</a><a class="link-muted mr-2" rel="tag" href="/tags/EC2/">EC2</a><a class="link-muted mr-2" rel="tag" href="/tags/RDS/">RDS</a><a class="link-muted mr-2" rel="tag" href="/tags/PostgreSQL/">PostgreSQL</a><a class="link-muted mr-2" rel="tag" href="/tags/OpenSearch/">OpenSearch</a><a class="link-muted mr-2" rel="tag" href="/tags/Vercel/">Vercel</a><a class="link-muted mr-2" rel="tag" href="/tags/Docker/">Docker</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2026/03/17/GitHub-Actions%EC%99%80-Docker%EB%A1%9C-EC2-%EC%9E%90%EB%8F%99-%EB%B0%B0%ED%8F%AC-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">GitHub Actions와 Docker로 EC2 자동 배포 파이프라인 구축하기</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/02/28/%EA%B5%AC%EA%B8%80-Oauth-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84/"><span class="level-item">구글 Oauth 로그인 구현</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2026/03/10/AWS%EC%99%80-Vercel%EB%A1%9C-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%8B%A4%EC%A0%9C-%EB%B0%B0%ED%8F%AC%ED%95%B4%EB%B3%B4%EA%B8%B0/';
+            this.page.identifier = '2026/03/10/AWS와-Vercel로-서비스-실제-배포해보기/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#목차"><span class="level-left"><span class="level-item">목차</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#현재-서비스-배포-구조"><span class="level-left"><span class="level-item">현재 서비스 배포 구조</span></span></a></li></ul></li><li><a class="level is-mobile" href="#1-AWS-EC2로-백엔드-배포하기"><span class="level-left"><span class="level-item">1. AWS EC2로 백엔드 배포하기</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-1-AWS-서버-생성"><span class="level-left"><span class="level-item">1.1 AWS 서버 생성</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-AWS-콘솔-들어가기"><span class="level-left"><span class="level-item">(1) AWS 콘솔 들어가기</span></span></a></li><li><a class="level is-mobile" href="#2-서버-생성"><span class="level-left"><span class="level-item">(2) 서버 생성</span></span></a></li><li><a class="level is-mobile" href="#3-기본-설정"><span class="level-left"><span class="level-item">(3) 기본 설정</span></span></a></li><li><a class="level is-mobile" href="#4-Key-pair-생성-SSH-접속용"><span class="level-left"><span class="level-item">(4) Key pair 생성 (SSH 접속용)</span></span></a></li><li><a class="level is-mobile" href="#5-네트워크-설정-포트-열기"><span class="level-left"><span class="level-item">(5) 네트워크 설정 (포트 열기)</span></span></a></li><li><a class="level is-mobile" href="#6-스토리지"><span class="level-left"><span class="level-item">(6) 스토리지</span></span></a></li><li><a class="level is-mobile" href="#7-Launch-Instance"><span class="level-left"><span class="level-item">(7) Launch Instance</span></span></a></li><li><a class="level is-mobile" href="#8-서버-IP-확인"><span class="level-left"><span class="level-item">(8) 서버 IP 확인</span></span></a></li></ul></li><li><a class="level is-mobile" href="#1-2-AWS-서버-접속-및-세팅"><span class="level-left"><span class="level-item">1.2 AWS 서버 접속 및 세팅</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-서버-접속-로컬에서"><span class="level-left"><span class="level-item">(1) 서버 접속 (로컬에서)</span></span></a></li><li><a class="level is-mobile" href="#2-리눅스-서버-세팅"><span class="level-left"><span class="level-item">(2) 리눅스 서버 세팅</span></span></a></li><li><a class="level is-mobile" href="#3-Docker-설치"><span class="level-left"><span class="level-item">(3) Docker 설치</span></span></a></li><li><a class="level is-mobile" href="#4-Docker-실행"><span class="level-left"><span class="level-item">(4) Docker 실행</span></span></a></li><li><a class="level is-mobile" href="#5-sudo-없이-docker-쓰기-중요"><span class="level-left"><span class="level-item">(5) sudo 없이 docker 쓰기 (중요)</span></span></a></li><li><a class="level is-mobile" href="#6-Docker-정상-작동-확인"><span class="level-left"><span class="level-item">(6) Docker 정상 작동 확인</span></span></a></li></ul></li><li><a class="level is-mobile" href="#1-3-서버에-코드-가져오기"><span class="level-left"><span class="level-item">1.3 서버에 코드 가져오기</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#방법-A-GitHub에서-clone"><span class="level-left"><span class="level-item">방법 A: GitHub에서 clone</span></span></a></li><li><a class="level is-mobile" href="#방법-B-로컬-코드-업로드"><span class="level-left"><span class="level-item">방법 B: 로컬 코드 업로드</span></span></a></li></ul></li><li><a class="level is-mobile" href="#1-4-배포용으로-코드-수정하기"><span class="level-left"><span class="level-item">1.4 배포용으로 코드 수정하기</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-docker-compose-yaml-수정"><span class="level-left"><span class="level-item">(1) docker-compose.yaml 수정</span></span></a></li><li><a class="level is-mobile" href="#2-DockerFile-수정"><span class="level-left"><span class="level-item">(2) DockerFile 수정</span></span></a></li><li><a class="level is-mobile" href="#3-env-파일-수정"><span class="level-left"><span class="level-item">(3) .env 파일 수정</span></span></a></li></ul></li><li><a class="level is-mobile" href="#1-5-서버-실행-테스트"><span class="level-left"><span class="level-item">1.5 서버 실행 테스트</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-AWS-서비스-생성-및-연결하기-RDS-OpenSearch"><span class="level-left"><span class="level-item">2. AWS 서비스 생성 및 연결하기 (RDS &amp; OpenSearch)</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-1-PostgreSQL-AWS-RDS"><span class="level-left"><span class="level-item">2.1 PostgreSQL - AWS RDS</span></span></a></li><li><a class="level is-mobile" href="#2-2-OpenSearch-EC2-Docker에-포함시키기"><span class="level-left"><span class="level-item">2.2 OpenSearch - EC2 Docker에 포함시키기</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#docker-compose-yml-수정"><span class="level-left"><span class="level-item">docker-compose.yml 수정</span></span></a></li><li><a class="level is-mobile" href="#스토리지-확장"><span class="level-left"><span class="level-item">스토리지 확장</span></span></a></li><li><a class="level is-mobile" href="#인스턴스-유형-변경"><span class="level-left"><span class="level-item">인스턴스 유형 변경</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-3-AWS-보안-규칙-추가"><span class="level-left"><span class="level-item">2.3 AWS 보안 규칙 추가</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-프론트엔드-Vercel-배포-및-연결"><span class="level-left"><span class="level-item">3. 프론트엔드(Vercel) 배포 및 연결</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-Vercel-프로젝트-생성"><span class="level-left"><span class="level-item">3.1 Vercel 프로젝트 생성</span></span></a></li><li><a class="level is-mobile" href="#3-2-Vercel-환경변수-설정-Environment-Variables"><span class="level-left"><span class="level-item">3.2 Vercel 환경변수 설정 (Environment Variables)</span></span></a></li><li><a class="level is-mobile" href="#3-3-백엔드-CORS-설정"><span class="level-left"><span class="level-item">3.3 백엔드 CORS 설정</span></span></a></li><li><a class="level is-mobile" href="#3-4-Google-Oauth-redirect-uri-mismatch-이슈-해결"><span class="level-left"><span class="level-item">3.4 Google Oauth redirect_uri_mismatch 이슈 해결</span></span></a></li></ul></li><li><a class="level is-mobile" href="#4-도메인-및-HTTPS-적용"><span class="level-left"><span class="level-item">4. 도메인 및 HTTPS 적용</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#4-1-도메인-구매-및-EC2-연결"><span class="level-left"><span class="level-item">4.1 도메인 구매 및 EC2 연결</span></span></a></li><li><a class="level is-mobile" href="#4-2-Nginx-리버스-프록시-설정"><span class="level-left"><span class="level-item">4.2 Nginx 리버스 프록시 설정</span></span></a></li><li><a class="level is-mobile" href="#4-3-SSL-인증서-발급"><span class="level-left"><span class="level-item">4.3 SSL 인증서 발급</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

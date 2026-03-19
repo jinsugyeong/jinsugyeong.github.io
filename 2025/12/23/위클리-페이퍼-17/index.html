@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 17 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 모델 서빙이란 무엇이며, 왜 필요한가요? 실제 서비스 환경에서 서빙 프레임워크가 어떤 역할을 하나요?모델 서빙(Model Serving)은 학습이 끝난 AI 모델을 실제 서비스 환경에서 외부 요청에 따라 추론 결과를 제공하는 과정 을 의미한다. 단순히 모델 파일을 불러오는 것을 넘어서, “모델을 하나의 서비스처럼 운영하는 것” 이 핵심이다."><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 17"><meta property="og:url" content="https://jinsugyeong.github.io/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. 모델 서빙이란 무엇이며, 왜 필요한가요? 실제 서비스 환경에서 서빙 프레임워크가 어떤 역할을 하나요?모델 서빙(Model Serving)은 학습이 끝난 AI 모델을 실제 서비스 환경에서 외부 요청에 따라 추론 결과를 제공하는 과정 을 의미한다. 단순히 모델 파일을 불러오는 것을 넘어서, “모델을 하나의 서비스처럼 운영하는 것” 이 핵심이다."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-12-23T02:49:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.455Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="딥러닝"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/"},"headline":"위클리 페이퍼 17","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-12-23T02:49:00.000Z","dateModified":"2026-03-19T14:10:15.455Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. 모델 서빙이란 무엇이며, 왜 필요한가요? 실제 서비스 환경에서 서빙 프레임워크가 어떤 역할을 하나요?모델 서빙(Model Serving)은 학습이 끝난 AI 모델을 실제 서비스 환경에서 외부 요청에 따라 추론 결과를 제공하는 과정 을 의미한다. 단순히 모델 파일을 불러오는 것을 넘어서, “모델을 하나의 서비스처럼 운영하는 것” 이 핵심이다."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 17</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-12-23 11:49 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-모델-서빙이란-무엇이며-왜-필요한가요-실제-서비스-환경에서-서빙-프레임워크가-어떤-역할을-하나요"><a href="#1-모델-서빙이란-무엇이며-왜-필요한가요-실제-서비스-환경에서-서빙-프레임워크가-어떤-역할을-하나요" class="headerlink" title="1. 모델 서빙이란 무엇이며, 왜 필요한가요? 실제 서비스 환경에서 서빙 프레임워크가 어떤 역할을 하나요?"></a>1. 모델 서빙이란 무엇이며, 왜 필요한가요? 실제 서비스 환경에서 서빙 프레임워크가 어떤 역할을 하나요?</h1><p>모델 서빙(Model Serving)은 <strong>학습이 끝난 AI 모델을 실제 서비스 환경에서 외부 요청에 따라 추론 결과를 제공하는 과정</strong> 을 의미한다.</p>
+<p>단순히 모델 파일을 불러오는 것을 넘어서, <strong>“모델을 하나의 서비스처럼 운영하는 것”</strong> 이 핵심이다.</p>
+<span id="more"></span>
+
+<h2 id="1-모델-서빙이-필요한-이유"><a href="#1-모델-서빙이-필요한-이유" class="headerlink" title="1. 모델 서빙이 필요한 이유"></a>1. 모델 서빙이 필요한 이유</h2><p>모델은 학습이 끝났다고 바로 서비스에 쓸 수 있는 상태가 아니다.<br>실제 서비스 환경에서는 다음과 같은 요구사항이 생긴다.</p>
+<ul>
+<li>여러 사용자가 동시에 요청</li>
+<li>요청마다 빠른 응답 시간</li>
+<li>모델 안정성 및 장애 대응</li>
+<li>모델 버전 관리 및 교체</li>
+</ul>
+<p>이걸 <strong>스크립트 수준의 코드</strong>로 처리하려고 하면 곧바로 구조가 무너진다.</p>
+<p>그래서 모델을 <strong>서버 형태로 감싸는 ‘서빙 단계’</strong> 가 필요해진다.</p>
+<h2 id="2-모델-서빙의-핵심-역할"><a href="#2-모델-서빙의-핵심-역할" class="headerlink" title="2. 모델 서빙의 핵심 역할"></a>2. 모델 서빙의 핵심 역할</h2><p>모델 서빙 프레임워크는 단순히 <code>predict()</code>를 호출하는 게 아니라,<br>아래 역할들을 함께 담당한다.</p>
+<h3 id="①-요청-처리"><a href="#①-요청-처리" class="headerlink" title="① 요청 처리"></a>① 요청 처리</h3><ul>
+<li>REST &#x2F; gRPC 형태의 API 제공</li>
+<li>외부 서비스와 표준 방식으로 통신</li>
+</ul>
+<h3 id="②-모델-로드-및-관리"><a href="#②-모델-로드-및-관리" class="headerlink" title="② 모델 로드 및 관리"></a>② 모델 로드 및 관리</h3><ul>
+<li>서버 시작 시 모델을 한 번만 로드</li>
+<li>여러 요청에서 동일 모델 재사용</li>
+<li>모델 버전 관리 및 교체 지원</li>
+</ul>
+<h3 id="③-동시성-및-성능-관리"><a href="#③-동시성-및-성능-관리" class="headerlink" title="③ 동시성 및 성능 관리"></a>③ 동시성 및 성능 관리</h3><ul>
+<li>멀티 유저 요청 처리</li>
+<li>배치 처리, 비동기 처리 지원</li>
+<li>GPU 자원 효율적 사용</li>
+</ul>
+<h2 id="3-실제-서비스-환경에서의-서빙-프레임워크-역할"><a href="#3-실제-서비스-환경에서의-서빙-프레임워크-역할" class="headerlink" title="3. 실제 서비스 환경에서의 서빙 프레임워크 역할"></a>3. 실제 서비스 환경에서의 서빙 프레임워크 역할</h2><p>실제 서비스에서는 서빙 프레임워크가 <strong>모델과 서비스 사이의 ‘완충 지대’</strong> 역할을 한다.</p>
+<p>예를 들면:</p>
+<ul>
+<li>FastAPI + 추론 로직</li>
+<li>TorchServe</li>
+<li>Triton Inference Server</li>
+</ul>
+<p>이들은 공통적으로 다음을 제공한다.</p>
+<ul>
+<li><strong>모델을 API로 감싸줌</strong></li>
+<li><strong>추론 속도 최적화</strong></li>
+<li><strong>에러 격리 및 장애 대응</strong></li>
+<li><strong>모니터링 포인트 제공</strong></li>
+</ul>
+<p>때문에 프론트엔드는 모델을 몰라도 되고, 모델 팀은 서비스 로직을 신경 쓸 필요가 없어진다.</p>
+<h2 id="4-서빙-프레임워크가-없을-때-생기는-문제"><a href="#4-서빙-프레임워크가-없을-때-생기는-문제" class="headerlink" title="4. 서빙 프레임워크가 없을 때 생기는 문제"></a>4. 서빙 프레임워크가 없을 때 생기는 문제</h2><p>서빙 프레임워크 없이 API 코드 안에서 직접 모델을 호출하면 다음 문제가 생긴다.</p>
+<ul>
+<li>요청마다 모델 로드</li>
+<li>GPU 메모리 낭비</li>
+<li>동시 요청 시 응답 지연</li>
+<li>모델 교체 시 코드 대규모 수정</li>
+</ul>
+<p>결국 <strong>“모델이 서비스의 발목을 잡는 구조”</strong> 가 된다.</p>
+<h2 id="5-모델-서빙은-‘운영-관점’의-기술"><a href="#5-모델-서빙은-‘운영-관점’의-기술" class="headerlink" title="5. 모델 서빙은 ‘운영 관점’의 기술"></a>5. 모델 서빙은 ‘운영 관점’의 기술</h2><p>모델 학습은 <strong>연구(Research)</strong> 영역에 가깝고,<br>모델 서빙은 <strong>운영(Production)</strong> 영역에 가깝다.</p>
+<ul>
+<li>학습: 정확도가 중요</li>
+<li>서빙: 안정성, 속도, 확장성이 중요</li>
+</ul>
+<p>그래서 실제 AI 서비스에서는 <strong>“모델 성능 + 서빙 구조”</strong> 가 함께 설계된다.</p>
+<h2 id="핵심-요약"><a href="#핵심-요약" class="headerlink" title="핵심 요약"></a>핵심 요약</h2><ul>
+<li>모델 서빙은 AI 모델을 서비스로 운영하기 위한 필수 단계다.</li>
+<li>서빙 프레임워크는 요청 처리, 성능 최적화, 안정성을 동시에 책임진다.</li>
+<li>모델이 아무리 좋아도, 서빙 구조가 없으면 실서비스에서는 쓸 수 없다.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>모델 서빙이란 학습이 끝난 AI 모델을 실제 서비스 환경에서 API 형태로 운영하는 것을 말합니다. 모델을 학습하는 것과 서비스로 운영하는 것은 완전히 다른 영역입니다.</p>
+<p>학습 단계에서는 정확도가 중요하지만, 서빙 단계에서는 안정성, 응답 속도, 동시 사용자 처리 같은 운영 관점의 요구사항이 중요해집니다. 서빙 프레임워크 없이 API 코드 안에서 직접 모델을 호출하면, 요청마다 모델을 새로 로드하거나 GPU 메모리를 낭비하는 문제가 생깁니다.</p>
+<p>그래서 TorchServe, Triton, FastAPI 같은 서빙 프레임워크를 사용해서 모델을 한 번만 로드하고 재사용하며, 동시 요청 처리, 모델 버전 관리, 장애 대응까지 자동화합니다. 모델 서빙은 AI 모델을 '서비스'로 만들기 위한 필수 단계라고 할 수 있습니다.</p>
+</details>
+
+<hr>
+<h1 id="2-Streamlit-FastAPI로-구성된-시스템에-Triton-기반-추론-서버를-통합하려면-어떤-구조로-설계하는-것이-바람직하다고-생각하나요"><a href="#2-Streamlit-FastAPI로-구성된-시스템에-Triton-기반-추론-서버를-통합하려면-어떤-구조로-설계하는-것이-바람직하다고-생각하나요" class="headerlink" title="2. Streamlit, FastAPI로 구성된 시스템에 Triton 기반 추론 서버를 통합하려면 어떤 구조로 설계하는 것이 바람직하다고 생각하나요?"></a>2. Streamlit, FastAPI로 구성된 시스템에 Triton 기반 추론 서버를 통합하려면 어떤 구조로 설계하는 것이 바람직하다고 생각하나요?</h1><p>Streamlit과 FastAPI로 구성된 AI 서비스에 <strong>NVIDIA Triton Inference Server</strong> 를 통합하려면,</p>
+<p>각 컴포넌트의 역할을 명확히 분리하는 구조가 가장 바람직하다고 생각한다.</p>
+<p>핵심은 <strong>“UI, API, 추론 엔진을 완전히 분리하는 것”</strong> 이다.</p>
+<h2 id="1-전체-구조-개요"><a href="#1-전체-구조-개요" class="headerlink" title="1. 전체 구조 개요"></a>1. 전체 구조 개요</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[ Client (Web/App) ]</span><br><span class="line">        |</span><br><span class="line">        | HTTPS</span><br><span class="line">        v</span><br><span class="line">[ Streamlit (UI Layer) ]</span><br><span class="line">        |</span><br><span class="line">        | REST API</span><br><span class="line">        v</span><br><span class="line">[ FastAPI (API Layer) ]</span><br><span class="line">        |</span><br><span class="line">        | gRPC / HTTP</span><br><span class="line">        v</span><br><span class="line">[ Triton Inference Server ]</span><br><span class="line">        |</span><br><span class="line">        | Optimized Model (ONNX / TensorRT)</span><br><span class="line">        v</span><br><span class="line">[ GPU ]</span><br></pre></td></tr></table></figure>
+
+<p>이 구조에서 Triton은<br><strong>순수하게 추론만 담당하는 독립 서버</strong>로 동작한다.</p>
+<h2 id="2-Streamlit-—-UI-전용-레이어"><a href="#2-Streamlit-—-UI-전용-레이어" class="headerlink" title="2. Streamlit — UI 전용 레이어"></a>2. Streamlit — UI 전용 레이어</h2><p>Streamlit은 <strong>사용자 인터페이스와 입력 처리만 담당</strong>한다.</p>
+<ul>
+<li>텍스트&#x2F;이미지 입력</li>
+<li>옵션 선택</li>
+<li>결과 시각화</li>
+</ul>
+<p>중요한 점은:</p>
+<ul>
+<li>Streamlit에서 Triton을 직접 호출하지 않음</li>
+<li>모든 요청은 FastAPI를 거쳐서 전달</li>
+</ul>
+<blockquote>
+<p>Streamlit은 “보여주기 위한 서버”이지, 추론 로직이 들어갈 자리가 아니다.</p>
+</blockquote>
+<h2 id="3-FastAPI-—-제어-및-오케스트레이션-레이어"><a href="#3-FastAPI-—-제어-및-오케스트레이션-레이어" class="headerlink" title="3. FastAPI — 제어 및 오케스트레이션 레이어"></a>3. FastAPI — 제어 및 오케스트레이션 레이어</h2><p>FastAPI는 시스템의 <strong>중앙 제어 계층</strong> 역할을 한다.</p>
+<p>담당 역할:</p>
+<ul>
+<li>요청 검증 및 전처리</li>
+<li>인증&#x2F;권한 체크</li>
+<li>비동기 요청 처리</li>
+<li>Triton 서버 호출</li>
+<li>결과 후처리</li>
+</ul>
+<p>FastAPI는 Triton과</p>
+<ul>
+<li>HTTP 또는 gRPC 방식으로 통신하며,</li>
+<li>클라이언트와 Triton 사이의 <strong>완충 지대</strong> 역할을 한다.</li>
+</ul>
+<h2 id="4-Triton-Inference-Server-—-추론-전용-서버"><a href="#4-Triton-Inference-Server-—-추론-전용-서버" class="headerlink" title="4. Triton Inference Server — 추론 전용 서버"></a>4. Triton Inference Server — 추론 전용 서버</h2><p>Triton은 <strong>모델 서빙에 특화된 추론 엔진</strong> 이다.</p>
+<p>Triton의 역할:</p>
+<ul>
+<li>모델 로딩 및 버전 관리</li>
+<li>배치 추론 자동 처리</li>
+<li>GPU 자원 효율적 사용</li>
+<li>FP16 &#x2F; INT8 최적화 모델 실행</li>
+</ul>
+<p>여기에는:</p>
+<ul>
+<li>비즈니스 로직 없음</li>
+<li>인증&#x2F;권한 없음</li>
+<li>오직 “추론 요청 → 추론 결과 반환”만 담당</li>
+</ul>
+<h2 id="5-통신-방식"><a href="#5-통신-방식" class="headerlink" title="5. 통신 방식"></a>5. 통신 방식</h2><p><strong>Streamlit ↔ FastAPI</strong>:</p>
+<ul>
+<li>REST API (HTTP)</li>
+<li>Public Network</li>
+</ul>
+<p><strong>FastAPI ↔ Triton</strong>:</p>
+<ul>
+<li>gRPC (고속 통신) 또는 HTTP</li>
+<li>Private Network (외부 접근 차단)</li>
+</ul>
+<h2 id="6-보안-설계"><a href="#6-보안-설계" class="headerlink" title="6. 보안 설계"></a>6. 보안 설계</h2><p><strong>Triton은 외부에 직접 노출되지 않음</strong></p>
+<ul>
+<li>FastAPI가 게이트웨이 역할</li>
+<li>Triton은 내부 네트워크에서만 접근 가능</li>
+<li>인증&#x2F;권한은 FastAPI에서 처리</li>
+</ul>
+<h2 id="7-Docker-배포-구조"><a href="#7-Docker-배포-구조" class="headerlink" title="7. Docker 배포 구조"></a>7. Docker 배포 구조</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker-compose</span><br><span class="line">├── streamlit-ui</span><br><span class="line">├── fastapi-api</span><br><span class="line">├── triton-server</span><br><span class="line">└── redis (optional, for task queue)</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-장점-요약"><a href="#8-장점-요약" class="headerlink" title="8. 장점 요약"></a>8. 장점 요약</h2><p><strong>역할 분리</strong>:</p>
+<ul>
+<li>Streamlit: UI만</li>
+<li>FastAPI: API 제어만</li>
+<li>Triton: 추론만</li>
+</ul>
+<p><strong>확장성</strong>:</p>
+<ul>
+<li>Triton은 수평 확장 가능 (여러 GPU 서버)</li>
+<li>FastAPI는 로드밸런싱 가능</li>
+</ul>
+<p><strong>유지보수성</strong>:</p>
+<ul>
+<li>각 컴포넌트를 독립적으로 업데이트 가능</li>
+<li>모델 교체 시 Triton만 재시작</li>
+</ul>
+<h2 id="핵심-요약-1"><a href="#핵심-요약-1" class="headerlink" title="핵심 요약"></a>핵심 요약</h2><ul>
+<li>Triton은 순수 추론 전용 서버로 완전히 분리</li>
+<li>Streamlit → FastAPI → Triton 구조가 최적</li>
+<li>FastAPI는 요청 제어, Triton은 성능 담당</li>
+<li>이 패턴은 실제 프로덕션 환경에서도 사용되는 표준 구조</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>Streamlit + FastAPI 시스템에 Triton Inference Server를 통합할 때 핵심은 각 컴포넌트의 역할을 완전히 분리하는 것입니다.</p>
+<p>Streamlit은 UI만 담당합니다. 사용자 입력을 받고 결과를 보여주되, 직접 모델을 호출하지 않고 모든 요청을 FastAPI로 전달합니다. FastAPI는 중앙 제어 역할로, 요청 검증, 인증, 전처리를 수행하고 Triton 서버를 호출합니다. Triton은 순수하게 추론만 담당하는 독립 서버로, 모델 로딩, 배치 추론, GPU 자원 관리를 최적화합니다.</p>
+<p>통신 방식은 Streamlit과 FastAPI 사이는 REST API, FastAPI와 Triton 사이는 gRPC(고속 통신)를 사용합니다. 보안상 Triton은 외부에 직접 노출하지 않고, FastAPI가 게이트웨이 역할을 하며 내부 네트워크에서만 Triton에 접근할 수 있도록 설계합니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2026/02/10/AI-%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4%EB%A1%9C-%EC%84%B1%EC%9E%A5%ED%95%98%EA%B8%B0%EA%B9%8C%EC%A7%80-%EC%BD%94%EB%93%9C%EC%9E%87-%EC%8A%A4%ED%94%84%EB%A6%B0%ED%8A%B8-%ED%9A%8C%EA%B3%A0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">AI 엔지니어로 성장하기까지, 코드잇 스프린트 회고</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/12/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-16/"><span class="level-item">위클리 페이퍼 16</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/';
+            this.page.identifier = '2025/12/23/위클리-페이퍼-17/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-모델-서빙이란-무엇이며-왜-필요한가요-실제-서비스-환경에서-서빙-프레임워크가-어떤-역할을-하나요"><span class="level-left"><span class="level-item">1. 모델 서빙이란 무엇이며, 왜 필요한가요? 실제 서비스 환경에서 서빙 프레임워크가 어떤 역할을 하나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-모델-서빙이-필요한-이유"><span class="level-left"><span class="level-item">1. 모델 서빙이 필요한 이유</span></span></a></li><li><a class="level is-mobile" href="#2-모델-서빙의-핵심-역할"><span class="level-left"><span class="level-item">2. 모델 서빙의 핵심 역할</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#①-요청-처리"><span class="level-left"><span class="level-item">① 요청 처리</span></span></a></li><li><a class="level is-mobile" href="#②-모델-로드-및-관리"><span class="level-left"><span class="level-item">② 모델 로드 및 관리</span></span></a></li><li><a class="level is-mobile" href="#③-동시성-및-성능-관리"><span class="level-left"><span class="level-item">③ 동시성 및 성능 관리</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-실제-서비스-환경에서의-서빙-프레임워크-역할"><span class="level-left"><span class="level-item">3. 실제 서비스 환경에서의 서빙 프레임워크 역할</span></span></a></li><li><a class="level is-mobile" href="#4-서빙-프레임워크가-없을-때-생기는-문제"><span class="level-left"><span class="level-item">4. 서빙 프레임워크가 없을 때 생기는 문제</span></span></a></li><li><a class="level is-mobile" href="#5-모델-서빙은-‘운영-관점’의-기술"><span class="level-left"><span class="level-item">5. 모델 서빙은 ‘운영 관점’의 기술</span></span></a></li><li><a class="level is-mobile" href="#핵심-요약"><span class="level-left"><span class="level-item">핵심 요약</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-Streamlit-FastAPI로-구성된-시스템에-Triton-기반-추론-서버를-통합하려면-어떤-구조로-설계하는-것이-바람직하다고-생각하나요"><span class="level-left"><span class="level-item">2. Streamlit, FastAPI로 구성된 시스템에 Triton 기반 추론 서버를 통합하려면 어떤 구조로 설계하는 것이 바람직하다고 생각하나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-전체-구조-개요"><span class="level-left"><span class="level-item">1. 전체 구조 개요</span></span></a></li><li><a class="level is-mobile" href="#2-Streamlit-—-UI-전용-레이어"><span class="level-left"><span class="level-item">2. Streamlit — UI 전용 레이어</span></span></a></li><li><a class="level is-mobile" href="#3-FastAPI-—-제어-및-오케스트레이션-레이어"><span class="level-left"><span class="level-item">3. FastAPI — 제어 및 오케스트레이션 레이어</span></span></a></li><li><a class="level is-mobile" href="#4-Triton-Inference-Server-—-추론-전용-서버"><span class="level-left"><span class="level-item">4. Triton Inference Server — 추론 전용 서버</span></span></a></li><li><a class="level is-mobile" href="#5-통신-방식"><span class="level-left"><span class="level-item">5. 통신 방식</span></span></a></li><li><a class="level is-mobile" href="#6-보안-설계"><span class="level-left"><span class="level-item">6. 보안 설계</span></span></a></li><li><a class="level is-mobile" href="#7-Docker-배포-구조"><span class="level-left"><span class="level-item">7. Docker 배포 구조</span></span></a></li><li><a class="level is-mobile" href="#8-장점-요약"><span class="level-left"><span class="level-item">8. 장점 요약</span></span></a></li><li><a class="level is-mobile" href="#핵심-요약-1"><span class="level-left"><span class="level-item">핵심 요약</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

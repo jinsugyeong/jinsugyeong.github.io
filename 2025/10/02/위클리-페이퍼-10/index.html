@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 10 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 텍스트 데이터를 모델에 적용하기 전에 어떤 전처리 과정을 거치나요? 정제(Cleaning): 노이즈 제거와 표준화를 통해 일관된 텍스트로 만든다. 토크나이징&amp;#x2F;인코딩 : 토큰 단위로 쪼개고 숫자 시퀀스로 변환한다. 정규화&amp;#x2F;정렬: 길이, 대소문자, 특수기호, 공백 등을 일관되게 맞춘다. 특수 목적 처리: 불용어, 표제어&amp;#x2F;어간,"><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 10"><meta property="og:url" content="https://jinsugyeong.github.io/2025/10/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-10/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. 텍스트 데이터를 모델에 적용하기 전에 어떤 전처리 과정을 거치나요? 정제(Cleaning): 노이즈 제거와 표준화를 통해 일관된 텍스트로 만든다. 토크나이징&amp;#x2F;인코딩 : 토큰 단위로 쪼개고 숫자 시퀀스로 변환한다. 정규화&amp;#x2F;정렬: 길이, 대소문자, 특수기호, 공백 등을 일관되게 맞춘다. 특수 목적 처리: 불용어, 표제어&amp;#x2F;어간,"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-10-01T15:00:00.000Z"><meta property="article:modified_time" content="2025-10-12T15:00:00.000Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="자연어처리"><meta property="article:tag" content="FastText"><meta property="article:tag" content="Word2Vec"><meta property="article:tag" content="Attention"><meta property="article:tag" content="Transformer"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/10/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-10/"},"headline":"위클리 페이퍼 10","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-10-01T15:00:00.000Z","dateModified":"2025-10-12T15:00:00.000Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. 텍스트 데이터를 모델에 적용하기 전에 어떤 전처리 과정을 거치나요? 정제(Cleaning): 노이즈 제거와 표준화를 통해 일관된 텍스트로 만든다. 토크나이징&#x2F;인코딩 : 토큰 단위로 쪼개고 숫자 시퀀스로 변환한다. 정규화&#x2F;정렬: 길이, 대소문자, 특수기호, 공백 등을 일관되게 맞춘다. 특수 목적 처리: 불용어, 표제어&#x2F;어간,"}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/10/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-10/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 10</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-10-02 00:00 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-텍스트-데이터를-모델에-적용하기-전에-어떤-전처리-과정을-거치나요"><a href="#1-텍스트-데이터를-모델에-적용하기-전에-어떤-전처리-과정을-거치나요" class="headerlink" title="1. 텍스트 데이터를 모델에 적용하기 전에 어떤 전처리 과정을 거치나요?"></a>1. 텍스트 데이터를 모델에 적용하기 전에 어떤 전처리 과정을 거치나요?</h1><ol>
+<li><strong>정제(Cleaning)</strong>: 노이즈 제거와 표준화를 통해 일관된 텍스트로 만든다.</li>
+<li><strong>토크나이징&#x2F;인코딩</strong> : 토큰 단위로 쪼개고 숫자 시퀀스로 변환한다.</li>
+<li><strong>정규화&#x2F;정렬</strong>: 길이, 대소문자, 특수기호, 공백 등을 일관되게 맞춘다.</li>
+<li><strong>특수 목적 처리</strong>: 불용어, 표제어&#x2F;어간, 오탈자, 이모지&#x2F;URL&#x2F;코드 블록 등 도메인별 룰을 적용한다.</li>
+<li><strong>레이블&#x2F;메타 처리</strong>: 지도 학습이면 레이블 정제, 불균형&#x2F;누락 처리, 샘플 재가공을 수행한다.</li>
+</ol>
+<span id="more"></span>
+
+<h2 id="단계별-상세"><a href="#단계별-상세" class="headerlink" title="단계별 상세"></a>단계별 상세</h2><ul>
+<li><p><strong>기본정제</strong></p>
+<ul>
+<li>공백 정리, 중복 문자 축약, 제어문자 제거, 잘못 인코딩된 문자 정정</li>
+<li>URL, 이메일, 숫자 패턴, 해시태그&#x2F;멘션, 이모지 처리 규칙을 정의(보존&#x2F;마스킹&#x2F;삭제 중 선택)</li>
+<li>대소문자 통일: 영어는 소문자화가 보편적이나, 고유명사&#x2F;약어가 중요한 태스크면 유지</li>
+<li>한국어 특화: 초성&#x2F;중성 분리 현상, 맞춥법&#x2F;띄어쓰기 오류가 성능에 영향을 주면 교정기를 고려</li>
+</ul>
+</li>
+<li><p><strong>토크나이징</strong></p>
+<ul>
+<li>전통 NLP: 공백&#x2F;구두점 기반, 형태소 분석기(한국어: mecab, Khaiii, Komoran 등)로 어절 → 형태소 분해</li>
+<li>신경망&#x2F;딥러닝: 서브워드 토크나이저 사용(BPE, WordPiece, Unigram). 미등록어 문제를 줄이고 어휘 크기 통제</li>
+<li>문자&#x2F;바이트 단위: 노이즈가 많거나 다국어 혼재 시 byte-level(BPE)로 견고성을 확보한다.</li>
+</ul>
+</li>
+<li><p><strong>인코딩과 수치화</strong></p>
+<ul>
+<li>정수 인덱싱: 토큰→정수 ID 매핑</li>
+<li>패딩&#x2F;마스킹: 배치 처리를 위해 길이 맞추기(최대 길이, truncation 규칙 정의)</li>
+<li>어휘 사전: 빈도 기준 최소 출현(threshold) 설정, 특수 토큰( [PAD], [UNK], [CLS], [SEP]) 정의</li>
+<li>임베딩 초기화: 학습형 임베딩 또는 사전학습 임베딩(Word2Vec, FastText, GloVe) 사용 결정. 트랜스포머는 내장 임베딩 사용</li>
+</ul>
+</li>
+<li><p><strong>텍스트 정규화 선택지</strong></p>
+<ul>
+<li>불용어 제거: 정보 손실-간소화 트레이드오프가 있음. 전통 모델(tf-idf, linear)에서는 효과적이나, 딥러닝에서는 문맥 손실 우려가 있다.</li>
+<li>표제어 추출&#x2F;어간 추출: 영어,유럽어권에서 변형을 줄인다. 한국어는 형태소 기반 원형 복원이 더 자연스러움</li>
+<li>숫자&#x2F;단위&#x2F;날짜: 정규 표현식으로 표준 포맷으로 통일하거나 토큰으로 치환한다.</li>
+</ul>
+</li>
+<li><p><strong>품질&#x2F;노이즈 대응</strong></p>
+<ul>
+<li>오탈자&#x2F;비표준어: 교정기 적용을 검토(과교정으로 의미 왜곡 가능성이 있어 샘플 검증해야함)</li>
+<li>스팸&#x2F;반복&#x2F;이상치: 규칙 필터링 또는 이상치 탐지로 제거&#x2F;가중치 조정</li>
+<li>민감정보: 개인정보, 키 등은 비식별화&#x2F;마스킹 처리</li>
+</ul>
+</li>
+<li><p><strong>태스크별 특화</strong></p>
+<ul>
+<li>분류&#x2F;감성: 문장 단위 정제, 이모지&#x2F;감탄사 보존 여부 중요(감성 신호로 작용)</li>
+<li>질의응답&#x2F;요약: 문장 분할, 문단 유지, 특수 토큰으로 구조 표식</li>
+<li>문서 검색&#x2F;랭킹: 형태소 기반 키워드 추출 + 문장 임베딩 병행</li>
+<li>코드&#x2F;로그: 토크나이저를 코드 친화적으로 설정, 서식 및 기호 보존</li>
+</ul>
+</li>
+<li><p><strong>데이터 분할&#x2F;검증</strong></p>
+<ul>
+<li>중복&#x2F;누수 방지: 유사 문서가 train&#x2F;val&#x2F;test에 동시에 들어가지 않도록 그룹 기준 분할해야함</li>
+<li>라벨 불균형: 샘플링&#x2F;가중치&#x2F;데이터 증강(역번역, 동의어 치환 등)으로 보정</li>
+</ul>
+</li>
+</ul>
+<h2 id="전처리-전략"><a href="#전처리-전략" class="headerlink" title="전처리 전략"></a>전처리 전략</h2><ul>
+<li>트랜스포머(예: BERT, RoBERTa, GPT 등)<ul>
+<li>해당 모델의 토크나이저와 정규화 규칙을 그대로 따른다.</li>
+<li>소문자화 여부, 특수토큰, 최대 길이를 모델 설정과 일치시킨다.</li>
+<li>과도한 정규화(불용어 제거, 표제어&#x2F;어간)은 대부분 불필요하며 오히려 성능을 해칠 수 있다.</li>
+</ul>
+</li>
+<li>전통 모델(BoW, tf-idf, n-gram, SVM&#x2F;로지스틱)<ul>
+<li>불용어 제거, 표제어&#x2F;어간, 구두점&#x2F;숫자 정규화가 효과를 낸다.</li>
+</ul>
+</li>
+<li>한국어 과제<ul>
+<li>형태소 분석기 품질과 도메인 적합도를 우선 검토한다.</li>
+<li>도메인 신조어가 많으면 서브워드&#x2F;바이트 수준이 안정적이다.</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+텍스트 데이터를 모델에 적용하기 전에 반드시 **전처리 과정** 을 거쳐야 합니다. 텍스트는 구조화되지 않은 형태로 존재하기 때문에, 이를 수치적으로 처리 가능한 형태로 변환해주는 것이 전처리의 핵심 목적입니다.
+
+<p>가장 기본적인 전처리는 <strong>불필요한 문자 제거</strong> 입니다. 예를 들어, HTML 태그, 특수 문자, 숫자, 이모지 등을 제거하거나 필요한 경우에만 유지하는 식으로 데이터를 정리합니다.</p>
+<p>그다음으로는 <strong>소문자 변환</strong> 을 많이 사용합니다. 대소문자를 통일함으로써 ‘Apple’과 ‘apple’을 같은 단어로 취급하게 되어 불필요한 중복을 줄일 수 있습니다.</p>
+<p>또한, <strong>불용어 제거</strong> 도 중요한 과정입니다. 불용어는 ‘의’, ‘이’, ‘가’, ‘the’, ‘is’, ‘and’처럼 자주 등장하지만 분석에 큰 의미가 없는 단어들로, 이들을 제거하면 모델이 더 중요한 단어에 집중할 수 있습니다.</p>
+<ul>
+<li>토큰화(Tokenization)*도 핵심 과정 중 하나입니다. 문장을 단어, 형태소, subword 단위 등으로 나누는 과정이며, 사용하는 언어와 목적에 따라 다양한 방식이 적용됩니다.</li>
+</ul>
+<p>그 외에도 <strong>어간 추출(Stemming)</strong> 이나 <strong>표제어 추출(Lemmatization)</strong> 을 통해 단어의 기본 형태를 통일할 수도 있고, <strong>중복 공백 제거, 이상값 필터링, 맞춤법 교정</strong> 등의 세부적인 정제 작업도 포함될 수 있습니다.</p>
+<p>이러한 전처리 과정을 통해 텍스트를 모델이 학습할 수 있는 일관된 입력 형태로 정리함으로써, 학습 효율과 성능을 향상시킬 수 있습니다.</p>
+</details>
+
+<hr>
+<h1 id="2-FastText가-Word2Vec과-다른-점은-무엇이며-어떤-장점이-있나요"><a href="#2-FastText가-Word2Vec과-다른-점은-무엇이며-어떤-장점이-있나요" class="headerlink" title="2. FastText가 Word2Vec과 다른 점은 무엇이며, 어떤 장점이 있나요?"></a>2. FastText가 Word2Vec과 다른 점은 무엇이며, 어떤 장점이 있나요?</h1><h2 id="차이점"><a href="#차이점" class="headerlink" title="차이점"></a>차이점</h2><table>
+<thead>
+<tr>
+<th><strong>차이점</strong></th>
+<th><strong>Word2Vec</strong></th>
+<th><strong>FastText</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>서브워드 (문자 n-그램)</strong>   <strong>사용 여부</strong></td>
+<td>- 단어를 하나의 토큰으로만 본다.   - 단어 임베딩을 단어 ID 기준으로 학습한다.</td>
+<td>- 단어를 문자 n-그램 조각으로 분해해 임베딩을 학습한다.   - 최종 단어 벡터는 해당 n-그램 벡터들의 합&#x2F;평균으로 구성된다.</td>
+</tr>
+<tr>
+<td><strong>희귀어&#x2F;미등록어</strong>   <strong>처리</strong></td>
+<td>학습 어휘에 없는 단어(OOV)는 벡터가 없다.</td>
+<td>문자 n-그램을 통해 OOV 단어라도 구성 가능한 n-그램이 있으면 벡터를 생성한다.</td>
+</tr>
+<tr>
+<td><strong>형태 변형·접사 표현</strong></td>
+<td>단어 형태가 바뀌면 별도 토큰으로 취급된다.</td>
+<td>공통 n-그램을 공유해 어근&#x2F;접사 관계를 일부 반영한다.</td>
+</tr>
+<tr>
+<td><strong>학습목표&#x2F;</strong>   <strong>알고리즘</strong></td>
+<td>두 모델 모두 CBOW&#x2F;Skip-gram, 네거티브 샘플링 등 학습 목적은 유사하게 사용할 수 있다.</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>토큰 대신 n-그램 임베딩 조합을 학습한다는 점이 구조적 차이를 만든다.</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>메모리&#x2F;속도</strong></td>
+<td>모델이 단어 임베딩 테이블 하나여서 가볍고 빠르다.</td>
+<td>n-그램 임베딩 테이블까지 학습하므로 메모리 사용이 증가하고, 학습&#x2F;추론이 다소 무거워진다. (하지만 최적 구현으로 실무에서 충분히 빠르게 응용된다)</td>
+</tr>
+</tbody></table>
+<h2 id="FastText의-장점"><a href="#FastText의-장점" class="headerlink" title="FastText의 장점"></a>FastText의 장점</h2><ul>
+<li>OOV와 희귀어에 강하다.<ul>
+<li>문자 n-gram 기반이라 처음 보는 단어라도 합리적 벡터를 생성</li>
+<li>도메인 신조어, 오탈자, 형태 변화가 많은 언어에서 유리</li>
+</ul>
+</li>
+<li>형태학적 일반화가 된다.<ul>
+<li>어근&#x2F;접사 공유로 유사 형태 단어 간 벡터가 가까워져 의미 일반화가 잘 된다.</li>
+<li>한국어&#x2F;형태가 풍부한 언어에서 효과적</li>
+</ul>
+</li>
+<li>데이터가 적을 때 안정적이다.<ul>
+<li>단어별 데이터가 부족해도 n-그램 공유로 표현이 보완됨</li>
+</ul>
+</li>
+<li>다운스트림 성능 개선이 가능하다.<ul>
+<li>희귀어 비중이 높은 코퍼스(사용자 로그, 소셜, 도메인 전문용어)에서 분류, 유사도, 검색 성능이 개선되는 경우가 많음</li>
+</ul>
+</li>
+</ul>
+<p><strong>선택 가이드</strong></p>
+<ul>
+<li>대규모 일반 코퍼스, 표준 어휘 중심 → Word2Vec로 충분한 성능</li>
+<li>신조어,오탈자,희귀어,형태 변화가 많은 언어(한국어 포함) → FastText가 더 견고하게 동작</li>
+<li>리소스 제약이 큰 경우 → Word2Vec이 더 가볍게 운용</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+FastText는 Word2Vec과 비슷한 방식으로 단어 임베딩을 학습하는 모델이지만, **단어를 더 작은 단위인 서브워드(Subword)로 분해해서 학습한다는 점** 에서 차이가 있습니다.
+
+<p>Word2Vec은 단어 전체를 하나의 단위로 보고 벡터를 학습합니다. 예를 들어 ‘apple’이라는 단어가 있다면, 이 단어 자체에 대한 벡터만 학습됩니다. 반면 FastText는 ‘app’, ‘ppl’, ‘ple’ 같은 <strong>n-gram 단위의 조각</strong> 으로 단어를 분해하고, 이 조각들의 임베딩을 평균내거나 합쳐서 단어 벡터를 구성합니다.</p>
+<p>이 방식의 장점은 특히 <strong>형태가 유사한 단어들 간의 관계를 잘 반영할 수 있다는 점</strong> 입니다. 예를 들어 ‘run’, ‘running’, ‘runner’처럼 비슷한 형태를 가진 단어들은 공통된 서브워드를 공유하므로, FastText는 이들 간의 의미적 유사성을 자연스럽게 학습할 수 있습니다.</p>
+<p>또 하나의 큰 장점은 <strong>OOV(Out-of-Vocabulary) 문제를 완화할 수 있다는 점</strong> 입니다. Word2Vec은 학습 데이터에 없는 단어는 임베딩할 수 없지만, FastText는 서브워드 단위로 처리하기 때문에 처음 보는 단어라도 그 조각들을 이용해 벡터를 생성할 수 있습니다.</p>
+<p>결과적으로 FastText는 <strong>희귀 단어, 신조어, 오타 등이 포함된 데이터셋</strong> 에서도 더 강건한 성능을 보일 수 있고, 특히 <strong>형태소 기반 언어나 언어 자원이 부족한 상황</strong> 에서도 유용하게 활용될 수 있는 모델입니다.</p>
+</details>
+
+<hr>
+<h1 id="3-Attention-메커니즘이-Seq2Seq-모델의-어떤-문제를-해결하는-데-도움이-되나요"><a href="#3-Attention-메커니즘이-Seq2Seq-모델의-어떤-문제를-해결하는-데-도움이-되나요" class="headerlink" title="3. Attention 메커니즘이 Seq2Seq 모델의 어떤 문제를 해결하는 데 도움이 되나요?"></a>3. Attention 메커니즘이 Seq2Seq 모델의 어떤 문제를 해결하는 데 도움이 되나요?</h1><ul>
+<li><p>단일 고정 길이 벡터 병목 문제 해결</p>
+<ul>
+<li>기존 RNN 기반 Seq2Seq는 인코더가 전체 입력을 하나의 고정 길이 컨텍스트 벡터로 압축한다.</li>
+<li>문장이 길어질수록 정보 손실이 커지고, 디코더가 필요한 세부 정보를 복원하기 어려워진다.</li>
+<li>Attention은 디코더가 매시점마다 인코더의 모든 은닉 상태를 “가중합”으로 참조하도록 해서, 고정 병목을 제거하고 길게 늘어난 문장에서도 정보 접근이 가능해진다.</li>
+</ul>
+</li>
+<li><p>장기 의존성&#x2F;길이 증가에 따른 성능 저하 완화</p>
+<ul>
+<li>중요한 단어가 멀리 떨어져 있어도, 해당 시점에 높은 어텐션 가중치를 주어 직접 참조한다.</li>
+<li>이로 인해 긴 문장 번역, 요약 등에서 재현율과 일관성이 개선된다.</li>
+</ul>
+</li>
+<li><p>위치별 동적 정보 선택을 가능하게 한다</p>
+<ul>
+<li>디코더가 현재 생성하려는 토큰에 맞춰 인코더 시퀀스 내 “어디를 볼지”를 동적으로 결정한다.</li>
+<li>불필요한 정보는 낮게, 관련 위치는 높게 가중하여 정밀한 대응을 이끈다.</li>
+</ul>
+</li>
+<li><p>정렬(alignment) 정보 암묵적 제공</p>
+<ul>
+<li>소스-타깃 단어&#x2F;구의 대응 관계가 어텐션 가중치 행렬로 드러난다.</li>
+<li>해석 가능성과 오류 분석이 용이해진다.</li>
+</ul>
+</li>
+<li><p>기계 번역&#x2F;요약의 문맥 일관성과 커버리지 문제 개선</p>
+<ul>
+<li>필요한 부분을 반복 참조하고, 커버리지 확장(커버리지 벡터 등)을 통해 같은 소스 구간을 과도하게 반복 번역하거나 누락하는 문제를 줄일 수 있다.</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+Attention 메커니즘은 Seq2Seq(Sequence-to-Sequence) 모델이 가지는 중요한 한계를 해결하는 데 큰 도움을 줍니다.
+
+<p>기본적인 Seq2Seq 모델은 입력 시퀀스를 인코더가 하나의 고정된 벡터로 요약하고, 디코더는 이 벡터만을 바탕으로 전체 출력을 생성합니다. 그런데 입력 문장이 길어질수록, 인코더가 모든 정보를 하나의 벡터에 압축하는 데 한계가 생기고, 그로 인해 디코더는 필요한 문맥 정보를 충분히 받지 못하게 됩니다. 이로 인해 성능이 떨어지거나 문장의 앞부분은 잘 예측하면서도 뒷부분은 틀리는 문제가 자주 발생합니다.</p>
+<p>이때 Attention 메커니즘을 적용하면, 디코더는 인코더의 전체 hidden state 중에서 <strong>매 시점에 필요한 부분에 ‘집중(attend)’해서 정보</strong> 를 가져올 수 있게 됩니다. 즉, 입력 시퀀스 전체를 한꺼번에 압축하는 대신, 각 출력 단어를 생성할 때마다 입력 시퀀스의 특정 위치에 더 많은 가중치를 두고 참고할 수 있습니다.</p>
+<p>이 덕분에 모델은 <strong>긴 문장에서도 필요한 문맥 정보를 유연하게 반영할 수 있고, 장기 의존성 문제(long-term dependency)를 완화</strong> 할 수 있습니다. 결과적으로 번역, 문장 생성, 질의응답 같은 자연어 처리 과제에서 Seq2Seq 모델의 성능이 크게 향상됩니다.</p>
+</details>
+
+<hr>
+<h1 id="4-Transformer-모델은-Seq2Seq-구조와-어떤-점에서-근본적으로-다른가요"><a href="#4-Transformer-모델은-Seq2Seq-구조와-어떤-점에서-근본적으로-다른가요" class="headerlink" title="4. Transformer 모델은 Seq2Seq 구조와 어떤 점에서 근본적으로 다른가요?"></a>4. Transformer 모델은 Seq2Seq 구조와 어떤 점에서 근본적으로 다른가요?</h1><h2 id="1-근본적-차이-개념-축"><a href="#1-근본적-차이-개념-축" class="headerlink" title="1) 근본적 차이(개념 축)"></a>1) 근본적 차이(개념 축)</h2><ul>
+<li>RNN 의존 vs 어텐션 전면화<ul>
+<li>전통 Seq2Seq(RNN 기반): 인코더·디코더가 순차적으로 토큰을 처리한다. 순서 의존이 강하고 긴 의존성 학습이 어렵다.</li>
+<li>Transformer: 전부 어텐션(Self-&#x2F;Cross-Attention)으로 구성해 순차 의존을 제거한다. 병렬 처리가 된다.</li>
+</ul>
+</li>
+<li>고정 컨텍스트 병목 vs 전역 컨텍스트 접근<ul>
+<li>RNN Seq2Seq: 고정 길이 컨텍스트 벡터 병목이 존재하거나, 어텐션을 붙여도 기본 표현은 순차 누적에 의존한다.</li>
+<li>Transformer: 각 토큰이 전 시퀀스에 직접 어텐션한다. 전역 문맥 접근이 기본 동작이 된다.</li>
+</ul>
+</li>
+<li>표현 방식<ul>
+<li>RNN Seq2Seq: 순차 상태 전이로 시점별 은닉 상태를 갱신한다.</li>
+<li>Transformer: 위치 임베딩을 추가해 순서를 암시하고, 다중 헤드 어텐션과 피드포워드로 표현을 갱신한다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-구조·학습-관점"><a href="#2-구조·학습-관점" class="headerlink" title="2) 구조·학습 관점"></a>2) 구조·학습 관점</h2><ul>
+<li>병렬화<ul>
+<li>RNN: 길이 T에 비례해 순차 계산해야 한다 → 병렬화가 제한된다.</li>
+<li>Transformer: 인코더 학습 시 전체 토큰을 한 번에 처리한다 → 대규모 병렬화가 된다. 디코더는 마스킹으로 오토리그레시브지만, 내부 행렬 연산은 병렬화된다.</li>
+</ul>
+</li>
+<li>장기 의존성<ul>
+<li>RNN: 기울기 소실&#x2F;폭주로 먼 의존성 학습이 어렵다(LSTM&#x2F;GRU로 완화).</li>
+<li>Transformer: 어텐션으로 먼 토큰 간 직접 연결이 된다 → 장기 의존성에 강하다.</li>
+</ul>
+</li>
+<li>용량·스케일링<ul>
+<li>RNN: 깊이·폭을 늘려도 순차 병목이 남는다.</li>
+<li>Transformer: 너비&#x2F;깊이&#x2F;헤드 수&#x2F;토큰 길이를 늘리며 스케일 업이 잘 된다(메모리·시간은 O(n^2) 어텐션 비용 이슈가 있다).</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-입력-출력-처리"><a href="#3-입력-출력-처리" class="headerlink" title="3) 입력&#x2F;출력 처리"></a>3) 입력&#x2F;출력 처리</h2><ul>
+<li>Seq2Seq(RNN): 인코더가 순차로 입력을 요약하고, 디코더가 이전 토큰을 조건으로 다음 토큰을 생성한다. 어텐션을 추가하면 인코더 은닉 상태 위에 가중합을 얹는다.</li>
+<li>Transformer: 인코더-디코더 구조에서도 각 층마다 Self-Attention과 Cross-Attention 블록으로 직접 상호작용한다. 분류&#x2F;요약&#x2F;번역 등 다양한 태스크에 맞춰 헤드를 바꾸기 쉽다.</li>
+</ul>
+<h2 id="4-성능·실무적-차이"><a href="#4-성능·실무적-차이" class="headerlink" title="4) 성능·실무적 차이"></a>4) 성능·실무적 차이</h2><ul>
+<li>데이터&#x2F;연산 효율<ul>
+<li>RNN: 짧은 시퀀스·경량 환경에서는 여전히 유효하다.</li>
+<li>Transformer: 대규모 데이터·가속기 환경에서 압도적 성능과 생산성을 보인다. 다만 긴 시퀀스에서 O(n^2) 비용이 커져 효율적 어텐션(Linear&#x2F;Long&#x2F;Flash 등) 기법을 병행한다.</li>
+</ul>
+</li>
+<li>해석·정렬<ul>
+<li>RNN+Attention: 정렬이 어텐션 맵으로 드러나지만, 기본 표현은 순차 은닉에 얹는 형태다.</li>
+<li>Transformer: 멀티헤드 어텐션 맵이 다양한 관계를 병렬로 포착한다(구문·의미·코리퍼런스 등).</li>
+</ul>
+</li>
+</ul>
+<p>Transformer는 순차 RNN을 버리고 어텐션을 전면에 둔 구조로, 전 토큰에 대한 병렬·전역 컨텍스트 접근이 기본이 된다.<br>그 결과 긴 의존성, 스케일링, 학습 속도에서 RNN 기반 Seq2Seq와 근본적으로 다르게 작동하고, 대규모 데이터&#x2F;모델에서 더 강력한 성능을 보인다.</p>
+<br>
+<details>
+<summary>실습해설</summary>
+Transformer 모델은 Seq2Seq 구조와 비교했을 때, **가장 큰 근본적인 차이점은 RNN을 사용하지 않고, 전적으로 Attention 메커니즘만으로 시퀀스를 처리한다는 점** 입니다.
+
+<p>전통적인 Seq2Seq 모델은 RNN, LSTM, GRU 같은 순환 신경망 구조를 사용하여 입력 시퀀스를 시간 순서대로 처리합니다. 이 구조는 시간 흐름을 따라 정보를 전달할 수 있지만, <strong>병렬 연산이 어렵고, 긴 시퀀스일수록 학습 속도가 느려지며, 장기 의존성 문제</strong> 가 발생할 수 있습니다.</p>
+<p>반면 Transformer는 모든 입력 토큰 간의 관계를 한 번에 계산할 수 있는 <strong>Self-Attention 메커니즘</strong> 을 기반으로 동작합니다. 덕분에 각 단어가 문장 내 다른 단어들과 어떻게 연결되는지를 병렬적으로 학습할 수 있으며, 연산 속도가 빠르고, 긴 문장에서도 정보 손실 없이 문맥을 반영할 수 있습니다.</p>
+<p>또한 Transformer는 <strong>Positional Encoding</strong> 이라는 기법을 사용해 입력 토큰의 순서 정보를 보완합니다. 이는 RNN처럼 순차적으로 데이터를 처리하지 않기 때문에 발생할 수 있는 순서 정보 손실 문제를 해결하는 방식입니다.</p>
+<p>결과적으로 Transformer는 Seq2Seq보다 <strong>병렬 처리 효율이 뛰어나고, 긴 문장에서도 더 안정적인 성능</strong> 을 보이며, 기계 번역, 텍스트 요약, 문장 생성 등 다양한 자연어처리 과제에서 기존 Seq2Seq을 대체하고 있습니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%EC%9E%90%EC%97%B0%EC%96%B4%EC%B2%98%EB%A6%AC/">자연어처리</a><a class="link-muted mr-2" rel="tag" href="/tags/FastText/">FastText</a><a class="link-muted mr-2" rel="tag" href="/tags/Word2Vec/">Word2Vec</a><a class="link-muted mr-2" rel="tag" href="/tags/Attention/">Attention</a><a class="link-muted mr-2" rel="tag" href="/tags/Transformer/">Transformer</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/10/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-11/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 11</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/09/07/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/"><span class="level-item">위클리 페이퍼 9</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/10/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-10/';
+            this.page.identifier = '2025/10/02/위클리-페이퍼-10/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-텍스트-데이터를-모델에-적용하기-전에-어떤-전처리-과정을-거치나요"><span class="level-left"><span class="level-item">1. 텍스트 데이터를 모델에 적용하기 전에 어떤 전처리 과정을 거치나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#단계별-상세"><span class="level-left"><span class="level-item">단계별 상세</span></span></a></li><li><a class="level is-mobile" href="#전처리-전략"><span class="level-left"><span class="level-item">전처리 전략</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-FastText가-Word2Vec과-다른-점은-무엇이며-어떤-장점이-있나요"><span class="level-left"><span class="level-item">2. FastText가 Word2Vec과 다른 점은 무엇이며, 어떤 장점이 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#차이점"><span class="level-left"><span class="level-item">차이점</span></span></a></li><li><a class="level is-mobile" href="#FastText의-장점"><span class="level-left"><span class="level-item">FastText의 장점</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-Attention-메커니즘이-Seq2Seq-모델의-어떤-문제를-해결하는-데-도움이-되나요"><span class="level-left"><span class="level-item">3. Attention 메커니즘이 Seq2Seq 모델의 어떤 문제를 해결하는 데 도움이 되나요?</span></span></a></li><li><a class="level is-mobile" href="#4-Transformer-모델은-Seq2Seq-구조와-어떤-점에서-근본적으로-다른가요"><span class="level-left"><span class="level-item">4. Transformer 모델은 Seq2Seq 구조와 어떤 점에서 근본적으로 다른가요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-근본적-차이-개념-축"><span class="level-left"><span class="level-item">1) 근본적 차이(개념 축)</span></span></a></li><li><a class="level is-mobile" href="#2-구조·학습-관점"><span class="level-left"><span class="level-item">2) 구조·학습 관점</span></span></a></li><li><a class="level is-mobile" href="#3-입력-출력-처리"><span class="level-left"><span class="level-item">3) 입력/출력 처리</span></span></a></li><li><a class="level is-mobile" href="#4-성능·실무적-차이"><span class="level-left"><span class="level-item">4) 성능·실무적 차이</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

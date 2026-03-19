@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 16 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. Streamlit을 사용해서 AI 모델을 웹 애플리케이션에 통합하려면 모델 로드, 사용자 입력, 결과 출력의 단계를 거쳐야합니다. 각각의 단계에 대해 설명해주세요.Streamlit을 사용해 AI 모델을 웹 애플리케이션에 통합할 때는크게 모델 로드 → 사용자 입력 → 결과 출력 의 흐름으로 구성된다.각 단계는 단순해 보이지만, 실제로는 역할이 명확하게"><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 16"><meta property="og:url" content="https://jinsugyeong.github.io/2025/12/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-16/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. Streamlit을 사용해서 AI 모델을 웹 애플리케이션에 통합하려면 모델 로드, 사용자 입력, 결과 출력의 단계를 거쳐야합니다. 각각의 단계에 대해 설명해주세요.Streamlit을 사용해 AI 모델을 웹 애플리케이션에 통합할 때는크게 모델 로드 → 사용자 입력 → 결과 출력 의 흐름으로 구성된다.각 단계는 단순해 보이지만, 실제로는 역할이 명확하게"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-12-19T00:25:00.000Z"><meta property="article:modified_time" content="2025-12-18T15:56:33.000Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="FastAPI"><meta property="article:tag" content="Streamlit"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/12/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-16/"},"headline":"위클리 페이퍼 16","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-12-19T00:25:00.000Z","dateModified":"2025-12-18T15:56:33.000Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. Streamlit을 사용해서 AI 모델을 웹 애플리케이션에 통합하려면 모델 로드, 사용자 입력, 결과 출력의 단계를 거쳐야합니다. 각각의 단계에 대해 설명해주세요.Streamlit을 사용해 AI 모델을 웹 애플리케이션에 통합할 때는크게 모델 로드 → 사용자 입력 → 결과 출력 의 흐름으로 구성된다.각 단계는 단순해 보이지만, 실제로는 역할이 명확하게"}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/12/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-16/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 16</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-12-19 09:25 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-Streamlit을-사용해서-AI-모델을-웹-애플리케이션에-통합하려면-모델-로드-사용자-입력-결과-출력의-단계를-거쳐야합니다-각각의-단계에-대해-설명해주세요"><a href="#1-Streamlit을-사용해서-AI-모델을-웹-애플리케이션에-통합하려면-모델-로드-사용자-입력-결과-출력의-단계를-거쳐야합니다-각각의-단계에-대해-설명해주세요" class="headerlink" title="1. Streamlit을 사용해서 AI 모델을 웹 애플리케이션에 통합하려면 모델 로드, 사용자 입력, 결과 출력의 단계를 거쳐야합니다. 각각의 단계에 대해 설명해주세요."></a>1. Streamlit을 사용해서 AI 모델을 웹 애플리케이션에 통합하려면 모델 로드, 사용자 입력, 결과 출력의 단계를 거쳐야합니다. 각각의 단계에 대해 설명해주세요.</h1><p>Streamlit을 사용해 AI 모델을 웹 애플리케이션에 통합할 때는<br>크게 <strong>모델 로드 → 사용자 입력 → 결과 출력</strong> 의 흐름으로 구성된다.<br>각 단계는 단순해 보이지만, 실제로는 역할이 명확하게 나뉘어 있다.</p>
+<span id="more"></span>
+
+<h2 id="1-1-모델-로드-단계-Model-Loading"><a href="#1-1-모델-로드-단계-Model-Loading" class="headerlink" title="1.1 모델 로드 단계 (Model Loading)"></a>1.1 모델 로드 단계 (Model Loading)</h2><p>AI 모델을 애플리케이션 시작 시점에 로드하며, “모델을 한 번만 로드하고 재사용”하는 것이 핵심입니다.</p>
+<p><strong>주요 작업</strong>:</p>
+<ul>
+<li>학습된 모델 파일(.pt, .onnx 등)을 메모리에 로드</li>
+<li>토크나이저, 전처리 객체 준비</li>
+<li>Streamlit의 <code>@st.cache</code> 데코레이터로 중복 로드 방지</li>
+</ul>
+<p><strong>중요 포인트</strong>:</p>
+<ul>
+<li>Streamlit은 스크립트가 재실행될 때마다 전체 코드를 다시 실행하므로, 캐싱이 필수</li>
+<li>모델 로드가 느린 경우(예: 대형 LLM), 캐시 없이는 매번 수십 초씩 대기</li>
+</ul>
+<h2 id="1-2-사용자-입력-단계-User-Input"><a href="#1-2-사용자-입력-단계-User-Input" class="headerlink" title="1.2 사용자 입력 단계 (User Input)"></a>1.2 사용자 입력 단계 (User Input)</h2><p>사용자가 웹 화면에서 데이터를 입력하는 단계입니다.</p>
+<p><strong>주요 작업</strong>:</p>
+<ul>
+<li>텍스트 입력, 파일 업로드, 슬라이더, 버튼 등의 UI 컴포넌트 활용</li>
+<li>입력값을 모델이 이해할 수 있는 형태로 전처리</li>
+<li>입력 변경 시 Streamlit 스크립트 재실행 관리</li>
+</ul>
+<p><strong>주의사항</strong>:</p>
+<ul>
+<li>사용자 입력이 바뀔 때마다 스크립트가 재실행되므로, 불필요한 연산은 조건문으로 제어</li>
+<li>파일 업로드 시 메모리 관리 필요</li>
+</ul>
+<h2 id="1-3-결과-출력-단계-Result-Output"><a href="#1-3-결과-출력-단계-Result-Output" class="headerlink" title="1.3 결과 출력 단계 (Result Output)"></a>1.3 결과 출력 단계 (Result Output)</h2><p>모델의 추론 결과를 사용자 친화적으로 표현합니다.</p>
+<p><strong>주요 작업</strong>:</p>
+<ul>
+<li>텍스트, 점수, 그래프, 이미지 등으로 출력</li>
+<li>중간 결과(확률, confidence) 함께 표시</li>
+<li>처리 시간이 긴 경우 로딩 메시지(spinner) 제공</li>
+</ul>
+<p><strong>UX 개선 팁</strong>:</p>
+<ul>
+<li>결과를 바로 보여주되, “왜 이런 결과가 나왔는지” 설명 추가</li>
+<li>모델의 불확실성(confidence score)도 함께 표시해 신뢰도 전달</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>Streamlit으로 AI 모델을 웹에 통합할 때는 세 단계로 나눠서 생각하면 됩니다.</p>
+<p>첫 번째는 모델 로드 단계입니다. 학습된 모델 파일을 메모리에 올리는 과정인데, Streamlit은 코드가 재실행될 때마다 전체를 다시 실행하기 때문에 @st.cache 같은 캐싱을 반드시 사용해야 합니다. 안 그러면 매번 모델을 새로 불러와서 엄청 느려집니다.</p>
+<p>두 번째는 사용자 입력 단계입니다. 텍스트 입력, 파일 업로드, 슬라이더 같은 UI 컴포넌트로 데이터를 받고, 이걸 모델이 이해할 수 있는 형태로 전처리합니다.</p>
+<p>세 번째는 결과 출력 단계입니다. 모델의 추론 결과를 텍스트, 그래프, 이미지 등으로 사용자에게 보여주는 과정입니다. 처리 시간이 길면 로딩 표시를 해주고, confidence score도 함께 보여주면 사용자 경험이 좋아집니다.</p>
+</details>
+
+<hr>
+<h1 id="2-FastAPI로-AI-웹-API-서버를-만들-때-어떻게-구조를-나누면-좋을까요-각-부분이-어떤-역할을-하는지-설명해주세요"><a href="#2-FastAPI로-AI-웹-API-서버를-만들-때-어떻게-구조를-나누면-좋을까요-각-부분이-어떤-역할을-하는지-설명해주세요" class="headerlink" title="2. FastAPI로 AI 웹 API 서버를 만들 때 어떻게 구조를 나누면 좋을까요? 각 부분이 어떤 역할을 하는지 설명해주세요."></a>2. FastAPI로 AI 웹 API 서버를 만들 때 어떻게 구조를 나누면 좋을까요? 각 부분이 어떤 역할을 하는지 설명해주세요.</h1><h2 id="2-1-구조-분리-기준"><a href="#2-1-구조-분리-기준" class="headerlink" title="2.1 구조 분리 기준"></a>2.1 구조 분리 기준</h2><p>FastAPI 기반 AI 서버는 다음과 같이 계층을 나눈다:</p>
+<ul>
+<li><strong>API 요청&#x2F;응답 로직</strong></li>
+<li><strong>비즈니스 로직</strong></li>
+<li><strong>모델 로딩 및 추론 로직</strong></li>
+<li><strong>공통 설정 및 유틸</strong></li>
+</ul>
+<h2 id="2-2-권장-디렉토리-구조"><a href="#2-2-권장-디렉토리-구조" class="headerlink" title="2.2 권장 디렉토리 구조"></a>2.2 권장 디렉토리 구조</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">app/</span><br><span class="line">├── main.py                    # FastAPI 앱 진입점</span><br><span class="line">├── api/</span><br><span class="line">│   ├── inference.py          # 추론 API 엔드포인트</span><br><span class="line">│   └── health.py             # 헬스 체크</span><br><span class="line">├── core/</span><br><span class="line">│   ├── config.py             # 설정값</span><br><span class="line">│   └── logging.py            # 로깅 설정</span><br><span class="line">├── models/</span><br><span class="line">│   ├── loader.py             # 모델 로딩 로직</span><br><span class="line">│   └── predictor.py          # 모델 추론 함수</span><br><span class="line">├── schemas/</span><br><span class="line">│   ├── request.py            # 요청 스키마</span><br><span class="line">│   └── response.py           # 응답 스키마</span><br><span class="line">├── services/</span><br><span class="line">│   └── inference_service.py  # 비즈니스 로직</span><br><span class="line">└── utils/</span><br><span class="line">    └── preprocess.py         # 전처리 유틸</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-각-계층의-역할"><a href="#2-3-각-계층의-역할" class="headerlink" title="2.3 각 계층의 역할"></a>2.3 각 계층의 역할</h2><h3 id="main-py-서버-진입점"><a href="#main-py-서버-진입점" class="headerlink" title="main.py: 서버 진입점"></a>main.py: 서버 진입점</h3><ul>
+<li>FastAPI 앱 생성</li>
+<li>라우터 등록</li>
+<li>미들웨어 설정</li>
+<li><strong>역할</strong>: 서버 시작과 전체 구성만 담당</li>
+</ul>
+<h3 id="api-API-레이어"><a href="#api-API-레이어" class="headerlink" title="api&#x2F;: API 레이어"></a>api&#x2F;: API 레이어</h3><ul>
+<li>외부 요청 수신</li>
+<li>Request&#x2F;Response 연결</li>
+<li>HTTP 레벨 처리 (헤더, 상태 코드 등)</li>
+<li><strong>역할</strong>: HTTP 통신 담당, 실제 로직은 services로 위임</li>
+</ul>
+<h3 id="schemas-데이터-검증"><a href="#schemas-데이터-검증" class="headerlink" title="schemas&#x2F;: 데이터 검증"></a>schemas&#x2F;: 데이터 검증</h3><ul>
+<li>Pydantic 모델로 입력&#x2F;출력 명확화</li>
+<li>타입 안정성 확보</li>
+<li>API 문서 자동 생성</li>
+<li><strong>역할</strong>: 데이터 구조 정의 및 검증</li>
+</ul>
+<h3 id="models-모델-로딩-추론"><a href="#models-모델-로딩-추론" class="headerlink" title="models&#x2F;: 모델 로딩 &amp; 추론"></a>models&#x2F;: 모델 로딩 &amp; 추론</h3><ul>
+<li>모델 로딩 함수</li>
+<li>추론 함수 정의</li>
+<li>프레임워크 의존성 포함 (PyTorch, ONNX 등)</li>
+<li><strong>역할</strong>: 순수 모델 연산만 담당</li>
+</ul>
+<h3 id="services-비즈니스-로직"><a href="#services-비즈니스-로직" class="headerlink" title="services&#x2F;: 비즈니스 로직"></a>services&#x2F;: 비즈니스 로직</h3><ul>
+<li>입력 전처리</li>
+<li>모델 호출</li>
+<li>결과 후처리</li>
+<li>예외 처리</li>
+<li><strong>역할</strong>: API와 모델 사이의 중재자</li>
+</ul>
+<h3 id="core-utils-공통-기능"><a href="#core-utils-공통-기능" class="headerlink" title="core&#x2F;utils&#x2F;: 공통 기능"></a>core&#x2F;utils&#x2F;: 공통 기능</h3><ul>
+<li>설정값, 환경 변수 관리</li>
+<li>로깅 설정</li>
+<li>공통 함수 (파일 I&#x2F;O, 유틸 등)</li>
+<li><strong>역할</strong>: 전역적으로 쓰이는 기능 제공</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>FastAPI로 AI 서버를 만들 때는 역할별로 코드를 분리하는 것이 핵심입니다.</p>
+<p>api/ 폴더에는 HTTP 요청을 받고 응답을 보내는 엔드포인트 코드만 넣고, 실제 AI 추론 로직은 models/ 폴더에 분리합니다. schemas/ 폴더에는 Pydantic으로 입력/출력 데이터 구조를 정의하고, services/ 폴더에는 전처리, 모델 호출, 후처리를 연결하는 비즈니스 로직을 넣습니다.</p>
+<p>이렇게 계층을 나누면 모델을 교체하거나 API를 수정할 때 다른 부분에 영향을 주지 않고 독립적으로 작업할 수 있습니다. API 레이어는 HTTP 통신만, 모델 레이어는 순수 추론만, 서비스 레이어는 그 사이를 중재하는 역할만 담당하도록 설계하는 것이 좋습니다.</p>
+</details>
+
+<hr>
+<h1 id="3-Notion-AI-같은-서비스가-어떤-구조로-되어있을지-상상해서-정리해보세요-예-Streamlit-FastAPI-최적화된-LLM"><a href="#3-Notion-AI-같은-서비스가-어떤-구조로-되어있을지-상상해서-정리해보세요-예-Streamlit-FastAPI-최적화된-LLM" class="headerlink" title="3. Notion AI 같은 서비스가 어떤 구조로 되어있을지 상상해서 정리해보세요. (예: Streamlit + FastAPI + 최적화된 LLM)"></a>3. Notion AI 같은 서비스가 어떤 구조로 되어있을지 상상해서 정리해보세요. (예: Streamlit + FastAPI + 최적화된 LLM)</h1><h2 id="3-1-서비스-개요"><a href="#3-1-서비스-개요" class="headerlink" title="3.1 서비스 개요"></a>3.1 서비스 개요</h2><p>Notion AI는 <strong>문서 요약, 문장 재작성, 핵심 포인트 정리</strong> 등을 제공하는 AI 서비스입니다.</p>
+<h2 id="3-2-아키텍처-흐름"><a href="#3-2-아키텍처-흐름" class="headerlink" title="3.2 아키텍처 흐름"></a>3.2 아키텍처 흐름</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[ Client (Web/App) ]</span><br><span class="line">        |</span><br><span class="line">        | HTTPS</span><br><span class="line">        v</span><br><span class="line">[ Streamlit (UI Server) ]</span><br><span class="line">        |</span><br><span class="line">        | REST API</span><br><span class="line">        v</span><br><span class="line">[ FastAPI (Backend API) ]</span><br><span class="line">        |</span><br><span class="line">        | Async Task</span><br><span class="line">        v</span><br><span class="line">[ Inference Service ]</span><br><span class="line">        |</span><br><span class="line">        v</span><br><span class="line">[ Optimized LLM (ONNX/TensorRT) ]</span><br><span class="line">        |</span><br><span class="line">        v</span><br><span class="line">[ GPU Instance ]</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3-Frontend-Streamlit-UI-Layer"><a href="#3-3-Frontend-Streamlit-UI-Layer" class="headerlink" title="3.3 Frontend (Streamlit UI Layer)"></a>3.3 Frontend (Streamlit UI Layer)</h2><p><strong>역할</strong>:</p>
+<ul>
+<li>사용자가 문서를 입력하거나 업로드</li>
+<li>요약 옵션 선택 (짧게 &#x2F; 자세히 등)</li>
+<li>결과를 시각적으로 표시</li>
+</ul>
+<p><strong>주의</strong>:</p>
+<ul>
+<li>모든 요청은 <strong>FastAPI로 전달</strong> (직접 모델 호출 없음)</li>
+<li>UI는 “보여주기만” 하고, 실제 AI 처리는 백엔드가 담당</li>
+</ul>
+<h2 id="3-4-Backend-FastAPI-API-Gateway"><a href="#3-4-Backend-FastAPI-API-Gateway" class="headerlink" title="3.4 Backend (FastAPI API Gateway)"></a>3.4 Backend (FastAPI API Gateway)</h2><p><strong>API 엔드포인트 예시</strong>:</p>
+<ul>
+<li><code>POST /api/v1/summarize</code> → 요약 요청</li>
+<li><code>GET /api/v1/status/&#123;job_id&#125;</code> → 작업 상태 조회</li>
+<li><code>GET /api/v1/health</code> → 서버 상태 확인</li>
+</ul>
+<p><strong>역할</strong>:</p>
+<ul>
+<li>요청 검증 및 인증</li>
+<li>비동기 처리(async)로 동시 사용자 요청 대응</li>
+<li>Inference Service로 작업 전달</li>
+<li>결과 캐싱 (동일 요청 재사용)</li>
+</ul>
+<h2 id="3-5-Inference-Service-추론-최적화"><a href="#3-5-Inference-Service-추론-최적화" class="headerlink" title="3.5 Inference Service (추론 최적화)"></a>3.5 Inference Service (추론 최적화)</h2><p><strong>모델 최적화 흐름</strong>:</p>
+<ul>
+<li><strong>학습</strong>: PyTorch 기반 LLM</li>
+<li><strong>변환</strong>: ONNX 포맷으로 변환</li>
+<li><strong>배포</strong>: TensorRT로 FP16&#x2F;INT8 최적화</li>
+<li><strong>서버 시작 시 한 번만 로드</strong></li>
+</ul>
+<p><strong>최적화 효과</strong>:</p>
+<ul>
+<li>PyTorch 원본 대비 <strong>2~10배 빠른 추론 속도</strong></li>
+<li>GPU 메모리 사용량 감소</li>
+<li>동시 사용자 처리 능력 향상</li>
+</ul>
+<h2 id="3-6-멀티유저-요청-처리"><a href="#3-6-멀티유저-요청-처리" class="headerlink" title="3.6 멀티유저 요청 처리"></a>3.6 멀티유저 요청 처리</h2><p><strong>처리 구조</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Request → Queue → Inference → Result Store</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Task Queue</strong> 활용 (Redis, RabbitMQ 등)</li>
+<li>긴 작업은 비동기로 처리</li>
+<li>즉시 <code>job_id</code> 반환</li>
+<li>클라이언트가 결과 조회</li>
+</ul>
+<h2 id="3-7-보안-요소"><a href="#3-7-보안-요소" class="headerlink" title="3.7 보안 요소"></a>3.7 보안 요소</h2><p><strong>CORS (Cross-Origin Resource Sharing)</strong>:</p>
+<ul>
+<li>허용된 도메인만 API 접근 가능</li>
+<li>프론트엔드와 백엔드가 분리된 경우 필수</li>
+</ul>
+<p><strong>인증 (Authentication)</strong>:</p>
+<ul>
+<li>JWT 기반 사용자 인증</li>
+<li>API 키 발급 및 Rate Limiting (과도한 요청 방지)</li>
+</ul>
+<p><strong>네트워크</strong>:</p>
+<ul>
+<li>HTTPS 통신 강제</li>
+<li>추론 서버는 Private Network에 배치 (외부 직접 접근 차단)</li>
+</ul>
+<h2 id="3-8-Docker-기반-배포"><a href="#3-8-Docker-기반-배포" class="headerlink" title="3.8 Docker 기반 배포"></a>3.8 Docker 기반 배포</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker-compose</span><br><span class="line">├── streamlit-ui         # 프론트엔드</span><br><span class="line">├── fastapi-server       # API 게이트웨이</span><br><span class="line">├── inference-server     # 추론 서버</span><br><span class="line">└── redis                # task queue</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-9-클라우드-배포-AWS-기준"><a href="#3-9-클라우드-배포-AWS-기준" class="headerlink" title="3.9 클라우드 배포 (AWS 기준)"></a>3.9 클라우드 배포 (AWS 기준)</h2><ul>
+<li><strong>EC2 (GPU)</strong>: 추론 서버 (g4dn.xlarge 등)</li>
+<li><strong>EC2 (CPU)</strong>: FastAPI 서버</li>
+<li><strong>ALB (Application Load Balancer)</strong>: 트래픽 분산</li>
+<li><strong>S3</strong>: 사용자 업로드 문서 저장</li>
+<li><strong>ECR</strong>: Docker 이미지 관리</li>
+</ul>
+<h2 id="3-10-모니터링-및-로깅"><a href="#3-10-모니터링-및-로깅" class="headerlink" title="3.10 모니터링 및 로깅"></a>3.10 모니터링 및 로깅</h2><p><strong>모니터링</strong>:</p>
+<ul>
+<li>API 응답 시간 (Latency)</li>
+<li>추론 속도 (Inference Time)</li>
+<li>GPU 사용률</li>
+</ul>
+<p><strong>로깅</strong>:</p>
+<ul>
+<li>요청&#x2F;응답 로그 (API 호출 추적)</li>
+<li>추론 에러 로그 (모델 실패 케이스)</li>
+<li>사용자 요청 추적 로그 (어떤 기능이 많이 쓰이는지 분석)</li>
+</ul>
+<hr>
+<h2 id="핵심-요약"><a href="#핵심-요약" class="headerlink" title="핵심 요약"></a>핵심 요약</h2><p>Streamlit 기반 AI 웹은 **”단계 흐름이 명확할수록 안정적”**이며, FastAPI 서버는 <strong>역할 분리</strong>를 통해 유지보수성을 확보합니다. <strong>ONNX&#x2F;TensorRT 최적화</strong>와 <strong>비동기 처리</strong> 구조가 대규모 AI 서비스의 기본입니다.</p>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>Notion AI 같은 서비스의 구조를 상상해보면, 크게 세 개의 계층으로 나눌 수 있습니다.</p>
+<p>프론트엔드(Streamlit)는 사용자가 문서를 입력하고 옵션을 선택하고 결과를 보는 UI 역할만 합니다. 직접 모델을 호출하지 않고, 모든 요청을 백엔드로 전달합니다.</p>
+<p>백엔드(FastAPI)는 API 게이트웨이 역할로, 요청 검증, 인증, 비동기 처리를 담당합니다. 긴 작업은 Task Queue(Redis 등)에 넣고 job_id를 반환해서 클라이언트가 나중에 결과를 조회하는 방식으로 처리합니다.</p>
+<p>추론 서버는 ONNX/TensorRT로 최적화된 LLM을 GPU 위에서 실행하며, 순수하게 추론만 담당합니다. 이렇게 UI, API, 추론을 완전히 분리하고 Docker Compose로 배포하면, 각 컴포넌트를 독립적으로 확장하고 관리할 수 있는 구조가 됩니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/FastAPI/">FastAPI</a><a class="link-muted mr-2" rel="tag" href="/tags/Streamlit/">Streamlit</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 17</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/12/11/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-15/"><span class="level-item">위클리 페이퍼 15</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/12/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-16/';
+            this.page.identifier = '2025/12/19/위클리-페이퍼-16/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-Streamlit을-사용해서-AI-모델을-웹-애플리케이션에-통합하려면-모델-로드-사용자-입력-결과-출력의-단계를-거쳐야합니다-각각의-단계에-대해-설명해주세요"><span class="level-left"><span class="level-item">1. Streamlit을 사용해서 AI 모델을 웹 애플리케이션에 통합하려면 모델 로드, 사용자 입력, 결과 출력의 단계를 거쳐야합니다. 각각의 단계에 대해 설명해주세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-1-모델-로드-단계-Model-Loading"><span class="level-left"><span class="level-item">1.1 모델 로드 단계 (Model Loading)</span></span></a></li><li><a class="level is-mobile" href="#1-2-사용자-입력-단계-User-Input"><span class="level-left"><span class="level-item">1.2 사용자 입력 단계 (User Input)</span></span></a></li><li><a class="level is-mobile" href="#1-3-결과-출력-단계-Result-Output"><span class="level-left"><span class="level-item">1.3 결과 출력 단계 (Result Output)</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-FastAPI로-AI-웹-API-서버를-만들-때-어떻게-구조를-나누면-좋을까요-각-부분이-어떤-역할을-하는지-설명해주세요"><span class="level-left"><span class="level-item">2. FastAPI로 AI 웹 API 서버를 만들 때 어떻게 구조를 나누면 좋을까요? 각 부분이 어떤 역할을 하는지 설명해주세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#2-1-구조-분리-기준"><span class="level-left"><span class="level-item">2.1 구조 분리 기준</span></span></a></li><li><a class="level is-mobile" href="#2-2-권장-디렉토리-구조"><span class="level-left"><span class="level-item">2.2 권장 디렉토리 구조</span></span></a></li><li><a class="level is-mobile" href="#2-3-각-계층의-역할"><span class="level-left"><span class="level-item">2.3 각 계층의 역할</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#main-py-서버-진입점"><span class="level-left"><span class="level-item">main.py: 서버 진입점</span></span></a></li><li><a class="level is-mobile" href="#api-API-레이어"><span class="level-left"><span class="level-item">api/: API 레이어</span></span></a></li><li><a class="level is-mobile" href="#schemas-데이터-검증"><span class="level-left"><span class="level-item">schemas/: 데이터 검증</span></span></a></li><li><a class="level is-mobile" href="#models-모델-로딩-추론"><span class="level-left"><span class="level-item">models/: 모델 로딩 &amp; 추론</span></span></a></li><li><a class="level is-mobile" href="#services-비즈니스-로직"><span class="level-left"><span class="level-item">services/: 비즈니스 로직</span></span></a></li><li><a class="level is-mobile" href="#core-utils-공통-기능"><span class="level-left"><span class="level-item">core/utils/: 공통 기능</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#3-Notion-AI-같은-서비스가-어떤-구조로-되어있을지-상상해서-정리해보세요-예-Streamlit-FastAPI-최적화된-LLM"><span class="level-left"><span class="level-item">3. Notion AI 같은 서비스가 어떤 구조로 되어있을지 상상해서 정리해보세요. (예: Streamlit + FastAPI + 최적화된 LLM)</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-서비스-개요"><span class="level-left"><span class="level-item">3.1 서비스 개요</span></span></a></li><li><a class="level is-mobile" href="#3-2-아키텍처-흐름"><span class="level-left"><span class="level-item">3.2 아키텍처 흐름</span></span></a></li><li><a class="level is-mobile" href="#3-3-Frontend-Streamlit-UI-Layer"><span class="level-left"><span class="level-item">3.3 Frontend (Streamlit UI Layer)</span></span></a></li><li><a class="level is-mobile" href="#3-4-Backend-FastAPI-API-Gateway"><span class="level-left"><span class="level-item">3.4 Backend (FastAPI API Gateway)</span></span></a></li><li><a class="level is-mobile" href="#3-5-Inference-Service-추론-최적화"><span class="level-left"><span class="level-item">3.5 Inference Service (추론 최적화)</span></span></a></li><li><a class="level is-mobile" href="#3-6-멀티유저-요청-처리"><span class="level-left"><span class="level-item">3.6 멀티유저 요청 처리</span></span></a></li><li><a class="level is-mobile" href="#3-7-보안-요소"><span class="level-left"><span class="level-item">3.7 보안 요소</span></span></a></li><li><a class="level is-mobile" href="#3-8-Docker-기반-배포"><span class="level-left"><span class="level-item">3.8 Docker 기반 배포</span></span></a></li><li><a class="level is-mobile" href="#3-9-클라우드-배포-AWS-기준"><span class="level-left"><span class="level-item">3.9 클라우드 배포 (AWS 기준)</span></span></a></li><li><a class="level is-mobile" href="#3-10-모니터링-및-로깅"><span class="level-left"><span class="level-item">3.10 모니터링 및 로깅</span></span></a></li><li><a class="level is-mobile" href="#핵심-요약"><span class="level-left"><span class="level-item">핵심 요약</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

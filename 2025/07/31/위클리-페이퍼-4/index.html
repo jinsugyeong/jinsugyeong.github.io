@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 4 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 딥러닝과 머신러닝 간의 포함관계에 대해 설명해주세요."><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 4"><meta property="og:url" content="https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. 딥러닝과 머신러닝 간의 포함관계에 대해 설명해주세요."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/image.png"><meta property="article:published_time" content="2025-07-30T15:00:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.455Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="머신러닝"><meta property="article:tag" content="딥러닝"><meta property="article:tag" content="신경망"><meta property="article:tag" content="하이퍼파라미터"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/"},"headline":"위클리 페이퍼 4","image":["https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/image.png"],"datePublished":"2025-07-30T15:00:00.000Z","dateModified":"2026-03-19T14:10:15.455Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. 딥러닝과 머신러닝 간의 포함관계에 대해 설명해주세요."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 4</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-07-31 00:00 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-딥러닝과-머신러닝-간의-포함관계에-대해-설명해주세요"><a href="#1-딥러닝과-머신러닝-간의-포함관계에-대해-설명해주세요" class="headerlink" title="1. 딥러닝과 머신러닝 간의 포함관계에 대해 설명해주세요."></a>1. 딥러닝과 머신러닝 간의 포함관계에 대해 설명해주세요.</h1><img src="/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/image.png" class="" title="alt text">
+
+<span id="more"></span>
+
+<h2 id="1-머신러닝"><a href="#1-머신러닝" class="headerlink" title="1. 머신러닝"></a>1. 머신러닝</h2><ul>
+<li><p>정의: 머신러닝은 데이터를 통해 학습하고, 이를 기반으로 예측이나 결정을 내리도록 컴퓨터를 프로그래밍하는 인공지능의 한 분야</p>
+</li>
+<li><p>목표: 명시적으로 프로그래밍하지 않고도 컴퓨터가 데이터를 분석하여 스스로 학습하고 발전하도록 하는 것</p>
+</li>
+<li><p>접근 방식: 데이터를 기반으로 패턴을 찾아내고, 규칙을 만들거나 예측 모델을 구축</p>
+</li>
+<li><p>예시:</p>
+<ul>
+<li>선형 회귀, 로지스틱 회귀: 데이터 경향성 예측</li>
+<li>결정 트리, 랜덤 포레스트: 분류 및 예측</li>
+<li>SVM(서포트 벡터 머신): 분류</li>
+<li>군집 분석(Clustering): 데이터 묶음 찾기</li>
+<li>특징 추출: 사람이 직접 데이터의 의미 있는 특징(예: 이미지에서 ‘눈동자의 색깔’, ‘코의 길이’ 등)을 찾아 모델에 입력해야 하는 경우가 많음</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-딥러닝-Deep-Learning"><a href="#2-딥러닝-Deep-Learning" class="headerlink" title="2. 딥러닝(Deep Learning)"></a>2. 딥러닝(Deep Learning)</h2><ul>
+<li><p>정의: 딥러닝은 머신러닝의 특별한 한 형태로, 인공신경망(Artificial Neural Networks)을 여러 층(Deep)으로 깊게 쌓아 올려 학습하는 방식</p>
+</li>
+<li><p>특징:</p>
+</li>
+<li><p>깊은 신경망: 인간의 뇌 구조를 모방한 신경망이 여러 층(은닉층)을 가집니다. (예: CNN, RNN, LSTM, GRU 등)</p>
+</li>
+<li><p>자동 특징 학습: 가장 큰 장점 중 하나는 데이터에서 자동으로 특징(feature)을 추출하고 학습함. 예를 들어, 이미지에서 사람 얼굴을 인식할 때, ‘눈, 코, 입의 형태’와 같은 특징을 사람이 알려주지 않아도 딥러닝 모델 스스로 학습할 수 있음</p>
+</li>
+<li><p>대규모 데이터 처리: 대량의 복잡한 비정형 데이터(이미지, 음성, 텍스트)를 처리하는 데 특히 강력한 성능을 보임</p>
+</li>
+<li><p>예시:</p>
+<ul>
+<li>이미지 인식: CNN을 활용한 객체 분류, 얼굴 인식</li>
+<li>음성 인식: RNN&#x2F;LSTM을 활용한 음성을 텍스트로 변환</li>
+<li>자연어 처리: 트랜스포머 등을 활용한 기계 번역, 챗봇</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>딥러닝과 머신러닝의 포함관계는 <strong>딥러닝이 머신러닝의 한 부분</strong> 이라는 점에서 설명할 수 있습니다. 머신러닝은 데이터를 기반으로 스스로 학습하여 예측하거나 의사 결정을 내리는 알고리즘과 기술을 총칭하는 개념입니다. 딥러닝은 머신러닝의 하위 분야로, 인공신경망(Artificial Neural Network)을 기반으로 한 알고리즘을 사용해 데이터를 학습합니다.</p>
+<p><strong>머신러닝</strong> 은 다양한 알고리즘을 포함하며, 주로 <strong>지도학습, 비지도학습, 강화학습</strong> 등의 접근법으로 데이터를 학습합니다. 대표적인 알고리즘으로는 선형 회귀, 결정 트리, SVM 등이 있으며, 데이터를 처리하기 위해 사람이 직접 중요한 특징(feature)을 설계하는 작업이 필요합니다.</p>
+<p><strong>딥러닝</strong> 은 머신러닝의 한 영역으로, 신경망 구조를 기반으로 데이터에서 <strong>스스로 특징을 추출</strong> 하여 학습합니다. 사람이 개입해 특징을 설계하지 않아도 되며, 대량의 데이터를 처리할수록 높은 성능을 발휘합니다. 딥러닝은 특히 이미지, 음성, 자연어 처리 등에서 강력한 성능을 보이며, 주요 기술로 CNN(합성곱 신경망), RNN(순환 신경망), 트랜스포머 등이 있습니다.</p>
+<p><strong>정리하자면,</strong> 딥러닝은 머신러닝의 한 갈래로, 더 복잡한 데이터와 문제를 해결하기 위해 인공신경망을 활용하는 기술입니다. 머신러닝은 딥러닝을 포함한 더 광범위한 알고리즘과 방법론을 아우르는 개념입니다. 쉽게 말해, 모든 딥러닝은 머신러닝이지만, 모든 머신러닝이 딥러닝은 아닙니다.</p>
+</details>
+
+<hr>
+<h1 id="2-딥러닝의-성능향상을-위해-고려하는-하이퍼파라미터의-종류에는-어떤-것들이-있는지-설명해주세요"><a href="#2-딥러닝의-성능향상을-위해-고려하는-하이퍼파라미터의-종류에는-어떤-것들이-있는지-설명해주세요" class="headerlink" title="2. 딥러닝의 성능향상을 위해 고려하는 하이퍼파라미터의 종류에는 어떤 것들이 있는지 설명해주세요."></a>2. 딥러닝의 성능향상을 위해 고려하는 하이퍼파라미터의 종류에는 어떤 것들이 있는지 설명해주세요.</h1><p>1. 배치크기(Batch Size)  </p>
+<ul>
+<li>한 번의 학습 단계에 사용되는 데이터 샘플의 수  </li>
+<li>메모리 사용량과 학습 속도에 큰 영향</li>
+</ul>
+<p>2. 학습률(Learning Rate)  </p>
+<ul>
+<li>모델의 가중치를 어느 정도로 업데이트할지 결정  </li>
+<li>역전파 과정에서 계산된 그래디언트에 학습률을 곱해 가중치를 업데이트</li>
+</ul>
+<p>3. 에폭 수(Epoch)  </p>
+<ul>
+<li>전체 훈련 데이터셋이 네트워크를 통과하는 횟수  </li>
+<li>너무 많으면 학습 시간이 길어지고, 과적합을 초래</li>
+</ul>
+<p>   </p>
+<p>4. 옵티마이저(Optimizer)  </p>
+<ul>
+<li>손실 함수를 최소화하기 위해 모델의 가중치를 어떻게 업데이트할지 결정  </li>
+<li>확률적 경사 하강법(SGD), 모멘텀(Momentum), 아담(Adam) 등</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+딥러닝의 성능을 향상시키기 위해 조정할 수 있는 하이퍼파라미터에는 크게 모델 구조, 학습 과정, 정규화 관련 하이퍼 파라미터가 있습니다.
+
+<p>먼저 <strong>모델 구조</strong> 와 관련된 하이퍼파라미터로는 레이어의 수와 뉴런의 개수가 있습니다. 예를 들어, 레이어수가 너무 적으면 과소적합될 가능성이 있고, 너무 많으면 과적합이 발생할 수 있으므로 적절한 모델 크기를 설정하는 것이 중요합니다. 또 다른 예로 활성화 함수는 ReLU&lt; sigmoid, tanh 등 여러 종류가 있는데, 문제의 특성과 데이터의 분포에 따라 적절히 선택해야 합니다.</p>
+<p>다음으로 <strong>학습 과정</strong> 과 관련된 하이퍼 파라미터에는 학습률과 배치 크기가 있습니다. 학습률은 모델의 학습 속도를 조정하는데, 값이 너무 크면 발산할 수 있고, 너무 작으면 학습 속도가 느려질 수 있습니다. 배치 크기는 한 번의 학습에서 처리하는 데이터 샘플의 수를 의미하며, 이를 조정함으로써 학습 속도와 모델의 안정성 사이의 균형을 맞출 수 있습니다.</p>
+<p>마지막으로 <strong>정규화</strong> 와 관련된 하이퍼 파라미터로는 드롭아웃 비율과 L1&#x2F;L2 정규화가 있습니다. 드롭아웃은 과적합을 방지하기 위해 일부 뉴런을 랜덤하게 제거하는 방식이고, L1&#x2F;L2 정규화는 가중치 크기를 제한하여 모델의 복잡도를 줄이는 역할을 합니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/">머신러닝</a><a class="link-muted mr-2" rel="tag" href="/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/">딥러닝</a><a class="link-muted mr-2" rel="tag" href="/tags/%EC%8B%A0%EA%B2%BD%EB%A7%9D/">신경망</a><a class="link-muted mr-2" rel="tag" href="/tags/%ED%95%98%EC%9D%B4%ED%8D%BC%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0/">하이퍼파라미터</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 5</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/07/26/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-3/"><span class="level-item">위클리 페이퍼 3</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/';
+            this.page.identifier = '2025/07/31/위클리-페이퍼-4/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-딥러닝과-머신러닝-간의-포함관계에-대해-설명해주세요"><span class="level-left"><span class="level-item">1. 딥러닝과 머신러닝 간의 포함관계에 대해 설명해주세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-머신러닝"><span class="level-left"><span class="level-item">1. 머신러닝</span></span></a></li><li><a class="level is-mobile" href="#2-딥러닝-Deep-Learning"><span class="level-left"><span class="level-item">2. 딥러닝(Deep Learning)</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-딥러닝의-성능향상을-위해-고려하는-하이퍼파라미터의-종류에는-어떤-것들이-있는지-설명해주세요"><span class="level-left"><span class="level-item">2. 딥러닝의 성능향상을 위해 고려하는 하이퍼파라미터의 종류에는 어떤 것들이 있는지 설명해주세요.</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

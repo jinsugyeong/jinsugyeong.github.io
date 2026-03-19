@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 14 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. Docker 이미지와 컨테이너의 차이를 설명해보세요.이미지(Image)실행 가능한 애플리케이션의 정적 스냅샷(템플릿)입니다. 파일시스템, 애플리케이션 코드, 런타임, 라이브러리, 설정값 등이 계층(layer) 형태로 포함된 읽기 전용 아티팩트입니다."><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 14"><meta property="og:url" content="https://jinsugyeong.github.io/2025/12/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-14/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. Docker 이미지와 컨테이너의 차이를 설명해보세요.이미지(Image)실행 가능한 애플리케이션의 정적 스냅샷(템플릿)입니다. 파일시스템, 애플리케이션 코드, 런타임, 라이브러리, 설정값 등이 계층(layer) 형태로 포함된 읽기 전용 아티팩트입니다."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-12-01T23:46:37.000Z"><meta property="article:modified_time" content="2025-12-02T00:10:10.000Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="Docker"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/12/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-14/"},"headline":"위클리 페이퍼 14","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-12-01T23:46:37.000Z","dateModified":"2025-12-02T00:10:10.000Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. Docker 이미지와 컨테이너의 차이를 설명해보세요.이미지(Image)실행 가능한 애플리케이션의 정적 스냅샷(템플릿)입니다. 파일시스템, 애플리케이션 코드, 런타임, 라이브러리, 설정값 등이 계층(layer) 형태로 포함된 읽기 전용 아티팩트입니다."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/12/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-14/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 14</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-12-02 08:46 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-Docker-이미지와-컨테이너의-차이를-설명해보세요"><a href="#1-Docker-이미지와-컨테이너의-차이를-설명해보세요" class="headerlink" title="1. Docker 이미지와 컨테이너의 차이를 설명해보세요."></a>1. Docker 이미지와 컨테이너의 차이를 설명해보세요.</h1><h2 id="이미지-Image"><a href="#이미지-Image" class="headerlink" title="이미지(Image)"></a>이미지(Image)</h2><p>실행 가능한 애플리케이션의 정적 스냅샷(템플릿)입니다. 파일시스템, 애플리케이션 코드, 런타임, 라이브러리, 설정값 등이 계층(layer) 형태로 포함된 읽기 전용 아티팩트입니다.</p>
+<span id="more"></span>
+
+<h2 id="컨테이너-Container"><a href="#컨테이너-Container" class="headerlink" title="컨테이너(Container)"></a>컨테이너(Container)</h2><p>이미지를 기반으로 실행되는 동적 인스턴스입니다. 이미지와 달리 쓰기 가능한 최상위 레이어를 가지며, 네트워크·프로세스·파일시스템이 호스트로부터 격리됩니다.</p>
+<h2 id="주요-차이점"><a href="#주요-차이점" class="headerlink" title="주요 차이점"></a>주요 차이점</h2><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>이미지</th>
+<th>컨테이너</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>성격</td>
+<td>정적(읽기 전용) 템플릿</td>
+<td>동적 실행 단위(프로세스)</td>
+</tr>
+<tr>
+<td>변경 가능성</td>
+<td>불변</td>
+<td>실행 중 상태 변경 가능</td>
+</tr>
+<tr>
+<td>생성 방법</td>
+<td>Dockerfile → docker build</td>
+<td>docker run</td>
+</tr>
+<tr>
+<td>저장 위치</td>
+<td>레지스트리</td>
+<td>호스트 컨테이너 런타임</td>
+</tr>
+</tbody></table>
+<h2 id="실무적-차이"><a href="#실무적-차이" class="headerlink" title="실무적 차이"></a>실무적 차이</h2><ul>
+<li><strong>불변성</strong>: 이미지는 빌드 시점에 고정되어 배포·롤백이 용이합니다.</li>
+<li><strong>효율성</strong>: 레이어 캐시로 빌드 효율이 높아지고 여러 컨테이너가 같은 레이어를 공유합니다.</li>
+<li><strong>디버깅</strong>: 컨테이너는 <code>docker exec</code>로 내부 진입 가능하지만, 이미지는 재빌드 필요합니다.</li>
+<li><strong>배포</strong>: CI에서 이미지 빌드 후 레지스트리에 푸시 → 운영에서 컨테이너 배포하는 흐름입니다.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+Docker 이미지란 컨테이너를 실행하기 위한 모든 요소가 포함된 정적인 템플릿입니다. 애플리케이션 코드, 라이브러리, 실행 환경, 의존성 등이 포함되어 있어, 어떤 환경에서도 동일하게 실행될 수 있도록 보장해줍니다.
+
+<p>반면, 컨테이너는 이 이미지를 기반으로 실제로 실행된 인스턴스로, 격리된 공간에서 동작하는 일종의 경량 가상 환경입니다. 이미지는 변경되지 않는 반면, 컨테이너는 실행 중에 상태가 바뀔 수 있고, 메모리나 파일시스템에 변화가 발생할 수 있습니다.</p>
+<p>즉, 이미지는 설계도이고, 컨테이너는 그 설계도를 바탕으로 실제로 동작하는 애플리케이션 인스턴스입니다.</p>
+</details>
+
+<hr>
+<h1 id="2-Docker-Compose는-어떤-상황에서-유용하며-일반-Dockerfile과-어떤-차이가-있나요"><a href="#2-Docker-Compose는-어떤-상황에서-유용하며-일반-Dockerfile과-어떤-차이가-있나요" class="headerlink" title="2. Docker Compose는 어떤 상황에서 유용하며, 일반 Dockerfile과 어떤 차이가 있나요?"></a>2. Docker Compose는 어떤 상황에서 유용하며, 일반 Dockerfile과 어떤 차이가 있나요?</h1><h2 id="Dockerfile-vs-Docker-Compose"><a href="#Dockerfile-vs-Docker-Compose" class="headerlink" title="Dockerfile vs Docker Compose"></a>Dockerfile vs Docker Compose</h2><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Dockerfile</th>
+<th>Docker Compose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>목적</td>
+<td>이미지 빌드 정의</td>
+<td>컨테이너 실행 구성</td>
+</tr>
+<tr>
+<td>사용 시점</td>
+<td>CI&#x2F;빌드 단계</td>
+<td>실행&#x2F;오케스트레이션</td>
+</tr>
+<tr>
+<td>구성 단위</td>
+<td>단일 서비스 레이어</td>
+<td>여러 서비스 YAML</td>
+</tr>
+<tr>
+<td>재사용성</td>
+<td>이미지 버전 관리</td>
+<td>서비스 조합 재현성</td>
+</tr>
+</tbody></table>
+<h2 id="Docker-Compose가-유용한-상황"><a href="#Docker-Compose가-유용한-상황" class="headerlink" title="Docker Compose가 유용한 상황"></a>Docker Compose가 유용한 상황</h2><ul>
+<li>“여러 서비스(웹 앱, DB, 캐시, 메시지 큐 등)를 동시에 띄워야 할 때”</li>
+<li>서비스 간 네트워크·볼륨·환경변수를 일관되게 관리</li>
+<li>로컬 통합 테스트 및 CI 파이프라인 구성</li>
+</ul>
+<h2 id="주요-명령어"><a href="#주요-명령어" class="headerlink" title="주요 명령어"></a>주요 명령어</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker compose up -d           <span class="comment"># 백그라운드 실행</span></span><br><span class="line">docker compose logs -f         <span class="comment"># 실시간 로그</span></span><br><span class="line">docker compose ps              <span class="comment"># 서비스 상태 확인</span></span><br><span class="line">docker compose down            <span class="comment"># 스택 정리</span></span><br><span class="line">docker compose up --scale web=3  <span class="comment"># 수평 복제</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="한계"><a href="#한계" class="headerlink" title="한계"></a>한계</h2><ul>
+<li>단일 호스트 중심으로 대규모 분산에 부적합</li>
+<li>비밀 관리에 보안 고려 필요</li>
+<li>프로덕션 운영에는 별도 오케스트레이터 필요</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>Dockerfile은 하나의 이미지를 어떻게 만들지를 정의하는 파일입니다. 예를 들어 Python 환경 위에 어떤 패키지를 설치하고, 어떤 코드를 복사할지를 단계별로 적어 놓은 것이죠.</p>
+<p>반면 Docker Compose는 여러 개의 컨테이너를 한꺼번에 실행하고 관리하기 위한 도구입니다. 예를 들어 웹 서버, 데이터베이스, 캐시 서버를 동시에 띄워야 할 때, 각각의 설정을 하나의 YAML 파일에 정리해두고 docker compose up 한 줄로 전부 실행할 수 있습니다.</p>
+<p>즉, Dockerfile은 '이미지 하나를 만드는 레시피'이고, Docker Compose는 '여러 서비스를 조합해서 실행하는 구성표'라고 이해하면 됩니다. 실무에서는 보통 Dockerfile로 각 서비스의 이미지를 만들고, Docker Compose로 그것들을 묶어서 실행하는 흐름으로 사용합니다.</p>
+</details>
+
+<hr>
+<h1 id="3-Kubernetes의-기본-개념은-무엇이며-Docker와는-어떤-관계가-있나요"><a href="#3-Kubernetes의-기본-개념은-무엇이며-Docker와는-어떤-관계가-있나요" class="headerlink" title="3. Kubernetes의 기본 개념은 무엇이며, Docker와는 어떤 관계가 있나요?"></a>3. Kubernetes의 기본 개념은 무엇이며, Docker와는 어떤 관계가 있나요?</h1><h2 id="Kubernetes-정의"><a href="#Kubernetes-정의" class="headerlink" title="Kubernetes 정의"></a>Kubernetes 정의</h2><p>“컨테이너화된 애플리케이션의 배포, 확장, 관리를 자동화하는 오케스트레이션 플랫폼”입니다.</p>
+<h2 id="핵심-구성-요소"><a href="#핵심-구성-요소" class="headerlink" title="핵심 구성 요소"></a>핵심 구성 요소</h2><ul>
+<li><strong>Cluster&#x2F;Node</strong>: 여러 호스트가 모인 클러스터</li>
+<li><strong>Pod</strong>: 최소 배포 단위 (하나 이상의 컨테이너)</li>
+<li><strong>Deployment&#x2F;StatefulSet&#x2F;DaemonSet</strong>: 배포 정책 정의</li>
+<li><strong>Service</strong>: Pod 접근을 위한 로드밸런싱 및 DNS</li>
+<li><strong>ConfigMap&#x2F;Secret</strong>: 설정 및 민감정보 관리</li>
+<li><strong>Volume&#x2F;PersistentVolume</strong>: 스토리지 관리</li>
+<li><strong>Control Plane</strong>: 클러스터 전반 제어 (API Server, Scheduler 등)</li>
+</ul>
+<h2 id="Docker와의-관계"><a href="#Docker와의-관계" class="headerlink" title="Docker와의 관계"></a>Docker와의 관계</h2><ul>
+<li><strong>역할</strong>: Docker는 이미지 빌드, Kubernetes는 클러스터 수준 관리</li>
+<li><strong>런타임</strong>: 현재 CRI 표준으로 containerd&#x2F;CRI-O 연동</li>
+<li><strong>이미지</strong>: “쿠버네티스는 Docker 이미지 형식을 사용”하여 호환성 유지</li>
+</ul>
+<h2 id="Kubernetes의-이점"><a href="#Kubernetes의-이점" class="headerlink" title="Kubernetes의 이점"></a>Kubernetes의 이점</h2><ul>
+<li>자동화된 수평 확장 및 부하 분산</li>
+<li>장애 발생 시 자동 재시작·교체</li>
+<li>롤링 업데이트&#x2F;롤백으로 무중단 배포</li>
+<li>서비스 디스커버리 및 설정 관리</li>
+</ul>
+<h2 id="Docker-Compose만으로-충분한-경우"><a href="#Docker-Compose만으로-충분한-경우" class="headerlink" title="Docker Compose만으로 충분한 경우"></a>Docker Compose만으로 충분한 경우</h2><ul>
+<li>단일 호스트 개발·테스트 환경</li>
+<li>소규모 서비스로 고가용성 불필요</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>Kubernetes(쿠버네티스)는 컨테이너화된 애플리케이션을 대규모로 배포하고 관리하기 위한 오케스트레이션 플랫폼입니다. Docker가 컨테이너 하나를 만들고 실행하는 도구라면, Kubernetes는 수십~수백 개의 컨테이너를 여러 서버에 걸쳐 자동으로 배포하고, 장애가 나면 자동으로 복구하고, 트래픽이 늘면 자동으로 확장해주는 역할을 합니다.</p>
+<p>핵심 개념으로는 Pod(컨테이너를 감싸는 최소 실행 단위), Deployment(Pod의 배포 방식 정의), Service(Pod에 접근하기 위한 네트워크 설정) 등이 있습니다.</p>
+<p>Docker와의 관계를 정리하면, Docker는 '컨테이너를 만드는 도구'이고 Kubernetes는 '컨테이너들을 운영하는 도구'입니다. 소규모 환경에서는 Docker Compose로 충분하지만, 실제 프로덕션에서 고가용성과 자동 확장이 필요하다면 Kubernetes가 필요해집니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Docker/">Docker</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/12/11/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-15/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 15</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/11/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-13/"><span class="level-item">위클리 페이퍼 13</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/12/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-14/';
+            this.page.identifier = '2025/12/02/위클리-페이퍼-14/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-Docker-이미지와-컨테이너의-차이를-설명해보세요"><span class="level-left"><span class="level-item">1. Docker 이미지와 컨테이너의 차이를 설명해보세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#이미지-Image"><span class="level-left"><span class="level-item">이미지(Image)</span></span></a></li><li><a class="level is-mobile" href="#컨테이너-Container"><span class="level-left"><span class="level-item">컨테이너(Container)</span></span></a></li><li><a class="level is-mobile" href="#주요-차이점"><span class="level-left"><span class="level-item">주요 차이점</span></span></a></li><li><a class="level is-mobile" href="#실무적-차이"><span class="level-left"><span class="level-item">실무적 차이</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-Docker-Compose는-어떤-상황에서-유용하며-일반-Dockerfile과-어떤-차이가-있나요"><span class="level-left"><span class="level-item">2. Docker Compose는 어떤 상황에서 유용하며, 일반 Dockerfile과 어떤 차이가 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Dockerfile-vs-Docker-Compose"><span class="level-left"><span class="level-item">Dockerfile vs Docker Compose</span></span></a></li><li><a class="level is-mobile" href="#Docker-Compose가-유용한-상황"><span class="level-left"><span class="level-item">Docker Compose가 유용한 상황</span></span></a></li><li><a class="level is-mobile" href="#주요-명령어"><span class="level-left"><span class="level-item">주요 명령어</span></span></a></li><li><a class="level is-mobile" href="#한계"><span class="level-left"><span class="level-item">한계</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-Kubernetes의-기본-개념은-무엇이며-Docker와는-어떤-관계가-있나요"><span class="level-left"><span class="level-item">3. Kubernetes의 기본 개념은 무엇이며, Docker와는 어떤 관계가 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Kubernetes-정의"><span class="level-left"><span class="level-item">Kubernetes 정의</span></span></a></li><li><a class="level is-mobile" href="#핵심-구성-요소"><span class="level-left"><span class="level-item">핵심 구성 요소</span></span></a></li><li><a class="level is-mobile" href="#Docker와의-관계"><span class="level-left"><span class="level-item">Docker와의 관계</span></span></a></li><li><a class="level is-mobile" href="#Kubernetes의-이점"><span class="level-left"><span class="level-item">Kubernetes의 이점</span></span></a></li><li><a class="level is-mobile" href="#Docker-Compose만으로-충분한-경우"><span class="level-left"><span class="level-item">Docker Compose만으로 충분한 경우</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 12 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. LLM이 생성한 텍스트에서 할루시네이션(Hallucination)이란 무엇이고, 왜 문제가 되나요? 여러 LLM 서비스들은 할루시네이션 문제를 어떻게 극복하려고 시도 중일까요?구글링 등을 통해 자유롭게 리서치해보세요."><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 12"><meta property="og:url" content="https://jinsugyeong.github.io/2025/10/24/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-12/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. LLM이 생성한 텍스트에서 할루시네이션(Hallucination)이란 무엇이고, 왜 문제가 되나요? 여러 LLM 서비스들은 할루시네이션 문제를 어떻게 극복하려고 시도 중일까요?구글링 등을 통해 자유롭게 리서치해보세요."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-10-23T15:00:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.440Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="LLM"><meta property="article:tag" content="할루시네이션"><meta property="article:tag" content="모델스케일링"><meta property="article:tag" content="PEFT"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/10/24/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-12/"},"headline":"위클리 페이퍼 12","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-10-23T15:00:00.000Z","dateModified":"2026-03-19T14:10:15.440Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. LLM이 생성한 텍스트에서 할루시네이션(Hallucination)이란 무엇이고, 왜 문제가 되나요? 여러 LLM 서비스들은 할루시네이션 문제를 어떻게 극복하려고 시도 중일까요?구글링 등을 통해 자유롭게 리서치해보세요."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/10/24/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-12/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 12</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-10-24 00:00 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-LLM이-생성한-텍스트에서-할루시네이션-Hallucination-이란-무엇이고-왜-문제가-되나요-여러-LLM-서비스들은-할루시네이션-문제를-어떻게-극복하려고-시도-중일까요"><a href="#1-LLM이-생성한-텍스트에서-할루시네이션-Hallucination-이란-무엇이고-왜-문제가-되나요-여러-LLM-서비스들은-할루시네이션-문제를-어떻게-극복하려고-시도-중일까요" class="headerlink" title="1. LLM이 생성한 텍스트에서 할루시네이션(Hallucination)이란 무엇이고, 왜 문제가 되나요? 여러 LLM 서비스들은 할루시네이션 문제를 어떻게 극복하려고 시도 중일까요?"></a>1. LLM이 생성한 텍스트에서 할루시네이션(Hallucination)이란 무엇이고, 왜 문제가 되나요? 여러 LLM 서비스들은 할루시네이션 문제를 어떻게 극복하려고 시도 중일까요?</h1><p>구글링 등을 통해 자유롭게 리서치해보세요. </p>
+<span id="more"></span>
+
+<h2 id="1-할루시네이션-Hallucination-이란"><a href="#1-할루시네이션-Hallucination-이란" class="headerlink" title="1) 할루시네이션(Hallucination)이란?"></a>1) 할루시네이션(Hallucination)이란?</h2><ul>
+<li>LLM이 출력한 텍스트 중 사실이 아니거나 근거가 없는 내용, 또는 모델 내부에서 만들어낸 잘못된 정보가 진실인 것처럼 표현된는 현상.<ul>
+<li>즉, 실제 데이터&#x2F;사실과 일치하지 않지만 모델이 자신 있게 주장하는 문장들을 뜻한다.</li>
+</ul>
+</li>
+<li>유형<ul>
+<li><strong>외부 근거 불일치(Extrinsic)</strong>: 모델이 외부 지식을 잘못 인용하거나 존재하지 않는 사실을 창작함<ul>
+<li>예: 존재하지 않는 논문·통계·인용문을 만들어냄</li>
+</ul>
+</li>
+<li><strong>내부 논리 오류(Intrinsic)</strong>: 모델 내부 추론에서 모순 또는 비논리적 결론 발생<ul>
+<li>예: 전후 문맥에서 모순되는 주장 생성</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-왜-문제가-될까"><a href="#2-왜-문제가-될까" class="headerlink" title="2) 왜 문제가 될까?"></a>2) 왜 문제가 될까?</h2><ul>
+<li><strong>신뢰성 저하</strong>: 사용자는 모델 출력을 사실로 받아들이기 쉬워 잘못된 정보 확산 위험이 커짐. 특히 의료·법률·재무 등 민감 도메인에서는 피해가 심각함.</li>
+<li><strong>의사결정 위험</strong>: 자동화된 보고서·요약·추천에 잘못된 근거가 포함되면 잘못된 비즈니스&#x2F;정책 결정으로 이어질 수 있음.</li>
+<li><strong>법적·윤리적 문제</strong>: 허위 정보로 인한 명예훼손, 규제 위반, 책임 소재 불명확성 문제가 발생할 수 있음.</li>
+<li><strong>사용자 경험 악화</strong>: 반복적 오류는 서비스 신뢰도와 사용자 유지율을 저하시킴.</li>
+<li><strong>검증 비용 증가</strong>: 모든 출력을 사람이 검증해야 하는 부담이 커져 실무 적용 비용이 높아짐.</li>
+</ul>
+<h2 id="3-할루시네이션의-주요-원인"><a href="#3-할루시네이션의-주요-원인" class="headerlink" title="3) 할루시네이션의 주요 원인"></a>3) 할루시네이션의 주요 원인</h2><ul>
+<li><strong>데이터 한계와 편향</strong>: 학습 데이터의 오류, 부정확한 문서, 편향된 표현이 모델로 전이됨.</li>
+<li><strong>일반화 및 추론 성향</strong>: 모델이 훈련 분포 밖 입력에 대해 그럴듯한 추정(추측)을 생성하려는 경향을 가짐.</li>
+<li><strong>확률적 생성 특성</strong>: 온도 등 생성 파라미터에 따라 더 창의적이지만 부정확한 텍스트가 생성될 수 있음.</li>
+<li><strong>컨텍스트 불충분·모호성</strong>: 입력 프롬프트가 애매하거나 불완전하면 모델이 보충하는 과정에서 오류를 만들기 쉬움.</li>
+<li><strong>외부 지식 미연동</strong>: 최신 정보나 도메인 지식이 모델 파라미터에 없을 경우, 잘못된 확신을 섞어 답변함.</li>
+<li><strong>디코딩과정의 제약</strong>: 탐욕적&#x2F;빔 디코딩 과정이 특정 오류를 증폭시키거나, 제약적 디코딩으로 불완전한 근거를 만들어냄.</li>
+</ul>
+<h2 id="4-여러-LLM-서비스들이-시도하는-주요-해결책"><a href="#4-여러-LLM-서비스들이-시도하는-주요-해결책" class="headerlink" title="4) 여러 LLM 서비스들이 시도하는 주요 해결책"></a>4) 여러 LLM 서비스들이 시도하는 주요 해결책</h2><ol>
+<li>Retrieval-Augmented Generation (RAG)<ul>
+<li>외부 지식베이스(검색, 문서 DB)를 모델 입력에 결합해 근거 기반 응답을 생성한다. 결과에 출처(문서·문단)를 함께 제공해 검증 가능성을 높인다.</li>
+</ul>
+</li>
+<li>툴 기반 접근(믹스: 검색기, 계산기, 데이터베이스, 브라우저)<ul>
+<li>모델이 직접 검색·계산·API 호출을 통해 사실을 확인하고, 도출 결과를 바탕으로 응답한다. 툴 사용 로그를 근거로 제시해 신뢰성 향상한다.</li>
+</ul>
+</li>
+<li>출처 표기·인용(Citation)<ul>
+<li>생성 시 근거 문헌(링크, 문서 ID, 인용문)을 함께 제공하도록 유도해 사용자가 근거를 추적할 수 있게 한다.</li>
+</ul>
+</li>
+<li>사실성 검증·후검증(Post-hoc Verification)<ul>
+<li>생성된 문장에 대해 별도의 검증 모델이나 체커(FACT-checker)를 돌려 오류를 감지·수정하거나 신뢰도 점수를 부여한다.</li>
+</ul>
+</li>
+<li>보정·불확실성 추정(Calibration &amp; Uncertainty)<ul>
+<li>출력에 신뢰도(uncertainty)를 삽입하거나, 확률&#x2F;점수 기반으로 사용자가 검토해야 할 부분을 표시한다.</li>
+</ul>
+</li>
+<li>안전한 디코딩·제약(Constrained Decoding)<ul>
+<li>사전 정의된 사실 기반 지식, 금지 토픽, 또는 포맷 규칙을 적용해 비근거적 생성 가능성을 줄인다.</li>
+</ul>
+</li>
+<li>Instruction Tuning &#x2F; RLHF (사람의 피드백)<ul>
+<li>인간 평가자의 피드백을 통해 ‘정확하고 검증 가능한 응답’을 선호하도록 모델을 미세조정한다.</li>
+</ul>
+</li>
+<li>Retrieval + Reranking<ul>
+<li>검색된 후보 근거를 랭커(혹은 판별자)로 우선순위 정리해 신뢰도 높은 근거만 모델에 제공한다.</li>
+</ul>
+</li>
+<li>증강 학습 데이터(합성 반예시 포함)<ul>
+<li>모델이 틀리기 쉬운 패턴을 학습하도록 조작된 데이터(negative examples, counterfactuals)를 넣어 할루시네이션 저항성을 높인다.</li>
+</ul>
+</li>
+<li>사용자 인터페이스·워크플로 개선<br>-   “모르겠다”, “확인 필요” 같은 불확실성 답변을 기본으로 제공하거나, 출처 확인 버튼을 넣어 사람 검증 루프를 쉽게 만든다.</li>
+<li>전문 도메인 파인튜닝 + 체인오브증거(Chain-of-Thought + Retrieval)<br>-   도메인 전문 문헌으로 파인튜닝하고, 근거 연결 과정을 명시적으로 생성하도록 유도해 신뢰도를 높인다.</li>
+</ol>
+<br>
+<details>
+<summary>실습해설</summary>
+LLM이 생성한 텍스트에서 **할루시네이션(Hallucination)** 이란, **모델이 실제로 존재하지 않는 정보나 사실과 다른 내용을 그럴듯하게 생성하는 현상** 을 말합니다. 예를 들어, 존재하지 않는 논문 제목을 만들어 내거나, 실제로는 관련 없는 사실을 연결해 설명하는 경우가 할루시네이션에 해당합니다.
+
+<p>이 문제는 특히 <strong>신뢰성과 정확성이 중요한 분야</strong> 에서 큰 문제가 됩니다. 예를 들어, 의료, 법률, 금융 같은 도메인에서는 모델이 잘못된 정보를 사실처럼 말할 경우 <strong>치명적인 의사결정 오류</strong> 로 이어질 수 있습니다. 또한, 모델이 허구의 정보를 스스로 ‘믿는 듯한’ 문장으로 생성하기 때문에 사용자가 쉽게 속을 수 있다는 점도 위험 요소입니다.</p>
+<hr>
+<p><strong>LLM 서비스들이 할루시네이션 문제를 극복하기 위해 시도 중인 주요 접근 방식은 다음과 같습니다.</strong></p>
+<ol>
+<li><strong>Retrieval-Augmented Generation (RAG)</strong></li>
+</ol>
+<ul>
+<li>외부 지식 베이스나 문서를 검색한 뒤, 그 검색 결과를 기반으로 응답을 생성하는 방식입니다.</li>
+<li>이를 통해 모델은 내부의 불완전한 파라미터 지식에 의존하지 않고, <strong>실시간 정보 기반으로 답변</strong> 할 수 있게 됩니다.</li>
+</ul>
+<ol start="2">
+<li><strong>Fact-checking 모델 또는 후처리 필터</strong></li>
+</ol>
+<ul>
+<li>생성된 응답을 다시 검토하고, 신뢰도가 낮거나 사실과 불일치하는 문장을 제거하거나 수정하는 후처리 모델을 사용합니다.</li>
+</ul>
+<ol start="3">
+<li><strong>지식 기반 모델 정렬 (Alignment with Notes)</strong></li>
+</ol>
+<ul>
+<li>LLM을 위키피디아, 논문 DB, 전문 도메인 지식 등 신뢰성 있는 데이터와 정렬시키는 방식입니다.</li>
+<li>FLAN이나 InstructGPT 등도 사용자 의도에 맞는 <strong>사실 기반 응답을 유도</strong> 하기 위해 학습 과정에서 지침(prompt instruction) 기반 학습을 적용합니다.</li>
+</ul>
+<ol start="4">
+<li><strong>Human Feedback 기반 강화 학습 (RLHF)</strong></li>
+</ol>
+<ul>
+<li>사람이 응답의 품질과 사실 여부를 평가한 피드백을 기반으로 모델을 조정합니다.</li>
+<li>이 과정은 LLM이 인간의 기대와 기준에 더 잘 맞도록 <strong>응답을 정렬(alignment)</strong> 시키는 데 중요한 역할을 합니다.</li>
+</ul>
+<ol start="5">
+<li><strong>출처 명시 및 인용 기능 추가</strong></li>
+</ol>
+<ul>
+<li>최근 일부 LLM 서비스에서는 응답에 인용한 웹사이트나 문서 링크를 함께 제공하여, <strong>사용자가 직접 사실 여부를 검증</strong> 할 수 있도록 유도하고 있습니다.</li>
+</ul>
+</details>
+
+<hr>
+<h1 id="2-모델-크기를-키우는-것만으로는-성능이-일정-시점-이후-둔화되는-이유는-무엇일까요"><a href="#2-모델-크기를-키우는-것만으로는-성능이-일정-시점-이후-둔화되는-이유는-무엇일까요" class="headerlink" title="2. 모델 크기를 키우는 것만으로는 성능이 일정 시점 이후 둔화되는 이유는 무엇일까요?"></a>2. 모델 크기를 키우는 것만으로는 성능이 일정 시점 이후 둔화되는 이유는 무엇일까요?</h1><ul>
+<li><strong>데이터 한계(Data-limited regime)</strong><ul>
+<li>모델 파라미터가 증가해도 학습에 쓰이는 데이터 양과 다양성이 부족하면 과적합 또는 일반화 한계에 도달한다.</li>
+<li>대형 모델은 더 많은 패턴을 학습할 수 있지만, 데이터가 부족하면 유의미한 추가 정보를 얻기 어렵다.</li>
+</ul>
+</li>
+<li><strong>샘플 효율성(데이터 대비 파라미터 효율) 한계</strong><ul>
+<li>파라미터가 늘어날수록 동일한 데이터에서 각 파라미터가 학습하는 신호의 강도가 약해질 수 있어 효율성이 떨어진다.</li>
+<li>결과적으로 성능 개선의 한계효용(diminishing marginal returns)이 발생한다.</li>
+</ul>
+</li>
+<li><strong>최적화 난제(Optimization difficulty)</strong><ul>
+<li>매우 큰 모델은 학습 시 기울기 소실·폭주, 불안정한 학습 궤적, 배치 정규화&#x2F;LayerNorm 통계 적응 문제 등이 생겨 수렴이 느려지거나 최적점에 도달하지 못할 수 있다.</li>
+<li>학습률·배치사이즈·정규화·초기화 같은 하이퍼파라미터 민감도가 커진다.</li>
+</ul>
+</li>
+<li><strong>계산·메모리 제약과 하드웨어 병목</strong><ul>
+<li>큰 모델은 배치 사이즈를 줄이게 만들어 통계 추정이 불안정해지고, 분산 학습에서 통신 오버헤드가 성능 병목을 초래한다.</li>
+<li>결과적으로 실제로 활용 가능한 학습 스텝 수(또는 에포크 수)가 제한된다.</li>
+</ul>
+</li>
+<li><strong>목표(데이터·태스크)와 모델 스케일 불일치</strong><ul>
+<li>단순한 태스크나 이미 포화된 벤치마크에서는 모델 용량을 늘려도 표현력이 더 이상 기여하지 못한다.</li>
+<li>태스크 복잡도와 모델 용량이 맞지 않으면 확장 효과가 적다.</li>
+</ul>
+</li>
+<li><strong>평가·지표 포화</strong><ul>
+<li>벤치마크 상에서 이미 상향 여지가 적을 때(예: 인간 수준에 근접하거나 데이터 노이즈 수준에 도달) mAP&#x2F;Accuracy&#x2F;ROUGE 등 지표가 포화되어 더 큰 모델로도 개선이 미미하다.</li>
+</ul>
+</li>
+<li><strong>효율적 파라미터 사용의 한계</strong><ul>
+<li>단순히 파라미터 수를 늘리는 방식은 파라미터가 실제로 유용한 표현을 학습하는지와는 별개다. 구조적 비효율(예: 중복 표현, 최적화되지 않은 아키텍처)은 추가 파라미터를 낭비할 수 있다.</li>
+</ul>
+</li>
+<li><strong>분포 불일치&#x2F;도메인 갭</strong><ul>
+<li>모델이 학습한 데이터 분포와 실제 테스트 분포가 다르면, 더 큰 모델도 일반화 성능 향상으로 이어지지 않는다.</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+모델 크기를 키우면 초기에는 성능이 눈에 띄게 좋아지지만, 일정 규모를 넘어서면 성능 향상 속도가 점점 느려지고 결국에는 거의 개선되지 않는 구간에 도달하게 됩니다. 이 현상에는 몇 가지 이유가 있습니다.
+
+<p>첫째, 학습 데이터의 한계입니다. 모델이 아무리 크더라도 학습할 수 있는 데이터가 부족하거나 품질이 낮으면 그 성능은 금방 한계에 부딪힙니다. 특히 데이터에 중복이 많거나 편향된 정보가 많으면, 큰 모델일수록 오히려 그 편향을 더 강하게 반영할 수 있습니다.</p>
+<p>둘째, 모델이 학습한 정보 중에는 실제로 문제 해결에 도움이 되지 않는 정보도 포함되기 때문에, 모델이 커질수록 반드시 ‘좋은 정보만 더 많이’ 배우는 것은 아닙니다. 오히려 불필요한 패턴이나 잡음을 과도하게 학습할 가능성도 있습니다.</p>
+<p>셋째, 하드웨어 자원과 학습 비용의 문제도 있습니다. 모델이 커질수록 연산량과 메모리 사용량이 급격히 증가하므로, 학습 효율은 떨어지고 실제로 그만큼의 성능 향상을 얻기 어려워집니다. 즉, 비용 대비 성능 개선이 비효율적인 구간에 들어서는 거죠.</p>
+<p>결국 성능을 계속 높이기 위해서는 단순히 모델 크기를 키우는 것만으로는 부족하고, 더 나은 데이터, 정렬 기법(Model Alignment), 지식 보강, 또는 프롬프트 설계와 같은 다양한 기술이 함께 사용되어야 합니다.</p>
+</details>
+
+<hr>
+<h1 id="3-PEFT가-필요한-이유는-무엇이며-어떤-상황에서-특히-효과적인가요"><a href="#3-PEFT가-필요한-이유는-무엇이며-어떤-상황에서-특히-효과적인가요" class="headerlink" title="3. PEFT가 필요한 이유는 무엇이며, 어떤 상황에서 특히 효과적인가요?"></a>3. PEFT가 필요한 이유는 무엇이며, 어떤 상황에서 특히 효과적인가요?</h1><h2 id="1-PEFT-파라미터-효율적-파인튜닝-가-필요한-이유"><a href="#1-PEFT-파라미터-효율적-파인튜닝-가-필요한-이유" class="headerlink" title="1) PEFT(파라미터 효율적 파인튜닝)가 필요한 이유"></a>1) PEFT(파라미터 효율적 파인튜닝)가 필요한 이유</h2><ul>
+<li>전체 파라미터 업데이트 비용 절감<ul>
+<li>대형 사전학습 모델을 통째로 파인튜닝하면 GPU 메모리·연산 비용이 매우 커진다. PEFT는 일부 저용량 파라미터만 학습하도록 하여 메모리와 시간 비용을 크게 줄인다.</li>
+</ul>
+</li>
+<li>저장·배포 효율성 확보<ul>
+<li>모델별로 전체 가중치를 저장하는 대신, 작은 어댑터(LoRA 행렬, 어댑터 모듈, 프롬프트 벡터)만 저장하면 여러 도메인&#x2F;태스크별 모델 버전을 가볍게 유지할 수 있다.</li>
+</ul>
+</li>
+<li>데이터·샘플 효율성 향상<ul>
+<li>소량 데이터 환경에서도 과적합 없이 빠르게 도메인 적응이 가능하다. 전체 파라미터를 건드릴 때보다 적은 데이터로도 안정적 성능 개선이 가능하다.</li>
+</ul>
+</li>
+<li>빠른 실험과 반복<ul>
+<li>학습 시간이 짧아 하이퍼파라미터 탐색·A&#x2F;B 실험을 빠르게 진행할 수 있다. 생산성 관점에서 실험 주기가 단축된다.</li>
+</ul>
+</li>
+<li>안전성·회복성<ul>
+<li>기본 모델은 고정해두고 작은 모듈만 교체하므로, 잘못된 파인튜닝으로 인한 원모델 파괴 위험이 적다. 롤백과 관리가 용이하다.</li>
+</ul>
+</li>
+<li>자원 제약 환경에서 실무 적용 가능<ul>
+<li>엣지&#x2F;온프레미스&#x2F;제한된 클라우드 예산 환경에서도 대형 모델의 도메인 적용이 현실적으로 가능하다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-PEFT가-특히-효과적인-상황"><a href="#2-PEFT가-특히-효과적인-상황" class="headerlink" title="2) PEFT가 특히 효과적인 상황"></a>2) PEFT가 특히 효과적인 상황</h2><ul>
+<li>연산·메모리 제약이 있는 환경<ul>
+<li>GPU 메모리가 제한적이거나, 비용 절감이 필요할 때 PEFT가 유리하다. 배포 시 작은 업데이트 파일만 배포하면 되므로 운영 비용이 낮아진다.</li>
+</ul>
+</li>
+<li>데이터가 적은 도메인 적응(저자원 도메인)<ul>
+<li>전문 분야 텍스트(의료, 법률, 기업 내부 문서 등)나 소규모 코퍼스만 있는 경우, 전체 파인튜닝보다 PEFT가 과적합을 방지하면서 효과적이다.</li>
+</ul>
+</li>
+<li>다수 태스크&#x2F;다중 도메인 관리<ul>
+<li>하나의 베이스 모델을 두고 여러 태스크별 어댑터를 만들어 관리할 때 유리하다. 태스크별 작은 모듈만 교체해 다양한 요구를 빠르게 지원할 수 있다.</li>
+</ul>
+</li>
+<li>반복적·빈번한 파인튜닝 필요 시<ul>
+<li>개인화·사용자별 모델·A&#x2F;B 실험 등 자주 파인튜닝해야 하는 워크플로에서는 전체 업데이트보다 PEFT가 비용·시간 측면에서 효율적이다.</li>
+</ul>
+</li>
+<li>모델 배포·업데이트 빈도가 높을 때<ul>
+<li>엣지 디바이스나 빈번한 버전 배포가 요구되는 서비스에서 소규모 패치(어댑터)만 전송하면 되어 네트워크·스토리지 부담이 작아진다.</li>
+</ul>
+</li>
+<li>규제·프라이버시 민감 환경<ul>
+<li>원모델을 변경하지 않고 도메인 데이터로 작은 모듈만 학습하면, 민감 데이터의 로컬 학습 후 모듈만 공유하는 워크플로로 프라이버시·규제 요구를 맞출 수 있다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-대표-PEFT-기법과-특성"><a href="#3-대표-PEFT-기법과-특성" class="headerlink" title="3) 대표 PEFT 기법과 특성"></a>3) 대표 PEFT 기법과 특성</h2><ul>
+<li>LoRA (Low-Rank Adaptation)<ul>
+<li>핵심: 일부 가중치 행렬을 저랭크 행렬의 합으로 근사해 업데이트한다.</li>
+<li>장점: 메모리·저장 효율 우수, Transformer의 쿼리&#x2F;키&#x2F;값 등 핵심 모듈에 적용해 좋은 성능을 보임.</li>
+<li>권장 상황: 대형 트랜스포머 파인튜닝, 제한된 GPU에서 빠른 실험 필요 시.</li>
+</ul>
+</li>
+<li>Adapters (Houlsby-style 등)<ul>
+<li>핵심: 각 층에 작은 MLP 블록을 삽입해 그 블록만 학습한다.</li>
+<li>장점: 모듈화가 쉬워 태스크별 어댑터 조합·교체 유리.</li>
+<li>권장 상황: 다수 태스크를 관리하거나 모듈 재사용이 필요한 경우.</li>
+</ul>
+</li>
+<li>Prompt Tuning &#x2F; Prefix Tuning<ul>
+<li>핵심: 입력에 붙이는 소규모 벡터(또는 프롬프트 토큰)를 학습한다.</li>
+<li>장점: 매우 작은 파라미터 업데이트, 자연어 프롬프트보다 더 효율적.</li>
+<li>권장 상황: 생성 모델에서 간단히 행동을 조정할 때, 저장 공간 극단적 제한이 있을 때.</li>
+</ul>
+</li>
+<li>BitFit<ul>
+<li>핵심: 편향(bias) 파라미터만 학습한다.</li>
+<li>장점: 극히 적은 파라미터로도 일정 성능 향상 가능.</li>
+<li>권장 상황: 초경량 적응·빠른 실험용.</li>
+</ul>
+</li>
+<li>LoRA + QLoRA (양자화 병행)<ul>
+<li>핵심: 양자화(4&#x2F;8비트)로 모델 메모리 줄이고 LoRA로 파인튜닝해 대형 모델을 단일 GPU에서 다룸.</li>
+<li>장점: 아주 큰 모델도 저비용으로 도메인 적응 가능.</li>
+<li>권장 상황: 자원 제약이 심한 실무 환경에서 대형 LLM 활용 시.</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+PEFT가 필요한 이유는 대형 언어 모델을 실제 환경에 맞게 활용하려고 할 때, 기존의 전체 파인튜닝 방식이 **너무 비효율적이고 부담이 크기 때문입니다.**
+
+<p>기존 방식은 모델의 모든 파라미터를 다시 학습해야 하다 보니, 수많은 GPU 자원이 필요하고, 학습 시간도 오래 걸리며, 각각의 작업마다 전체 모델을 따로 저장해야 해서 저장 공간도 많이 차지합니다. 특히 사전학습 모델의 크기가 수십억에서 수천억 파라미터로 커진 요즘에는, 이 방식이 현실적으로 어렵습니다.</p>
+<p>이럴 때 PEFT는 전체 모델을 그대로 두고, <strong>일부 파라미터만 학습하거나 작은 모듈만 추가로 학습하는 방식</strong> 이기 때문에 훨씬 가볍고 빠릅니다. 전체 모델의 1%도 안 되는 파라미터만 수정하면 되니까, 자원이 적은 환경에서도 쉽게 사용할 수 있습니다.</p>
+<p>PEFT가 특히 효과적인 상황은 다음과 같습니다.</p>
+<p>첫째, 하나의 모델을 다양한 작업에 재활용해야 할 때입니다. 예를 들어 챗봇, 문서 분류, 질의응답 같은 여러 태스크를 동시에 다뤄야 하는 경우, 각각을 위해 전체 모델을 다시 학습하는 것보다, <strong>작은 파인튜닝 모듈만 따로 관리</strong> 하는 방식이 훨씬 효율적입니다.</p>
+<p>둘째, 빠르게 실험하고 반복해야 하는 환경에서도 유리합니다. 전체 모델을 학습하는 데 며칠씩 걸리는 대신, PEFT는 몇 시간 내에 끝날 수 있어 <strong>연구 속도와 반복 실험 속도를 크게 높일 수 있습니다.</strong></p>
+<p>셋째, 모델을 클라우드가 아닌 <strong>로컬, 모바일, 엣지 환경</strong> 에서 돌려야 할 때도 좋습니다. 작은 모듈만 추가하면 되기 때문에, 저장 용량도 적고 실행 속도도 빠르기 때문입니다.</p>
+<p>결국 PEFT는 자원을 절약하면서도 높은 성능을 유지하고, 다양한 환경에서 유연하게 모델을 활용할 수 있게 해주는 현실적인 해결책입니다.</p>
+</details>
+
+<hr>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/LLM/">LLM</a><a class="link-muted mr-2" rel="tag" href="/tags/%ED%95%A0%EB%A3%A8%EC%8B%9C%EB%84%A4%EC%9D%B4%EC%85%98/">할루시네이션</a><a class="link-muted mr-2" rel="tag" href="/tags/%EB%AA%A8%EB%8D%B8%EC%8A%A4%EC%BC%80%EC%9D%BC%EB%A7%81/">모델스케일링</a><a class="link-muted mr-2" rel="tag" href="/tags/PEFT/">PEFT</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/11/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-13/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 13</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/10/19/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-11/"><span class="level-item">위클리 페이퍼 11</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/10/24/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-12/';
+            this.page.identifier = '2025/10/24/위클리-페이퍼-12/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-LLM이-생성한-텍스트에서-할루시네이션-Hallucination-이란-무엇이고-왜-문제가-되나요-여러-LLM-서비스들은-할루시네이션-문제를-어떻게-극복하려고-시도-중일까요"><span class="level-left"><span class="level-item">1. LLM이 생성한 텍스트에서 할루시네이션(Hallucination)이란 무엇이고, 왜 문제가 되나요? 여러 LLM 서비스들은 할루시네이션 문제를 어떻게 극복하려고 시도 중일까요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-할루시네이션-Hallucination-이란"><span class="level-left"><span class="level-item">1) 할루시네이션(Hallucination)이란?</span></span></a></li><li><a class="level is-mobile" href="#2-왜-문제가-될까"><span class="level-left"><span class="level-item">2) 왜 문제가 될까?</span></span></a></li><li><a class="level is-mobile" href="#3-할루시네이션의-주요-원인"><span class="level-left"><span class="level-item">3) 할루시네이션의 주요 원인</span></span></a></li><li><a class="level is-mobile" href="#4-여러-LLM-서비스들이-시도하는-주요-해결책"><span class="level-left"><span class="level-item">4) 여러 LLM 서비스들이 시도하는 주요 해결책</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-모델-크기를-키우는-것만으로는-성능이-일정-시점-이후-둔화되는-이유는-무엇일까요"><span class="level-left"><span class="level-item">2. 모델 크기를 키우는 것만으로는 성능이 일정 시점 이후 둔화되는 이유는 무엇일까요?</span></span></a></li><li><a class="level is-mobile" href="#3-PEFT가-필요한-이유는-무엇이며-어떤-상황에서-특히-효과적인가요"><span class="level-left"><span class="level-item">3. PEFT가 필요한 이유는 무엇이며, 어떤 상황에서 특히 효과적인가요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-PEFT-파라미터-효율적-파인튜닝-가-필요한-이유"><span class="level-left"><span class="level-item">1) PEFT(파라미터 효율적 파인튜닝)가 필요한 이유</span></span></a></li><li><a class="level is-mobile" href="#2-PEFT가-특히-효과적인-상황"><span class="level-left"><span class="level-item">2) PEFT가 특히 효과적인 상황</span></span></a></li><li><a class="level is-mobile" href="#3-대표-PEFT-기법과-특성"><span class="level-left"><span class="level-item">3) 대표 PEFT 기법과 특성</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

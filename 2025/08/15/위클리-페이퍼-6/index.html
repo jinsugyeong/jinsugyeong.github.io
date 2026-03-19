@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 6 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. CNN을 구성하는 각 레이어의 역할에 대해 설명해보세요.1) 입력&amp;#x2F;전처리 레이어(Input, Normalize) 역할: 이미지 텐서의 스케일을 맞추고 분포를 안정화.예를 들어 [0, 255] 픽셀을 [0, 1] 또는 평균 0, 표준편차 1로 정규화해 학습을 빠르고 안정적으로 만든다. 포인트: 배치 차원과 채널 차원 순서(NCHW vs NHWC"><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 6"><meta property="og:url" content="https://jinsugyeong.github.io/2025/08/15/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. CNN을 구성하는 각 레이어의 역할에 대해 설명해보세요.1) 입력&amp;#x2F;전처리 레이어(Input, Normalize) 역할: 이미지 텐서의 스케일을 맞추고 분포를 안정화.예를 들어 [0, 255] 픽셀을 [0, 1] 또는 평균 0, 표준편차 1로 정규화해 학습을 빠르고 안정적으로 만든다. 포인트: 배치 차원과 채널 차원 순서(NCHW vs NHWC"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-08-14T15:00:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.476Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="CNN"><meta property="article:tag" content="Auto Encoder"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/08/15/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/"},"headline":"위클리 페이퍼 6","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-08-14T15:00:00.000Z","dateModified":"2026-03-19T14:10:15.476Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. CNN을 구성하는 각 레이어의 역할에 대해 설명해보세요.1) 입력&#x2F;전처리 레이어(Input, Normalize) 역할: 이미지 텐서의 스케일을 맞추고 분포를 안정화.예를 들어 [0, 255] 픽셀을 [0, 1] 또는 평균 0, 표준편차 1로 정규화해 학습을 빠르고 안정적으로 만든다. 포인트: 배치 차원과 채널 차원 순서(NCHW vs NHWC"}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/08/15/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 6</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-08-15 00:00 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-CNN을-구성하는-각-레이어의-역할에-대해-설명해보세요"><a href="#1-CNN을-구성하는-각-레이어의-역할에-대해-설명해보세요" class="headerlink" title="1. CNN을 구성하는 각 레이어의 역할에 대해 설명해보세요."></a>1. CNN을 구성하는 각 레이어의 역할에 대해 설명해보세요.</h1><h2 id="1-입력-전처리-레이어-Input-Normalize"><a href="#1-입력-전처리-레이어-Input-Normalize" class="headerlink" title="1) 입력&#x2F;전처리 레이어(Input, Normalize)"></a>1) 입력&#x2F;전처리 레이어(Input, Normalize)</h2><ul>
+<li>역할: 이미지 텐서의 스케일을 맞추고 분포를 안정화.<br>예를 들어 [0, 255] 픽셀을 [0, 1] 또는 평균 0, 표준편차 1로 정규화해 학습을 빠르고 안정적으로 만든다.</li>
+<li>포인트: 배치 차원과 채널 차원 순서(NCHW vs NHWC)를 모델&#x2F;프레임워크 요구에 맞춥니다. PyTorch는 일반적으로 NCHW를 사용.</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="2-합성곱-레이어-Convolution"><a href="#2-합성곱-레이어-Convolution" class="headerlink" title="2) 합성곱 레이어(Convolution)"></a>2) 합성곱 레이어(Convolution)</h2><ul>
+<li>역할: 지역(receptive field) 정보를 이용해 에지, 텍스처, 형태 같은 특징을 추출. 필터(커널)가 이미지 위를 슬라이딩하며 특징 맵을 만듦.</li>
+<li>하이퍼파라미터: 커널 크기(예: 3×3), 스트라이드, 패딩, 필터 수(출력 채널).</li>
+<li>효과: 필터 수가 늘면 더 많은 종류의 특징을 병렬로 학습. 스트라이드&#x2F;패딩은 출력 해상도에 직접 영향을 줌.</li>
+</ul>
+<h2 id="3-비선형-활성화-Activation-ReLU-GELU-등"><a href="#3-비선형-활성화-Activation-ReLU-GELU-등" class="headerlink" title="3) 비선형 활성화(Activation: ReLU, GELU 등)"></a>3) 비선형 활성화(Activation: ReLU, GELU 등)</h2><ul>
+<li>역할: 비선형성을 도입해 복잡한 함수 근사 능력을 부여. 단순 선형 조합의 한계를 넘어 다양한 패턴을 학습하게 함.</li>
+<li>실무 팁: ReLU는 빠르고 안정적, 최근에는 GELU&#x2F;SiLU가 성능 면에서 선호.</li>
+</ul>
+<h2 id="4-정규화-레이어-Normalization-BatchNorm-LayerNorm-등"><a href="#4-정규화-레이어-Normalization-BatchNorm-LayerNorm-등" class="headerlink" title="4) 정규화 레이어(Normalization: BatchNorm&#x2F;LayerNorm 등)"></a>4) 정규화 레이어(Normalization: BatchNorm&#x2F;LayerNorm 등)</h2><ul>
+<li>역할: 중간 특징의 분포를 정규화해 학습을 안정화하고 수렴을 빠르게 함.</li>
+<li>선택 기준: 합성곱 기반 백본에서는 BatchNorm이 흔하고, 배치 크기가 작거나 시퀀스형 구조에서는 GroupNorm&#x2F;LayerNorm을 쓰기도 한다.</li>
+</ul>
+<h2 id="5-풀링-레이어-Pooling-Max-Average-Pool"><a href="#5-풀링-레이어-Pooling-Max-Average-Pool" class="headerlink" title="5) 풀링 레이어(Pooling: Max&#x2F;Average Pool)"></a>5) 풀링 레이어(Pooling: Max&#x2F;Average Pool)</h2><ul>
+<li>역할: 공간 해상도를 줄이며(다운샘플링) 불변성(translation invariance)을 키우고 파라미터·연산량을 줄인다.</li>
+<li>MaxPool vs AvgPool: MaxPool은 가장 강한 활성만 전달해 경계&#x2F;패턴에 민감, AvgPool은 평균을 취해 더 부드러운 표현을 만듦</li>
+<li>설계 팁: 합성곱의 스트라이드로 다운샘플링을 대신하는 추세(예: stride 2 conv).</li>
+</ul>
+<h2 id="6-드롭아웃-규제-Regularization-Dropout-Weight-Decay-등"><a href="#6-드롭아웃-규제-Regularization-Dropout-Weight-Decay-등" class="headerlink" title="6) 드롭아웃&#x2F;규제(Regularization: Dropout, Weight Decay 등)"></a>6) 드롭아웃&#x2F;규제(Regularization: Dropout, Weight Decay 등)</h2><ul>
+<li>역할: 과적합을 줄임. 드롭아웃은 일부 활성화를 확률적으로 0으로 만들어 네트워크의 공변 특화(co-adaptation)를 방지</li>
+<li>비고: Conv 블록에서는 SpatialDropout2d나 DropBlock 같은 변형을 사용하기도 함</li>
+</ul>
+<h2 id="7-스킵-잔차-연결-Skip-Residual-Connection"><a href="#7-스킵-잔차-연결-Skip-Residual-Connection" class="headerlink" title="7) 스킵&#x2F;잔차 연결(Skip&#x2F;Residual Connection)"></a>7) 스킵&#x2F;잔차 연결(Skip&#x2F;Residual Connection)</h2><ul>
+<li>역할: 입력을 출력에 더해(또는 연결해) 그라디언트 흐름을 원활히 하여 깊은 네트워크 학습을 쉽게 함. ResNet, U-Net 등에서 핵심.</li>
+<li>효과: 정보 손실을 줄이고, 깊어질 때 생기는 기울기 소실 문제를 완화.</li>
+</ul>
+<h2 id="8-병목-집약-레이어-Global-Average-Pool-Flatten"><a href="#8-병목-집약-레이어-Global-Average-Pool-Flatten" class="headerlink" title="8) 병목&#x2F;집약 레이어(Global Average Pool, Flatten)"></a>8) 병목&#x2F;집약 레이어(Global Average Pool, Flatten)</h2><ul>
+<li>역할: 공간 차원을 벡터로 요약합니다. Global Average Pool은 각 채널을 하나의 값으로 집약해 파라미터 없이 특징을 요약하고, Flatten은 그대로 펼쳐 완전연결층에 전달합니다.</li>
+<li>추세: 파라미터 효율과 과적합 방지 측면에서 Global Average Pool이 자주 쓰입니다.</li>
+</ul>
+<h2 id="9-완전연결-레이어-FC-Classifier-Head"><a href="#9-완전연결-레이어-FC-Classifier-Head" class="headerlink" title="9) 완전연결 레이어(FC, Classifier Head)"></a>9) 완전연결 레이어(FC, Classifier Head)</h2><ul>
+<li>역할: 추출된 특징을 최종 태스크(분류, 회귀 등)로 매핑. 분류의 경우 마지막에 소프트맥스로 클래스 확률을 출력.</li>
+<li>팁: 채널 축은 특징의 “종류”, 공간 축은 “위치”로 이해하면 집약 후 FC가 왜 필요한지 직관적</li>
+</ul>
+<h2 id="10-출력-손실-함수-Output-Loss"><a href="#10-출력-손실-함수-Output-Loss" class="headerlink" title="10) 출력&#x2F;손실 함수(Output, Loss)"></a>10) 출력&#x2F;손실 함수(Output, Loss)</h2><ul>
+<li>역할: 태스크에 맞는 로짓&#x2F;확률을 내고, 손실 함수로 정답과의 차이를 정량화 함</li>
+<li>예시: 다중분류는 CrossEntropy, 이진분류는 BCEWithLogits, 회귀는 MSE&#x2F;L1 등을 사용.</li>
+</ul>
+<h2 id="11-보조-레이어-연산-주의할-요소"><a href="#11-보조-레이어-연산-주의할-요소" class="headerlink" title="11) 보조 레이어&#x2F;연산(주의할 요소)"></a>11) 보조 레이어&#x2F;연산(주의할 요소)</h2><ul>
+<li>패딩: 출력 크기를 제어하고 경계 정보 손실을 줄여준다. same 패딩은 입력과 동일 해상도를 유지, valid는 줄어듦.</li>
+<li>스트라이드&#x2F;커널&#x2F;패딩 상호작용: 해상도 계산과 파라미터·연산량이 크게 달라짐. 입력 크기와 커널&#x2F;스트라이드&#x2F;패딩을 명확히 설계하면 디버깅이 쉬움.</li>
+<li>혼합정밀&#x2F;정규화 순서: Conv → Norm → Activation 순서가 널리 쓰이며, 프로젝트에 따라 Activation → Norm을 쓰는 변형도 있음</li>
+</ul>
+<p><strong>전체 흐름 요약</strong></p>
+<ul>
+<li>초반 블록: 합성곱+활성화(+정규화)로 저수준 특징 추출 → 다운샘플링으로 해상도 감소, 채널 확장</li>
+<li>중간&#x2F;후반 블록: 더 추상적인 특징을 깊게 학습, 스킵&#x2F;잔차 연결로 정보 흐름 보존</li>
+<li>헤드: Global Pool&#x2F;Flatten → FC → 소프트맥스(또는 태스크별 출력)로 최종 예측</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+CNN은 크게 **Convolution Layer, Pooling Layer, 그리고 Fully Connected Layer** 로 구성됩니다.
+
+<p>먼저, Convolution Layer는 입력 데이터에서 특징(feature)을 추출하는 역할을 합니다. 필터 또는 커널이라는 작은 행렬을 사용해 이미지를 스캔하면서, 엣지나 텍스처 같은 특징을 학습합니다. 이 레이어는 이미지의 공간적 구조를 보존하면서 특징을 추출할 수 있는 것이 큰 장점입니다.</p>
+<p>그다음 Pooling Layer는 데이터의 크기를 줄여 계산량을 감소시키고, 모델의 일반화 능력을 높이는 역할을 합니다. Max Pooling은 가장 중요한 값을 선택해 중요한 정보를 보존하고, Average Pooling은 값들의 평균을 취해 데이터를 축소합니다. 이를 통해 과적합을 방지하는 효과도 있습니다.</p>
+<p>마지막으로 Fully Connected Layer는 Convolution Layer와 Pooling Layer를 통해 학습된 특징들을 종합적으로 분석해 최종적으로 분류(classification)나 예측 작업을 수행합니다. 이 레이어는 전체 뉴런이 연결되어 있어 종합적인 결정을 내리는 데 적합합니다.</p>
+<p>추가적으로, 활성화 함수나 정규화 레이어도 CNN의 중요한 구성 요소로, 비선형성을 추가하거나 학습을 안정화하는 데 기여합니다.</p>
+</details>
+
+<hr>
+<h1 id="2-오토-인코더가-적용되기-적합한-상황에-대해-설명하고-오토-인코더를-구성하는-인코더-Encoder-와-디코더-Decoder-각각의-개념과-차이점에-대해-설명하세요"><a href="#2-오토-인코더가-적용되기-적합한-상황에-대해-설명하고-오토-인코더를-구성하는-인코더-Encoder-와-디코더-Decoder-각각의-개념과-차이점에-대해-설명하세요" class="headerlink" title="2. 오토 인코더가 적용되기 적합한 상황에 대해 설명하고, 오토 인코더를 구성하는 인코더(Encoder)와 디코더(Decoder) 각각의 개념과 차이점에 대해 설명하세요."></a>2. 오토 인코더가 적용되기 적합한 상황에 대해 설명하고, 오토 인코더를 구성하는 인코더(Encoder)와 디코더(Decoder) 각각의 개념과 차이점에 대해 설명하세요.</h1><h2 id="오토인코더가-적합한-상황"><a href="#오토인코더가-적합한-상황" class="headerlink" title="오토인코더가 적합한 상황"></a>오토인코더가 적합한 상황</h2><p> 오토인코더는 **“레이블이 없거나 부족한 상황에서 데이터의 본질적 구조를 학습해 압축·복원”**하는 데 강하다.</p>
+<ul>
+<li>노이즈 제거&#x2F;복원: 얼룩, 찢김, 블러 등 손상된 이미지를 원본에 가깝게 복원할 때 유용. 문서 복원 미션처럼 손상 패턴이 다양할 때, 노이즈 제거 오토인코더(Denoising AE)가 특히 효과적</li>
+<li>차원 축소&#x2F;특징 추출: PCA보다 비선형 구조를 더 잘 포착해, 시각화나 다운스트림 모델 입력용 임베딩으로 사용하기 좋다.</li>
+<li>이상치 탐지: 정상 패턴을 잘 복원하도록 학습되면, 이상 데이터는 복원 오차가 커지므로 탐지에 활용할 수 있다.(제조 불량, 네트워크 이상 등).</li>
+<li>데이터 압축: 손실 압축 형태로 잠재공간에 효율적으로 정보를 담아 전송·저장 비용을 낮출 수 있다.</li>
+<li>사전학습&#x2F;표현학습: 라벨이 적은 태스크에서, 오토인코더로 학습한 인코더를 다운스트림 과제에 전이해 성능을 끌어올릴 수 있다.</li>
+</ul>
+<p>실무 체크포인트</p>
+<ul>
+<li>복원 대상의 “정상 패턴”이 충분히 대표되도록 학습 데이터가 다양해야 함</li>
+<li>손상 종류가 특정하다면, 데이터 증강으로 손상 패턴을 학습에 주입하면 복원력이 좋아짐</li>
+<li>평가지표는 PSNR&#x2F;SSIM(이미지), MSE&#x2F;MAE(수치), 문자 인식 정확도 같은 태스크 지표를 함께 보면 좋음</li>
+</ul>
+<h2 id="인코더-Encoder-와-디코더-Decoder-개념과-차이"><a href="#인코더-Encoder-와-디코더-Decoder-개념과-차이" class="headerlink" title="인코더(Encoder)와 디코더(Decoder): 개념과 차이"></a>인코더(Encoder)와 디코더(Decoder): 개념과 차이</h2><ul>
+<li><p>인코더(Encoder)</p>
+<ul>
+<li>개념: 입력 데이터를 점점 “축약”해 핵심 정보만 남기는 모듈입니다. 합성곱&#x2F;풀링(또는 스트라이드 컨볼루션) 등으로 해상도를 줄이고 채널 표현을 풍부하게 만들어, 잠재공간(latent space) 벡터나 맵으로 압축.</li>
+<li>역할 초점: 정보 추출과 압축. 잡음·불필요한 세부를 걸러내고, 데이터의 구조적 특징을 응축</li>
+<li>설계 특징: 다운샘플링 반복(예: Conv → Norm → Activation → Down), 마지막에 잠재표현 z를 출력.</li>
+</ul>
+</li>
+<li><p>디코더(Decoder)</p>
+<ul>
+<li>개념: 잠재표현을 다시 “복원”해 원래 공간으로 재구성하는 모듈. 업샘플링(또는 전치 합성곱)으로 해상도를 높이며, 누락된 세부를 단계적으로 복원</li>
+<li>역할 초점: 정보 복원과 세부 재구성. 인코더가 보존한 핵심 정보를 바탕으로 자연스러운 출력을 만듦</li>
+<li>설계 특징: 업샘플링 반복(예: Upsample&#x2F;ConvTranspose → Norm → Activation), 마지막에 원본과 동일한 크기&#x2F;채널로 출력.</li>
+</ul>
+</li>
+</ul>
+<p>핵심 차이 한줄 요약</p>
+<ul>
+<li>인코더는 “압축(정보 요약)”, 디코더는 “복원(세부 재생성)”.</li>
+<li>인코더는 정보 손실을 최소화하며 요약하고, 디코더는 그 정보를 최대한 자연스럽게 펼칩니다.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+AutoEncoder는 데이터를 압축하고 복원하는 과정에서 중요한 특징을 학습하는 데 적합하며, 다음과 같은 상황에서 활용됩니다.
+
+<p>먼저, 차원 축소 작업에 적합합니다. 고차원 데이터를 저차원으로 효율적으로 표현하여 분석하거나 시각화할 때 사용할 수 있습니다. 또한, 데이터에 포함된 잡음(노이즈)을 제거하고 원본 데이터를 복원하는 데 유용한 Denoising 작업에도 사용됩니다. 이상치 탐지에서도 AutoEncoder가 유용한데, 정상 데이터를 학습한 모델은 이상 데이터를 복원하기 어려워 이 차이를 기반으로 이상치를 탐지할 수 있습니다. 마지막으로, 생성 모델링에도 사용되며, 잠재 공간(latent space)을 활용해 새로운 데이터를 생성할 수 있습니다.</p>
+<p>AutoEncoder는 크게 인코더(Encoder)와 디코더(Decoder)로 구성됩니다. 인코더는 입력 데이터를 압축하여 잠재 공간에 표현하는 역할을 합니다. 이 과정에서 입력 데이터의 중요한 특징만 추출하고, 불필요한 정보를 제거합니다. 예를 들어, 고차원 데이터에서 주요 패턴만 학습하는 역할을 합니다.</p>
+<p>반대로 디코더는 잠재 공간에서 압축된 표현을 다시 원래 데이터로 복원하는 역할을 합니다. 디코더는 인코더가 학습한 특징을 기반으로 데이터의 세부 정보를 복원하며, 입력 데이터와 유사한 출력을 생성하는 데 초점이 맞춰져 있습니다.</p>
+<p>인코더와 디코더의 차이점은 작업의 방향성입니다. 인코더는 데이터를 축소하고 특징을 학습하며, 디코더는 축소된 데이터를 기반으로 복원하는 작업을 수행합니다. 이 두 과정은 서로 연결되어 입력 데이터와 복원된 데이터 간의 차이를 최소화하는 것을 목표로 합니다.</p>
+</details></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/CNN/">CNN</a><a class="link-muted mr-2" rel="tag" href="/tags/Auto-Encoder/">Auto Encoder</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 7</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/"><span class="level-item">위클리 페이퍼 5</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/08/15/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/';
+            this.page.identifier = '2025/08/15/위클리-페이퍼-6/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-CNN을-구성하는-각-레이어의-역할에-대해-설명해보세요"><span class="level-left"><span class="level-item">1. CNN을 구성하는 각 레이어의 역할에 대해 설명해보세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-입력-전처리-레이어-Input-Normalize"><span class="level-left"><span class="level-item">1) 입력/전처리 레이어(Input, Normalize)</span></span></a></li><li><a class="level is-mobile" href="#2-합성곱-레이어-Convolution"><span class="level-left"><span class="level-item">2) 합성곱 레이어(Convolution)</span></span></a></li><li><a class="level is-mobile" href="#3-비선형-활성화-Activation-ReLU-GELU-등"><span class="level-left"><span class="level-item">3) 비선형 활성화(Activation: ReLU, GELU 등)</span></span></a></li><li><a class="level is-mobile" href="#4-정규화-레이어-Normalization-BatchNorm-LayerNorm-등"><span class="level-left"><span class="level-item">4) 정규화 레이어(Normalization: BatchNorm/LayerNorm 등)</span></span></a></li><li><a class="level is-mobile" href="#5-풀링-레이어-Pooling-Max-Average-Pool"><span class="level-left"><span class="level-item">5) 풀링 레이어(Pooling: Max/Average Pool)</span></span></a></li><li><a class="level is-mobile" href="#6-드롭아웃-규제-Regularization-Dropout-Weight-Decay-등"><span class="level-left"><span class="level-item">6) 드롭아웃/규제(Regularization: Dropout, Weight Decay 등)</span></span></a></li><li><a class="level is-mobile" href="#7-스킵-잔차-연결-Skip-Residual-Connection"><span class="level-left"><span class="level-item">7) 스킵/잔차 연결(Skip/Residual Connection)</span></span></a></li><li><a class="level is-mobile" href="#8-병목-집약-레이어-Global-Average-Pool-Flatten"><span class="level-left"><span class="level-item">8) 병목/집약 레이어(Global Average Pool, Flatten)</span></span></a></li><li><a class="level is-mobile" href="#9-완전연결-레이어-FC-Classifier-Head"><span class="level-left"><span class="level-item">9) 완전연결 레이어(FC, Classifier Head)</span></span></a></li><li><a class="level is-mobile" href="#10-출력-손실-함수-Output-Loss"><span class="level-left"><span class="level-item">10) 출력/손실 함수(Output, Loss)</span></span></a></li><li><a class="level is-mobile" href="#11-보조-레이어-연산-주의할-요소"><span class="level-left"><span class="level-item">11) 보조 레이어/연산(주의할 요소)</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-오토-인코더가-적용되기-적합한-상황에-대해-설명하고-오토-인코더를-구성하는-인코더-Encoder-와-디코더-Decoder-각각의-개념과-차이점에-대해-설명하세요"><span class="level-left"><span class="level-item">2. 오토 인코더가 적용되기 적합한 상황에 대해 설명하고, 오토 인코더를 구성하는 인코더(Encoder)와 디코더(Decoder) 각각의 개념과 차이점에 대해 설명하세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#오토인코더가-적합한-상황"><span class="level-left"><span class="level-item">오토인코더가 적합한 상황</span></span></a></li><li><a class="level is-mobile" href="#인코더-Encoder-와-디코더-Decoder-개념과-차이"><span class="level-left"><span class="level-item">인코더(Encoder)와 디코더(Decoder): 개념과 차이</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

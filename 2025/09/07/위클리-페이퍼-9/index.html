@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 9 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. Semantic Segmentation이란 무엇이며, 이미지 분류(Classification)와 어떤 차이가 있나요?Semantic Segmentation이란?이미지의 모든 픽셀에 대해 어떤 클래스인지 예측해, 입력과 동일한 해상도의 픽셀별 레이블 맵을 생성하는 테스크를 의미한다.“어디에 무엇이 있는지”를 구분한다."><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 9"><meta property="og:url" content="https://jinsugyeong.github.io/2025/09/07/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. Semantic Segmentation이란 무엇이며, 이미지 분류(Classification)와 어떤 차이가 있나요?Semantic Segmentation이란?이미지의 모든 픽셀에 대해 어떤 클래스인지 예측해, 입력과 동일한 해상도의 픽셀별 레이블 맵을 생성하는 테스크를 의미한다.“어디에 무엇이 있는지”를 구분한다."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-09-06T15:00:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.481Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="FCN"><meta property="article:tag" content="GAN"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/09/07/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/"},"headline":"위클리 페이퍼 9","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-09-06T15:00:00.000Z","dateModified":"2026-03-19T14:10:15.481Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. Semantic Segmentation이란 무엇이며, 이미지 분류(Classification)와 어떤 차이가 있나요?Semantic Segmentation이란?이미지의 모든 픽셀에 대해 어떤 클래스인지 예측해, 입력과 동일한 해상도의 픽셀별 레이블 맵을 생성하는 테스크를 의미한다.“어디에 무엇이 있는지”를 구분한다."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/09/07/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 9</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-09-07 00:00 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-Semantic-Segmentation이란-무엇이며-이미지-분류-Classification-와-어떤-차이가-있나요"><a href="#1-Semantic-Segmentation이란-무엇이며-이미지-분류-Classification-와-어떤-차이가-있나요" class="headerlink" title="1. Semantic Segmentation이란 무엇이며, 이미지 분류(Classification)와 어떤 차이가 있나요?"></a>1. Semantic Segmentation이란 무엇이며, 이미지 분류(Classification)와 어떤 차이가 있나요?</h1><h2 id="Semantic-Segmentation이란"><a href="#Semantic-Segmentation이란" class="headerlink" title="Semantic Segmentation이란?"></a>Semantic Segmentation이란?</h2><p>이미지의 모든 픽셀에 대해 어떤 클래스인지 예측해, 입력과 동일한 해상도의 픽셀별 레이블 맵을 생성하는 테스크를 의미한다.<br>“어디에 무엇이 있는지”를 구분한다.  </p>
+<span id="more"></span>
+
+<h2 id="이미지-분류와의-차이점"><a href="#이미지-분류와의-차이점" class="headerlink" title="이미지 분류와의 차이점"></a>이미지 분류와의 차이점</h2><p>분류는 이미지 전체에 하나의 레이블을 예측해 “무엇이 있는지” 판단하는데, 세그멘테이션은 픽셀 단위로 레이블을 예측한다. 따라서 출력이 분류는 단일 레이블(또는 확률 벡터)로 나오는 반면, 세그멘테이션은 입력과 같은 크기의 다채널 마스크(픽세별 클래스)로 나온다.</p>
+<br>
+<details>
+<summary>실습해설</summary>
+Semantic Segmentation이란 이미지 내 각 픽셀에 대해 특정 클래스를 할당하는 작업을 의미합니다. 즉, 이미지 속의 모든 픽셀이 어떤 객체나 배경에 속하는지를 분류하는 것입니다.
+
+<p>Semantic Segmentation과 이미지 분류(Classification)의 가장 큰 차이점은 <strong>출력 형태</strong> 입니다. 이미지 분류는 입력 이미지 전체에 대해 단 하나의 클래스를 예측하는 반면, Semantic Segmentation은 <strong>픽셀 단위</strong> 로 분류를 수행합니다. 예를 들어, 개와 고양이가 함께 있는 사진을 이미지 분류 모델에 입력하면 “개” 또는 “고양이” 중 하나로 분류될 수 있습니다. 하지만 Semantic Segmentation 모델은 이미지의 모든 픽셀을 분석하여 개의 영역과 고양이의 영역을 각각 분리하여 표시할 수 있습니다.</p>
+<p>Semantic Segmentation은 <strong>자율주행(차선 및 보행자 감지), 의료 영상 분석(암 조직 탐지), 위성 영상 처리(토지 유형 분류)</strong> 등 다양한 분야에서 활용됩니다. 픽셀 단위로 정확한 영역을 식별할 수 있어, 물체의 경계를 정확히 구별해야 하는 작업에서 특히 중요한 역할을 합니다.</p>
+</details>
+
+<hr>
+<h1 id="2-Fully-Convolutional-Networks-FCN-의-주요-특징과-기존-CNN-기반-분류-모델과의-차이점은-무엇인가요"><a href="#2-Fully-Convolutional-Networks-FCN-의-주요-특징과-기존-CNN-기반-분류-모델과의-차이점은-무엇인가요" class="headerlink" title="2. Fully Convolutional Networks(FCN)의 주요 특징과 기존 CNN 기반 분류 모델과의 차이점은 무엇인가요?"></a>2. Fully Convolutional Networks(FCN)의 주요 특징과 기존 CNN 기반 분류 모델과의 차이점은 무엇인가요?</h1><h2 id="FCN-Fully-Convolutional-Networks-의-주요-특징"><a href="#FCN-Fully-Convolutional-Networks-의-주요-특징" class="headerlink" title="FCN(Fully Convolutional Networks)의 주요 특징"></a>FCN(Fully Convolutional Networks)의 주요 특징</h2><ul>
+<li>전층 합성곱화<ul>
+<li>완전연결(FC) 레이어를 제거하고, 모두 합성곱&#x2F;업샘플링(Deconv&#x2F;Interpolation)으로 구성한다.</li>
+<li>임의 크기 입력을 처리하고, 공간적 출력을 직접 생성한다.</li>
+</ul>
+</li>
+<li>픽셀 단위 예측<ul>
+<li>분류 점수 대신 클래스별 점수 맵을 출력한다.</li>
+<li>업샘플링을 통해 입력 해상도와 맞춘 픽셀별 라벨 지도를 예측한다.</li>
+</ul>
+</li>
+<li>스킵 연결로 세부 복원<ul>
+<li>깊은 층의 추상적 특징과 얕은 층의 세밀한 특징을 결합해 경계·세부를 보완한다(예: FCN-32s&#x2F;16s&#x2F;8s).</li>
+</ul>
+</li>
+<li>엔드투엔드 학습<ul>
+<li>이미지→픽셀 라벨 맵까지 하나의 네트워크로 학습한다.</li>
+<li>크로스엔트로피(픽셀 단위) 등 손실로 직접 최적화한다.</li>
+</ul>
+</li>
+<li>유연한 입력 크기와 효율<ul>
+<li>FC가 없어 파라미터가 줄고, 슬라이딩 윈도우 없이 전체 이미지 단일 패스로 처리된다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="기존-CNN-기반-분류-모델과의-차이점"><a href="#기존-CNN-기반-분류-모델과의-차이점" class="headerlink" title="기존 CNN 기반 분류 모델과의 차이점"></a>기존 CNN 기반 분류 모델과의 차이점</h2><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>FCN</strong></th>
+<th><strong>기존 CNN 기반 분류 모델</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>출력 형태</strong></td>
+<td>입력과 동일(또는 복원된) 해상도의   픽셀별 클래스 맵을 출력한다(공간적 지도)</td>
+<td>이미지 전체에 하나(또는 다중)의   라벨 확률을 출력한다(전역 요약)</td>
+</tr>
+<tr>
+<td><strong>아키텍처 구성</strong></td>
+<td>FC를 합성곱으로 대체하고, 업샘플링&#x2F;스킵 연결로   공간 해상도를 복원한다</td>
+<td>백본 특징 추출 후 Global Pool&#x2F;FC로   전역 벡터→클래스 확률을 산출한다</td>
+</tr>
+<tr>
+<td><strong>입력 크기 제약</strong></td>
+<td>전층 합성곱이므로 다양한 크기 입력을 자연스럽게   처리한다(출력도 그에 맞게 스케일된다)</td>
+<td>보통 고정 크기로 리사이즈해서 넣는다</td>
+</tr>
+<tr>
+<td><strong>학습 라벨과 손실</strong></td>
+<td>픽셀 레벨 마스크, 픽셀 단위 손실   (크로스엔트로피&#x2F;Dice 등)을 사용한다</td>
+<td>이미지 레벨 레이블, 이미지 단위 손실을 사용한다</td>
+</tr>
+<tr>
+<td><strong>용도</strong></td>
+<td>“어디에 무엇이 있는가”를 픽셀 단위로   분할한다(세그멘테이션)</td>
+<td>“무엇이 있는가”를 전역적으로 판단한다</td>
+</tr>
+</tbody></table>
+<br>
+<details>
+<summary>실습해설</summary>
+Fully Convolutional Networks(FCN)는 기존의 CNN을 확장하여 **픽셀 단위의 예측을 수행** 하는 신경망 모델입니다. 일반적인 CNN 기반 분류 모델은 입력 이미지에서 특징을 추출한 후, 완전 연결층(Fully Connected Layer)을 거쳐 최종적으로 하나의 클래스를 출력합니다. 그러나 FCN은 **완전 연결층을 제거하고, 대신 컨볼루션 연산만을 사용하여 전체 이미지의 공간적 정보를 유지하면서 픽셀 단위로 클래스를 예측할 수 있도록 설계되었습니다.**
+
+<p>FCN의 가장 큰 특징은 <strong>업샘플링(Upsampling) 또는 디컨볼루션(Deconvolution) 연산을 사용하여 입력 이미지와 동일한 크기의 출력을 생성할 수 있다는 점</strong> 입니다. 이를 통해, 이미지 내 각 픽셀에 대해 클래스 라벨을 할당하는 <strong>Semantic Segmentation 작업</strong> 이 가능해집니다.</p>
+<p>기존의 CNN 기반 분류 모델과 비교했을 때, FCN의 주요 차이점은 다음과 같습니다.</p>
+<p>첫째, <strong>출력 형태의 차이</strong> 입니다. 일반적인 CNN 모델은 전체 이미지에 대한 하나의 클래스 예측값을 반환하는 반면, FCN은 입력 이미지와 동일한 크기의 <strong>픽셀 단위</strong> 예측 결과를 출력합니다.</p>
+<p>둘째, <strong>완전 연결층(Fully Connected Layer)의 제거</strong> 입니다. FCN은 전통적인 CNN에서 마지막에 사용되는 완전 연결층을 제거하고, 모든 레이어를 컨볼루션 연산으로 대체하여 입력 이미지의 공간적 정보를 유지합니다.</p>
+<p>셋째, <strong>업샘플링을 활용한 복원 과정</strong> 입니다. CNN의 다운샘플링(Stride, Pooling) 과정에서 손실된 해상도를 복구하기 위해 FCN은 업샘플링 기법을 활용하여 원본 크기의 예측 맵을 생성합니다. 이를 통해 모델이 <strong>픽셀 단위로 세밀한 예측을 수행할 수 있도록 합니다.</strong></p>
+</details>
+
+<hr>
+<h1 id="3-GAN에서-생성자-Generator-와-판별자-Discriminator-의-역할은-각각-무엇인가요"><a href="#3-GAN에서-생성자-Generator-와-판별자-Discriminator-의-역할은-각각-무엇인가요" class="headerlink" title="3. GAN에서 생성자(Generator)와 판별자(Discriminator)의 역할은 각각 무엇인가요?"></a>3. GAN에서 생성자(Generator)와 판별자(Discriminator)의 역할은 각각 무엇인가요?</h1><h2 id="생성자-Generator-의-역할"><a href="#생성자-Generator-의-역할" class="headerlink" title="생성자(Generator)의 역할"></a>생성자(Generator)의 역할</h2><ul>
+<li>무작위 노이즈(잠재 벡터) 또는 조건 정보(레이블, 텍스트 등)를 입력으로 받아, 실제 데이터와 구분하기 어려운 샘플을 “생성”하는 모델을 의미한다.</li>
+<li>목표: 판별자를 속일 만큼 그럴듯한 데이터를 만들어 판별자의 구분 능력을 낮추는 방향으로 학습된다.</li>
+<li>학습 신호: 판별자의 피드백(진짜&#x2F;가짜 판정 손실)으로부터 역전파 받아 파라미터가 업데이트된다.</li>
+</ul>
+<h2 id="판별자-Discriminator-의-역할"><a href="#판별자-Discriminator-의-역할" class="headerlink" title="판별자(Discriminator)의 역할"></a>판별자(Discriminator)의 역할</h2><ul>
+<li>입력된 샘플이 “진짜 데이터 분포에서 온 것인지” 혹은 “생성자가 만든 가짜인지”를 구분·판단하는 모델을 의미한다.</li>
+<li>목표: 진짜는 높게, 가짜는 낮게 점수 주어 생성자를 분별하는 능력을 극대화한다.</li>
+<li>학습 신호: 진짜&#x2F;가짜 라벨을 기준으로 분류 손실을 최소화하도록 업데이트된다.</li>
+</ul>
+<p><strong>두 모델의 상호작용(적대적 학습)</strong></p>
+<ul>
+<li>판별자는 진짜와 가짜를 더 잘 구분하도록 학습되고, 생성자는 판별자를 속이도록 더 정교한 샘플을 만들도록 학습된다.</li>
+<li>이 “적대적 게임”이 균형을 이루면, 생성자는 데이터 분포를 잘 근사하는 고품질 샘플을 만들어 낼 수 있게 된다.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+GAN(Generative Adversarial Networks)은 두 개의 신경망인 생성자(Generator)와 판별자(Discriminator)가 서로 경쟁하면서 데이터를 생성하는 모델입니다.
+
+<p>생성자(Generator)는 새로운 데이터를 만들어내는 역할을 합니다. 랜덤한 노이즈를 입력으로 받아, 실제 데이터와 구별할 수 없을 정도로 유사한 데이터를 생성하는 것이 목표입니다. 생성자는 학습을 거듭하면서 점점 더 현실적인 데이터를 만들어내도록 발전합니다.</p>
+<p>반면, 판별자(Discriminator)는 입력된 데이터가 실제 데이터인지, 생성자가 만든 가짜 데이터인지 구별하는 역할을 합니다. 처음에는 가짜 데이터를 쉽게 구별할 수 있지만, 생성자가 점점 더 정교한 데이터를 만들면서 판별자의 판단이 어려워지게 됩니다.</p>
+<p>이 두 네트워크는 적대적 학습(adversarial learning)을 통해 서로 경쟁하며 성능을 향상시킵니다. 생성자는 판별자를 속이기 위해 점점 더 현실적인 데이터를 만들어내려 하고, 판별자는 생성자가 만든 데이터를 더 정확하게 구별하려고 학습합니다. 결국, 이 과정이 반복되면서 생성자는 점점 더 실제 데이터와 구별하기 어려운 고품질의 데이터를 생성할 수 있게 됩니다.</p>
+</details>
+
+<hr>
+<h1 id="4-Diffusion-모델이-이미지-생성에서-어떻게-활용되며-어떤-장점이-있나요"><a href="#4-Diffusion-모델이-이미지-생성에서-어떻게-활용되며-어떤-장점이-있나요" class="headerlink" title="4. Diffusion 모델이 이미지 생성에서 어떻게 활용되며, 어떤 장점이 있나요?"></a>4. Diffusion 모델이 이미지 생성에서 어떻게 활용되며, 어떤 장점이 있나요?</h1><h2 id="이미지-생성에서-Diffusion-모델의-활용-방법"><a href="#이미지-생성에서-Diffusion-모델의-활용-방법" class="headerlink" title="이미지 생성에서 Diffusion 모델의 활용 방법"></a>이미지 생성에서 Diffusion 모델의 활용 방법</h2><ul>
+<li>역과정 학습한다<ul>
+<li>학습 시: 실제 이미지를 점점 더 강한 가우시안 노이즈로 훼손하는 순과정(Forward) 분포를 정의한다.</li>
+<li>모델은 이 과정을 거꾸로 되돌리는 역과정(Reverse)을 학습해, “노이즈 → 덜 노이즈 → 이미지”로 점진적으로 복원하는 방법을 익힌다.</li>
+</ul>
+</li>
+<li>샘플링 시: 순수 노이즈에서 시작해 T 스텝에 걸쳐 노이즈를 제거한다<ul>
+<li>매 스텝에서 U-Net 등 예측기가 현재 상태의 노이즈(또는 깨끗한 데이터, 또는 분산 파라미터)를 추정하고, 스케줄에 따라 한 단계씩 더 선명한 상태로 이동한다.</li>
+<li>텍스트 조건부(예: CLIP&#x2F;텍스트 인코더)로 프롬프트에 맞춘 이미지를 생성한다. Classifier-Free Guidance로 조건 신호를 강화해 프롬프트 적합도를 높일 수 있다.</li>
+</ul>
+</li>
+<li>가속&#x2F;변형<ul>
+<li>DDPM 기본 다단계 샘플링을, DDIM, DPM-Solver, 샘플러(Heun, Euler 등)로 가속한다.</li>
+<li>Latent Diffusion(예: Stable Diffusion)은 픽셀 공간 대신 VAE 잠재공간에서 확산을 수행해 메모리·속도를 크게 개선한다.</li>
+<li>ControlNet, LoRA, T2I-Adapter 등으로 조건(스케치, 깊이, 포즈, 세그멘트)을 추가해 제어 가능한 생성이 가능해진다.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Diffusion-모델의-장점"><a href="#Diffusion-모델의-장점" class="headerlink" title="Diffusion 모델의 장점"></a>Diffusion 모델의 장점</h2><ul>
+<li>고품질·안정적 생성<ul>
+<li>모드 붕괴가 상대적으로 적고, 세부 디테일과 질감 표현이 뛰어나 다양한 도메인에서 높은 FID&#x2F;IS를 달성한다.</li>
+</ul>
+</li>
+<li>조건부 제어 용이성<ul>
+<li>텍스트, 스케치, 포즈, 깊이 지도, 엣지 등 다양한 조건을 유연하게 붙일 수 있어 원하는 구도를 정교하게 유도한다.</li>
+</ul>
+</li>
+<li>학습의 안정성<ul>
+<li>GAN 대비 학습이 안정적으로 수렴하는 경향이 있어 대규모 데이터·모델에서 재현성이 높다.</li>
+</ul>
+</li>
+<li>해상도·도메인 확장성<ul>
+<li>잠재 확산으로 자원 효율이 좋아지고, 업스케일러&#x2F;리파이너와 결합해 고해상도 이미지를 생성한다. 포토, 일러스트, 의료&#x2F;위성 등 도메인 적응이 수월하다.</li>
+</ul>
+</li>
+<li>안전·편집 워크플로 적합성<ul>
+<li>Inpainting&#x2F;Outpainting, 이미지-투-이미지, 스타일 전환, 컨트롤 지도로의 편집이 자연스럽게 된다. 콘텐츠 필터링·가이드 강도 조절로 안전 제어가 비교적 용이하다.</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+Diffusion 모델은 이미지 생성에서 **확률적 과정(노이즈 추가 및 제거)을 활용하여 고품질의 이미지를 생성하는 기법** 입니다. 이 모델은 초기에는 랜덤한 노이즈를 포함한 이미지에서 점진적으로 원래의 데이터 분포를 복원하는 방식으로 동작합니다.
+
+<p>Diffusion 모델의 기본 아이디어는 데이터에 점진적으로 노이즈를 추가하는 전방향 과정(Forward Process)과, 이 노이즈를 단계적으로 제거하여 원본 데이터를 복원하는 역방향 과정(Reverse Process)으로 구성됩니다. 훈련 과정에서 모델은 노이즈가 추가된 데이터를 보고, 이를 원래 데이터로 복원하는 방법을 학습합니다. 따라서, 학습이 완료되면 순수한 노이즈에서 점진적으로 의미 있는 패턴을 복원하며 새로운 이미지를 생성할 수 있습니다.</p>
+<p>Diffusion 모델은 이미지 생성 분야에서 다음과 같은 장점을 가집니다.</p>
+<p>첫째, <strong>고품질 이미지 생성이 가능</strong> 합니다. 기존 생성 모델(GAN, VAE)과 비교했을 때, Diffusion 모델은 더욱 세밀하고 자연스러운 이미지를 생성할 수 있으며, 특정 구조적 결함(예: GAN의 모드 붕괴 문제)이 적습니다.</p>
+<p>둘째, <strong>안정적인 학습 과정</strong> 을 제공합니다. GAN은 생성자와 판별자 간의 경쟁으로 인해 학습이 불안정해질 수 있지만, Diffusion 모델은 확률적 모델링을 기반으로 하기 때문에 학습이 비교적 안정적입니다.</p>
+<p>셋째, <strong>다양한 데이터 생성이 가능</strong> 합니다. Diffusion 모델은 다양한 데이터 분포를 학습할 수 있어, 단순한 이미지 생성뿐만 아니라 <strong>스타일 변환, 텍스트-이미지 생성, 의료 영상 복원</strong> 등의 응용에도 활용됩니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/FCN/">FCN</a><a class="link-muted mr-2" rel="tag" href="/tags/GAN/">GAN</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/10/02/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-10/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 10</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/08/29/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-8/"><span class="level-item">위클리 페이퍼 8</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/09/07/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/';
+            this.page.identifier = '2025/09/07/위클리-페이퍼-9/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-Semantic-Segmentation이란-무엇이며-이미지-분류-Classification-와-어떤-차이가-있나요"><span class="level-left"><span class="level-item">1. Semantic Segmentation이란 무엇이며, 이미지 분류(Classification)와 어떤 차이가 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Semantic-Segmentation이란"><span class="level-left"><span class="level-item">Semantic Segmentation이란?</span></span></a></li><li><a class="level is-mobile" href="#이미지-분류와의-차이점"><span class="level-left"><span class="level-item">이미지 분류와의 차이점</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-Fully-Convolutional-Networks-FCN-의-주요-특징과-기존-CNN-기반-분류-모델과의-차이점은-무엇인가요"><span class="level-left"><span class="level-item">2. Fully Convolutional Networks(FCN)의 주요 특징과 기존 CNN 기반 분류 모델과의 차이점은 무엇인가요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#FCN-Fully-Convolutional-Networks-의-주요-특징"><span class="level-left"><span class="level-item">FCN(Fully Convolutional Networks)의 주요 특징</span></span></a></li><li><a class="level is-mobile" href="#기존-CNN-기반-분류-모델과의-차이점"><span class="level-left"><span class="level-item">기존 CNN 기반 분류 모델과의 차이점</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-GAN에서-생성자-Generator-와-판별자-Discriminator-의-역할은-각각-무엇인가요"><span class="level-left"><span class="level-item">3. GAN에서 생성자(Generator)와 판별자(Discriminator)의 역할은 각각 무엇인가요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#생성자-Generator-의-역할"><span class="level-left"><span class="level-item">생성자(Generator)의 역할</span></span></a></li><li><a class="level is-mobile" href="#판별자-Discriminator-의-역할"><span class="level-left"><span class="level-item">판별자(Discriminator)의 역할</span></span></a></li></ul></li><li><a class="level is-mobile" href="#4-Diffusion-모델이-이미지-생성에서-어떻게-활용되며-어떤-장점이-있나요"><span class="level-left"><span class="level-item">4. Diffusion 모델이 이미지 생성에서 어떻게 활용되며, 어떤 장점이 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#이미지-생성에서-Diffusion-모델의-활용-방법"><span class="level-left"><span class="level-item">이미지 생성에서 Diffusion 모델의 활용 방법</span></span></a></li><li><a class="level is-mobile" href="#Diffusion-모델의-장점"><span class="level-left"><span class="level-item">Diffusion 모델의 장점</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

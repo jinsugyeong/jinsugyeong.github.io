@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 5 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 딥러닝 프레임워크인 PyTorch와 TensorFlow를 비교해보세요."><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 5"><meta property="og:url" content="https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. 딥러닝 프레임워크인 PyTorch와 TensorFlow를 비교해보세요."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-08-08T00:41:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.471Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="PyTorch"><meta property="article:tag" content="TensorFlow"><meta property="article:tag" content="Tensor"><meta property="article:tag" content="NumPy"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/"},"headline":"위클리 페이퍼 5","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-08-08T00:41:00.000Z","dateModified":"2026-03-19T14:10:15.471Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. 딥러닝 프레임워크인 PyTorch와 TensorFlow를 비교해보세요."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 5</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-08-08 09:41 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-딥러닝-프레임워크인-PyTorch와-TensorFlow를-비교해보세요"><a href="#1-딥러닝-프레임워크인-PyTorch와-TensorFlow를-비교해보세요" class="headerlink" title="1. 딥러닝 프레임워크인 PyTorch와 TensorFlow를 비교해보세요."></a>1. 딥러닝 프레임워크인 PyTorch와 TensorFlow를 비교해보세요.</h1><span id="more"></span>
+
+<table>
+<thead>
+<tr>
+<th><strong>항목</strong></th>
+<th><strong>PyTorch</strong></th>
+<th><strong>TensorFlow</strong></th>
+<th><strong>코멘트</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>학습 그래프</td>
+<td>동적 그래프 기본</td>
+<td>즉시 실행+정적 그래프(tf.function)</td>
+<td>디버깅은 PyTorch가 직관적, 최적화&#x2F;배포는 TF의 정적 그래프가 유리한 경우가 있음</td>
+</tr>
+<tr>
+<td>사용성&#x2F;디버깅</td>
+<td>Pythonic, 연구 친화</td>
+<td>Keras로 고수준, 커스텀은 GradientTape</td>
+<td>연구·프로토타이핑은 PyTorch가 편함</td>
+</tr>
+<tr>
+<td>고수준 API</td>
+<td>Lightning, TorchMetrics 등</td>
+<td>Keras(표준), TFX 파이프라인</td>
+<td>Keras는 표준화된 고수준 API로 생산성 높음</td>
+</tr>
+<tr>
+<td>성능 최적화</td>
+<td>PyTorch 2.x: torch.compile, Inductor</td>
+<td>XLA, tf.function, Grappler</td>
+<td>둘 다 컴파일러 최적화 지원, 하드웨어&#x2F;모델에 따라 우열이 달라짐</td>
+</tr>
+<tr>
+<td>분산 학습</td>
+<td>DDP, FSDP, DeepSpeed&#x2F;Accelerate</td>
+<td>tf.distribute.Strategy</td>
+<td>대규모 모델은 양쪽 모두 성숙, 운영 경험&#x2F;툴링 취향 차이</td>
+</tr>
+<tr>
+<td>서빙&#x2F;배포</td>
+<td>TorchServe, Triton, ONNX Runtime, ExecuTorch(엣지)</td>
+<td>TF Serving, TFLite, TF.js, TFX</td>
+<td>모바일&#x2F;웹은 TF의 툴체인이 더 폭넓고 성숙</td>
+</tr>
+<tr>
+<td>모바일&#x2F;엣지</td>
+<td>PyTorch Mobile, ExecuTorch</td>
+<td>TFLite, TF Micro</td>
+<td>초경량·마이크로컨트롤러는 TF Micro가 강점</td>
+</tr>
+<tr>
+<td>TPU&#x2F;GPU 지원</td>
+<td>CUDA&#x2F;CUDNN 우수, TPU는 PyTorch&#x2F;XLA</td>
+<td>CUDA&#x2F;CUDNN, TPU 네이티브</td>
+<td>TPU는 TF가 기본 경험이 매끄럽고, PyTorch도 XLA로 가능</td>
+</tr>
+<tr>
+<td>생태계&#x2F;커뮤니티</td>
+<td>논문·연구 커뮤니티 강력</td>
+<td>프로덕션·엔터프라이즈 도구 풍부</td>
+<td>팀 성격(연구 vs 운영)에 따라 선호가 갈림</td>
+</tr>
+</tbody></table>
+<h2 id="핵심-차이점"><a href="#핵심-차이점" class="headerlink" title="핵심 차이점"></a>핵심 차이점</h2><p>상세 비교 포인트</p>
+<ul>
+<li>개발 경험<ul>
+<li>PyTorch: 파이썬 코드와 거의 동일하게 동작해 직관적이다.. 에러가 발생해도 스택 추적이 이해하기 쉽고, 커스텀 학습 루프가 간단하다.</li>
+<li>TensorFlow: Keras로 모델 정의&#x2F;학습이 빠르고 일관되어있다. 성능을 위해 tf.function으로 그래프 컴파일을 적용하기 쉽다.</li>
+</ul>
+</li>
+<li>성능&#x2F;컴파일<ul>
+<li>PyTorch 2.x의 torch.compile(TorchInductor)로 추가 최적화가 가능하다.</li>
+<li>TensorFlow는 XLA 최적화와 Grappler 패스가 잘 연동된다.</li>
+<li>어느 쪽이 “항상 더 빠르다”는 결론은 없고, 모델·배치·하드웨어에 따라 달라진다. 둘 다 프로파일러(TensorBoard, PyTorch Profiler)로 병목을 잡는 접근이 중요하다.</li>
+</ul>
+</li>
+<li>분산&#x2F;대규모 학습<ul>
+<li>PyTorch: DDP가 표준, 메모리 최적화는 FSDP&#x2F;ZeRO(DeepSpeed) 조합이 널리 쓰인다.</li>
+<li>TensorFlow: Mirrored&#x2F;MultiWorker&#x2F;ParameterServer Strategy로 다양한 토폴로지를 포괄한다.</li>
+</ul>
+</li>
+<li>배포&#x2F;서빙<ul>
+<li>PyTorch: TorchServe, NVIDIA Triton, ONNX Runtime을 통한 범용 배포가 흔합니다. 엣지는 ExecuTorch가 점점 자리 잡는 중이다.</li>
+<li>TensorFlow: 서버는 TF Serving, 모바일&#x2F;엣지는 TFLite, 웹은 TensorFlow.js로 풀 스택 배포 경험이 매끄러워요. 파이프라인은 TFX가 강력하다.</li>
+</ul>
+</li>
+<li>모델 저장&#x2F;호환<ul>
+<li>PyTorch: TorchScript&#x2F;torch.export, ONNX 내보내기.</li>
+<li>TensorFlow: SavedModel이 표준. Keras 3는 멀티 백엔드 방향이지만, 프로덕션에선 여전히 tf.keras + SavedModel 조합이 주류.</li>
+</ul>
+</li>
+<li>시각화&#x2F;모니터링<ul>
+<li>TensorBoard는 양쪽에서 모두 활용 가능(플러그인&#x2F;Writer).</li>
+<li>Weights &amp; Biases, MLflow 등 외부 툴은 프레임워크 불문 공용으로 잘 맞는다.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="빠른-선택-가이드-의사결정-기준"><a href="#빠른-선택-가이드-의사결정-기준" class="headerlink" title="빠른 선택 가이드(의사결정 기준)"></a>빠른 선택 가이드(의사결정 기준)</h3><ul>
+<li>연구&#x2F;프로토타이핑 속도, 커스텀 모델·학습 루프가 많다 → PyTorch.</li>
+<li>모바일&#x2F;IoT&#x2F;웹까지 포괄하는 대규모 배포 로드맵이 있다 → TensorFlow(TFLite&#x2F;TF.js&#x2F;TFX)가 유리.</li>
+<li>TPU 중심 학습(특히 Google Cloud) → TensorFlow가 기본값, 필요 시 PyTorch&#x2F;XLA도 가능.</li>
+<li>다양한 런타임으로의 이식성(ONNX)과 범용 서빙 → PyTorch(+ONNX Runtime)나 TensorFlow 모두 가능하나, ONNX 생태계 활용이 잦다면 PyTorch 쪽이 편할 수 있음.</li>
+<li>팀 경험&#x2F;레거시가 Keras&#x2F;TF에 있다 → TensorFlow가 도입·운영 비용이 낮음.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p>PyTorch와 TensorFlow는 모두 딥러닝을 위한 프레임워크이지만, 몇 가지 주요 차이점이 있습니다.</p>
+<p>첫 번째는 <strong>사용성</strong> 입니다. PyTorch는 Pythonic한 설계 덕분에 직관적이고 간결한 코드 작성이 가능하며, 특히 연구 개발 단계에서 인기가 많습니다. 반면 TensorFlow는 초기에는 코드가 복잡했지만, TensorFlow 2.0 이후 Keras와 통합되면서 사용성이 많이 개선되었습니다.</p>
+<p>두번째는 <strong>커뮤니티와 생태계</strong> 측면에서 TensorFlow는 대규모 배포와 모바일 환경 지원에서 강점이 있습니다. PyTorch는 연구와 프로토타입 개발에서 더 선호되며, 최근에는 배포 도구인 TorchServe로 프로덕션 환경에서도 많이 사용되고 있습니다.</p>
+<p>결론적으로, PyTorch는 유연성과 사용성이 강점이고, TensorFlow는 배포와 확장성에서 더 유리하다고 볼 수 있습니다.</p>
+</details>
+
+<hr>
+<h1 id="2-PyTorch에서-텐서란-무엇이고-NumPy의-Array-배열-과-어떤-차이가-있나요"><a href="#2-PyTorch에서-텐서란-무엇이고-NumPy의-Array-배열-과-어떤-차이가-있나요" class="headerlink" title="2. PyTorch에서 텐서란 무엇이고, NumPy의 Array(배열)과 어떤 차이가 있나요?"></a>2. PyTorch에서 텐서란 무엇이고, NumPy의 Array(배열)과 어떤 차이가 있나요?</h1><h2 id="PyTorch-텐서-Tensor-란"><a href="#PyTorch-텐서-Tensor-란" class="headerlink" title="PyTorch 텐서(Tensor)란 ?"></a>PyTorch 텐서(Tensor)란 ?</h2><p>텐서는 수치 데이터를 담는 다차원 배열 자료구조이다. 스칼라(0차원), 벡터(1차원), 행렬(2차원), 더 높은 차원까지 표현할 수 있고, 선형대수 연산과 브로드캐스팅, 인덱싱 등 수치 계산에 필요한 기능을 제공한다.</p>
+<ul>
+<li>“텐서 &#x3D; 다차원 숫자 그릇 + 하드웨어 가속 + 자동미분 지원”</li>
+</ul>
+<h2 id="NumPy-배열과의-공통점"><a href="#NumPy-배열과의-공통점" class="headerlink" title="NumPy 배열과의 공통점"></a>NumPy 배열과의 공통점</h2><ul>
+<li>형태와 인덱싱: 모양(shape), 슬라이싱, 브로드캐스팅 규칙이 매우 유사</li>
+<li>속도: 둘 다 내부적으로 C&#x2F;CUDA 커널로 빠르게 연산</li>
+<li>메모리 모델: 둘 다 “stride 기반” 메모리 레이아웃을 사용</li>
+</ul>
+<hr>
+<h2 id="핵심-차이-한눈에-보기"><a href="#핵심-차이-한눈에-보기" class="headerlink" title="핵심 차이 한눈에 보기"></a>핵심 차이 한눈에 보기</h2><table>
+<thead>
+<tr>
+<th><strong>항목</strong></th>
+<th><strong>PyTorch Tensor</strong></th>
+<th><strong>NumPy Array</strong></th>
+<th><strong>차이점</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>하드웨어</td>
+<td>CPU, GPU(.to(device))</td>
+<td>주로 CPU</td>
+<td>GPU 가속이 필요한 학습·추론에 텐서가 유리</td>
+</tr>
+<tr>
+<td>자동미분</td>
+<td>autograd(역전파) 지원</td>
+<td>미지원</td>
+<td>모델 학습에 필수적인 차이</td>
+</tr>
+<tr>
+<td>in-place 제약</td>
+<td>autograd와 충돌 시 제한</td>
+<td>제약 적음</td>
+<td>텐서는 requires_grad일 때 in-place 주의</td>
+</tr>
+<tr>
+<td>데이터 변환</td>
+<td>.numpy(), from_numpy()</td>
+<td>array(), asarray()</td>
+<td>CPU 텐서↔NumPy는 메모리 공유 가능</td>
+</tr>
+<tr>
+<td>dtype&#x2F;정밀도</td>
+<td>float32, float16, bfloat16 등</td>
+<td>float64 기본(많이 사용)</td>
+<td>혼합정밀 학습은 텐서 쪽이 친화적</td>
+</tr>
+<tr>
+<td>희소&#x2F;양자화</td>
+<td>sparse, quantized, complex 등</td>
+<td>제한적</td>
+<td>대규모·경량화 시 텐서가 유리</td>
+</tr>
+<tr>
+<td>분산&#x2F;가속기</td>
+<td>DDP&#x2F;FSDP, CUDA&#x2F;XLA 등</td>
+<td>없음</td>
+<td>대규모 학습 인프라에 맞춤</td>
+</tr>
+<tr>
+<td>직렬화&#x2F;서빙</td>
+<td>TorchScript&#x2F;ONNX&#x2F;Serve</td>
+<td>npy&#x2F;npz</td>
+<td>모델 배포 도구 체인 차이</td>
+</tr>
+<tr>
+<td>그래프 컴파일</td>
+<td>torch.compile(2.x)</td>
+<td>없음</td>
+<td>학습&#x2F;추론 최적화에 도움</td>
+</tr>
+<tr>
+<td>생태계 초점</td>
+<td>딥러닝 학습과 배포</td>
+<td>범용 수치계산</td>
+<td>목적에 따른 도구 선택 포인트</td>
+</tr>
+</tbody></table>
+<h2 id="상호-변환과-메모리-공유-중요-포인트"><a href="#상호-변환과-메모리-공유-중요-포인트" class="headerlink" title="상호 변환과 메모리 공유(중요 포인트)"></a>상호 변환과 메모리 공유(중요 포인트)</h2><ul>
+<li>CPU 텐서 ↔ NumPy 배열은 “복사 없이” 같은 메모리를 공유할 수 있음.<ul>
+<li>torch.from_numpy(ndarray): 복사 없이 텐서로 보기</li>
+<li>tensor.numpy(): CPU 텐서를 NumPy로 보기(필요 시 .detach() 사용)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">import torch</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line"># NumPy → Tensor (메모리 공유)</span><br><span class="line">a = np.arange(6).reshape(2, 3)</span><br><span class="line">t = torch.from_numpy(a)           # 복사 없음 (CPU)</span><br><span class="line">a[0, 0] = 999</span><br><span class="line">print(t[0, 0])                    # tensor(999)</span><br><span class="line"></span><br><span class="line"># Tensor → NumPy (메모리 공유)</span><br><span class="line">x = torch.tensor([1., 2., 3.])    # CPU 텐서</span><br><span class="line">y = x.numpy()                     # 복사 없음</span><br><span class="line">x[0] = 7.</span><br><span class="line">print(y[0])                       # 7.0</span><br><span class="line"></span><br><span class="line"># autograd 사용 중이면 detach 필요</span><br><span class="line">w = torch.ones(3, requires_grad=True)</span><br><span class="line">w_np_safe = w.detach().numpy()    # 안전 변환</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>GPU 텐서는 .cpu()로 옮긴 뒤 .numpy()를 써야 한다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g = torch.randn(2, 2, device=&quot;cuda&quot;)</span><br><span class="line">g_np = g.detach().cpu().numpy()   # GPU → CPU → NumPy</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="자동미분과-in-place-연산"><a href="#자동미분과-in-place-연산" class="headerlink" title="자동미분과 in-place 연산"></a>자동미분과 in-place 연산</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = torch.tensor([2.0], requires_grad=True)</span><br><span class="line">y = x**2 + 3*x + 1</span><br><span class="line">y.backward()             # dy/dx = 2x + 3 = 7</span><br><span class="line">print(x.grad)            # tensor([7.])</span><br><span class="line"></span><br><span class="line"># 주의: 다음과 같은 in-place는 그래프를 망가뜨릴 수 있어요.</span><br><span class="line"># x += 1  # requires_grad=True인 텐서에 in-place 연산은 에러/경고의 원인이 될 수 있음</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>학습 시에는 가급적 out-of-place 연산(새 텐서 반환)을 권장.</li>
+</ul>
+<h2 id="실제-사용에서-헷갈리기-쉬운-포인트"><a href="#실제-사용에서-헷갈리기-쉬운-포인트" class="headerlink" title="실제 사용에서 헷갈리기 쉬운 포인트"></a>실제 사용에서 헷갈리기 쉬운 포인트</h2><ul>
+<li>.tensor vs .from_numpy: torch.tensor(nd)는 “<strong>복사</strong>”가 기본, from_numpy(nd)는 “<strong>공유</strong>”가 기본.</li>
+<li>연산 디바이스 혼합: <strong>텐서 연산은 같은 디바이스에서만 가능</strong>해요. CPU↔GPU 간에는 .to(device)로 맞춰 주세요.</li>
+<li>dtype 혼합: float32(학습 일반), float16&#x2F;bfloat16(혼합정밀), float64(정밀계산) 등 목적에 맞게 통일하는 게 좋아요.</li>
+<li>비연속 메모리(contiguous): 전치(transpose)나 고급 인덱싱 후 연산 시 .contiguous()가 필요할 때가 있어요.</li>
+<li>브로드캐스팅: 규칙은 대체로 동일하지만, 중간 차원 삽입&#x2F;확장 시 shape을 명확히 관리하면 디버깅이 쉬워요.</li>
+</ul>
+<h2 id="빠른-선택-가이드"><a href="#빠른-선택-가이드" class="headerlink" title="빠른 선택 가이드"></a>빠른 선택 가이드</h2><ul>
+<li>딥러닝 모델 학습&#x2F;추론: PyTorch 텐서가 기본 선택(GPU, autograd, 분산 지원).</li>
+<li>전처리·일반 수치 계산: NumPy가 간단하고 가벼움. 이후 from_numpy로 텐서에 올리면 된다.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+PyTorch의 텐서는 다차원 배열을 표현하는 데이터 구조로, NumPy의 배열과 유사한 역할을 합니다. 하지만 PyTorch 텐서는 **GPU 가속 연산** 을 지원한다는 점에서 NumPy 배열과 차이가 있습니다.
+
+<p>예를 들어, PyTorch의 텐서는 torch.tensor로 선언하며, CPU뿐만 아니라 GPU에서도 연산을 수행할 수 있습니다. GPU로 연산하려면 텐서를 .to(device) 메서드로 이동시키면 됩니다. 이 기능은 대규모 데이터 처리와 딥러닝 모델 학습에 유리합니다.</p>
+<p>또한, PyTorch 텐서는 autograd을 지원합니다. requires_grad&#x3D;True로 설정된 텐서는 계산 그래프를 기록하며, 이를 통해 손실 함수의 경사(gradient)를 자동으로 계산할 수 있습니다. 반면 NumPy 배열은 이러한 기능이 없기 때문에 딥러닝 학습에는 적합하지 않습니다.</p>
+<p>요약하자면, PyTorch 텐서는 NumPy 배열처럼 데이터 조작이 가능하지만, GPU 가속 연산과 자동 미분 기능 덕분에 딥러닝 작업에 특화된 데이터 구조입니다.</p>
+</details>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/PyTorch/">PyTorch</a><a class="link-muted mr-2" rel="tag" href="/tags/TensorFlow/">TensorFlow</a><a class="link-muted mr-2" rel="tag" href="/tags/Tensor/">Tensor</a><a class="link-muted mr-2" rel="tag" href="/tags/NumPy/">NumPy</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/08/15/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 6</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/07/31/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/"><span class="level-item">위클리 페이퍼 4</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/';
+            this.page.identifier = '2025/08/08/위클리-페이퍼-5/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-딥러닝-프레임워크인-PyTorch와-TensorFlow를-비교해보세요"><span class="level-left"><span class="level-item">1. 딥러닝 프레임워크인 PyTorch와 TensorFlow를 비교해보세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#핵심-차이점"><span class="level-left"><span class="level-item">핵심 차이점</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#빠른-선택-가이드-의사결정-기준"><span class="level-left"><span class="level-item">빠른 선택 가이드(의사결정 기준)</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#2-PyTorch에서-텐서란-무엇이고-NumPy의-Array-배열-과-어떤-차이가-있나요"><span class="level-left"><span class="level-item">2. PyTorch에서 텐서란 무엇이고, NumPy의 Array(배열)과 어떤 차이가 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#PyTorch-텐서-Tensor-란"><span class="level-left"><span class="level-item">PyTorch 텐서(Tensor)란 ?</span></span></a></li><li><a class="level is-mobile" href="#NumPy-배열과의-공통점"><span class="level-left"><span class="level-item">NumPy 배열과의 공통점</span></span></a></li><li><a class="level is-mobile" href="#핵심-차이-한눈에-보기"><span class="level-left"><span class="level-item">핵심 차이 한눈에 보기</span></span></a></li><li><a class="level is-mobile" href="#상호-변환과-메모리-공유-중요-포인트"><span class="level-left"><span class="level-item">상호 변환과 메모리 공유(중요 포인트)</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#자동미분과-in-place-연산"><span class="level-left"><span class="level-item">자동미분과 in-place 연산</span></span></a></li></ul></li><li><a class="level is-mobile" href="#실제-사용에서-헷갈리기-쉬운-포인트"><span class="level-left"><span class="level-item">실제 사용에서 헷갈리기 쉬운 포인트</span></span></a></li><li><a class="level is-mobile" href="#빠른-선택-가이드"><span class="level-left"><span class="level-item">빠른 선택 가이드</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

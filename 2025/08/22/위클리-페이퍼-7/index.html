@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 7 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 이미지를 모델에 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 무엇인가요?1) 리사이징(Resizing)을 하는 이유 입력 크기 통일 모델은 고정된 입력 해상도를 기대하는 경우가 많음 크기를 맞춰야 배치 처리가 가능하고 메모리&amp;#x2F;연산량을 예측할 수 있음"><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 7"><meta property="og:url" content="https://jinsugyeong.github.io/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. 이미지를 모델에 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 무엇인가요?1) 리사이징(Resizing)을 하는 이유 입력 크기 통일 모델은 고정된 입력 해상도를 기대하는 경우가 많음 크기를 맞춰야 배치 처리가 가능하고 메모리&amp;#x2F;연산량을 예측할 수 있음"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-08-22T07:32:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.478Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="데이터 증강"><meta property="article:tag" content="전이 학습"><meta property="article:tag" content="mAP"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/"},"headline":"위클리 페이퍼 7","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-08-22T07:32:00.000Z","dateModified":"2026-03-19T14:10:15.478Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. 이미지를 모델에 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 무엇인가요?1) 리사이징(Resizing)을 하는 이유 입력 크기 통일 모델은 고정된 입력 해상도를 기대하는 경우가 많음 크기를 맞춰야 배치 처리가 가능하고 메모리&#x2F;연산량을 예측할 수 있음"}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 7</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-08-22 16:32 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-이미지를-모델에-입력하기-전에-리사이징-Resizing-과-정규화-Normalization-를-하는-이유는-무엇인가요"><a href="#1-이미지를-모델에-입력하기-전에-리사이징-Resizing-과-정규화-Normalization-를-하는-이유는-무엇인가요" class="headerlink" title="1. 이미지를 모델에 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 무엇인가요?"></a>1. 이미지를 모델에 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 무엇인가요?</h1><h2 id="1-리사이징-Resizing-을-하는-이유"><a href="#1-리사이징-Resizing-을-하는-이유" class="headerlink" title="1) 리사이징(Resizing)을 하는 이유"></a>1) 리사이징(Resizing)을 하는 이유</h2><ul>
+<li>입력 크기 통일<ul>
+<li>모델은 고정된 입력 해상도를 기대하는 경우가 많음</li>
+<li>크기를 맞춰야 배치 처리가 가능하고 메모리&#x2F;연산량을 예측할 수 있음</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<ul>
+<li>연산 비용 관리: 큰 이미지는 GPU와 연산 시간이 증가함</li>
+<li>field와 스케일 일관<ul>
+<li>합성곱 필터의 수용야 대비 객체 크기가 표준화되면 특징 학습이 안정적</li>
+<li>입력 스케일이 들쭉날쭉하면 같은 필터가 다른 의미로 작동할 수 있어 학습이 어려워짐</li>
+</ul>
+</li>
+<li>데이터셋 간&#x2F;내 편차 감소: 서로 다른 원본 해상도를 공통 크기로 맞추면 분포가 덜 산란해져 일반화에 유리</li>
+</ul>
+<p>실무 팁</p>
+<ul>
+<li>분류: 224×224, 256×256 같은 표준 크기를 많이 사용</li>
+<li>탐지&#x2F;분할: 종횡비 보존(Aspect-Ratio Preserving) 리사이즈 후 패딩(letterbox, center pad)으로 타깃 해상도에 맞춤</li>
+<li>고해상도 문서&#x2F;의료 영상: 정보 손실이 성능에 직결되므로 타일링(슬라이딩 윈도우)이나 멀티스케일</li>
+</ul>
+<h2 id="2-정규화-Normalization-를-하는-이유"><a href="#2-정규화-Normalization-를-하는-이유" class="headerlink" title="2) 정규화(Normalization)를 하는 이유"></a>2) 정규화(Normalization)를 하는 이유</h2><ul>
+<li>수치 안정성과 빠른 수렴: 입력 픽셀 범위([0, 255])를 [0, 1] 또는 평균 0·표준편차 1로 맞추면 기울기 폭주&#x2F;소실을 줄이고 최적화가 빨라짐</li>
+<li>사전학습 백본과의 정합: ImageNet 등으로 사전학습된 모델은 특정 평균·표준편차(예: RGB 평균, 표준편차)에 맞춰져 있기때문에 동일한 정규화를 적용해야 사전학습 가중치의 표현을 제대로 활용할 수 있음</li>
+<li>채널 간 균형: R&#x2F;G&#x2F;B 채널의 분포 차이를 줄여, 특정 채널에 치우친 학습 방지</li>
+<li>조명·명암 변동 완화: 전역 스케일을 맞추면 조명&#x2F;노출 차이의 영향을 낮춰 데이터 분포를 안정화</li>
+</ul>
+<p>실무 팁</p>
+<ul>
+<li>일반적인 흐름: 정수 픽셀 → 부동소수점 변환 → 스케일 정규화(÷255) → 평균&#x2F;표준편차 정규화.</li>
+<li>사전학습 모델 사용 시: 해당 모델이 사용한 평균&#x2F;표준편차를 그대로 적용</li>
+<li>흑백&#x2F;문서 이미지: 데이터셋 자체의 평균·표준편차를 추정해 사용</li>
+</ul>
+<h2 id="리사이징과-정규화가-학습에-주는-종합-효과"><a href="#리사이징과-정규화가-학습에-주는-종합-효과" class="headerlink" title="리사이징과 정규화가 학습에 주는 종합 효과"></a>리사이징과 정규화가 학습에 주는 종합 효과</h2><ul>
+<li>배치 단위의 일관된 텐서 크기 확보로 효율적인 병렬 연산 가능.</li>
+<li>입력 스케일과 분포가 정돈되어 가중치 업데이트가 안정화.</li>
+<li>사전학습 모델 전이 성능 극대화.</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+딥러닝 모델에 이미지를 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 모델 학습의 효율성과 성능을 높이기 위해서입니다.
+
+<p>먼저, <strong>리사이징(Resizing)</strong> 은 모든 입력 이미지의 크기를 통일하기 위해 필요합니다. 딥러닝 모델은 고정된 크기의 입력을 받도록 설계되므로, 다양한 크기의 이미지를 일관된 형태로 맞춰야 합니다. 예를 들어, ResNet과 같은 사전 학습된 모델은 일반적으로 224x224 크기의 이미지를 입력으로 받습니다. 따라서, 모델이 학습할 수 있도록 모든 이미지를 동일한 크기로 변환해야 합니다.</p>
+<p>다음으로, <strong>정규화(Normalization)</strong> 는 이미지의 픽셀 값 범위를 조정하는 과정입니다. 일반적으로 이미지의 픽셀 값은 0에서 255 사이의 정수값을 가지는데, 이를 [0, 1] 범위 또는 평균을 0, 표준편차를 1로 조정하는 방식으로 정규화합니다. 이렇게 하면 모델이 더 안정적으로 학습할 수 있으며, 특히 경사 소실(vanishing gradient) 문제를 완화하는 데 도움이 됩니다. 또한, 정규화를 통해 데이터의 분포를 일정하게 맞춰주면 모델이 특정 값 범위에 편향되지 않고 더 효과적으로 특징을 학습할 수 있습니다.</p>
+<p>결론적으로, 리사이징은 입력 형태를 맞춰주고, 정규화는 학습을 안정적으로 진행하도록 도와주는 과정이라고 볼 수 있습니다.</p>
+</details>
+  
+
+<h1 id="2-데이터-증강-Data-Augmentation-이란-무엇이며-이미지-데이터에서-주로-사용하는-증강-기법에는-어떤-것들이-있나요"><a href="#2-데이터-증강-Data-Augmentation-이란-무엇이며-이미지-데이터에서-주로-사용하는-증강-기법에는-어떤-것들이-있나요" class="headerlink" title="2. 데이터 증강(Data Augmentation)이란 무엇이며, 이미지 데이터에서 주로 사용하는 증강 기법에는 어떤 것들이 있나요?"></a>2. 데이터 증강(Data Augmentation)이란 무엇이며, 이미지 데이터에서 주로 사용하는 증강 기법에는 어떤 것들이 있나요?</h1><h3 id="데이터-증강이란"><a href="#데이터-증강이란" class="headerlink" title="데이터 증강이란 ?"></a>데이터 증강이란 ?</h3><p>데이터 증강은 기존 학습 데이터를 다양한 방식으로 변형해 “새로운 훈련 샘플처럼” 활용하는 기법이다. 모델이 더 많은 경우의 수를 경험하게 만들어 과적합을 줄이고 일반화 성능을 높인다. 특히 이미지에서는 라벨을 바꾸지 않는(라벨 보존) 변환을 적용해 입력 분포를 풍부하게 만드는 것이 핵심이다.  </p>
+<ul>
+<li>기대 효과<ul>
+<li>일반화 성능 향상(테스트 성능, 견고성)</li>
+<li>과적합 완화(실질적 데이터 수 증가 효과)</li>
+<li>데이터 편향 감소(조명·각도·배치 등 변화에 대한 불변성 학습)</li>
+<li>소량 데이터나 클래스 불균형 문제 완화</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="이미지에서-자주-쓰는-기본-증강-기법"><a href="#이미지에서-자주-쓰는-기본-증강-기법" class="headerlink" title="이미지에서 자주 쓰는 기본 증강 기법"></a>이미지에서 자주 쓰는 기본 증강 기법</h2><ul>
+<li><p><strong>기하학적 변환</strong></p>
+<ul>
+<li>수평&#x2F;수직 뒤집기(Flip): 좌우 반전이 가장 흔함. 인체·글자 등 좌우 의미가 중요한 도메인은 주의 필요.</li>
+<li>회전(Rotation): 작은 각도 범위(예: ±10~30°)가 일반적</li>
+<li>평행이동(Translation)&#x2F;크롭(Crop): RandomCrop, RandomResizedCrop으로 위치·스케일 다양화.</li>
+<li>스케일&#x2F;리사이즈(Scaling): 확대&#x2F;축소로 객체 크기 변화에 대한 불변성 부여.</li>
+<li>종횡비 변화(Aspect Ratio Jitter): 탐지&#x2F;분할에서 견고성 향상에 도움.</li>
+<li>기하학 왜곡(Affine&#x2F;Projective, Shear): 약한 왜곡으로 현실 변형을 모사.</li>
+</ul>
+</li>
+<li><p><strong>색&#x2F;광학 변환</strong></p>
+<ul>
+<li>밝기&#x2F;대비&#x2F;채도&#x2F;색조 조절(Brightness&#x2F;Contrast&#x2F;Saturation&#x2F;Hue): 조명·카메라 조건 변화에 대응.</li>
+<li>감마 보정(Gamma), 화이트 밸런스 유사 변환: 사진 환경 차이 보정.</li>
+<li>컬러 점프(Color Jitter), 그레이스케일 변환: 채널 정보 의존도 완화.</li>
+</ul>
+</li>
+<li><p><strong>노이즈&#x2F;블러&#x2F;압축</strong></p>
+<ul>
+<li>가우시안 노이즈&#x2F;스펙클 노이즈: 센서 잡음 모사.</li>
+<li>가우시안&#x2F;모션&#x2F;박스 블러: 초점 흔들림, 움직임 블러 대응.</li>
+<li>JPEG 압축 아티팩트: 저품질 저장 상황에 견고.</li>
+</ul>
+</li>
+<li><p><strong>컷&#x2F;혼합 계열</strong></p>
+<ul>
+<li>Cutout&#x2F;Random Erasing: 이미지 일부를 마스킹해 부분 가림에 강건.</li>
+<li>Mixup: 두 이미지를 선형 혼합, 라벨도 가중 평균. 경계 일반화에 도움.</li>
+<li>CutMix: 두 이미지를 패치 단위로 섞고 라벨도 면적 비율로 혼합. 객체 위치 정보 일부 보존.</li>
+<li>FMix&#x2F;ResizeMix 등: 변형된 마스크&#x2F;스케일로 혼합 다양화.</li>
+</ul>
+</li>
+<li><p><strong>정규·확률적 증강 패키지</strong></p>
+<ul>
+<li>RandAugment&#x2F;AutoAugment&#x2F;TrivialAugment: 변환 종류·강도를 자동&#x2F;간단 규칙으로 샘플링.</li>
+<li>AugMix: 시각적 일관성을 유지하면서 견고성을 높이는 조합 방식.</li>
+<li>Color&#x2F;Geom 변환을 균형 있게 섞어 과도한 왜곡을 피하는 것이 포인트</li>
+</ul>
+</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+데이터 증강(Data Augmentation)이란 기존 데이터에 다양한 변형을 가하여 새로운 학습 데이터를 생성하는 기법입니다. 딥러닝 모델은 많은 데이터를 필요로 하지만, 충분한 양의 데이터를 확보하기 어려운 경우가 많습니다. 데이터 증강을 활용하면 기존 데이터를 다양하게 변형하여 모델의 일반화 성능을 향상시킬 수 있습니다. 이를 통해 과적합(overfitting)을 방지하고, 모델이 특정 패턴에 치우치지 않도록 학습할 수 있습니다.
+
+<p>이미지 데이터에서 자주 사용하는 데이터 증강 기법에는 다음과 같은 것들이 있습니다.</p>
+<p>첫째, <strong>회전(Rotation)</strong> 입니다. 이미지를 특정 각도로 회전시켜 모델이 다양한 방향에서의 데이터를 학습할 수 있도록 합니다.</p>
+<p>둘째, <strong>수평&#x2F;수직 뒤집기(Flipping)</strong> 입니다. 특히 수평 뒤집기는 이미지 데이터가 좌우 대칭성을 가질 때 효과적인 방법입니다.</p>
+<p>셋째, <strong>잘라내기(Cropping) 및 크기 변환(Scaling)</strong> 입니다. 이미지의 일부분을 랜덤하게 잘라내거나 확대 및 축소하여 다양한 시각적 변화를 학습할 수 있습니다.</p>
+<p>넷째, <strong>밝기 및 색상 변화(Brightness &amp; Color Jittering)</strong> 입니다. 이미지의 밝기, 대비, 색조 등을 조정하여 다양한 조명 환경에서도 모델이 잘 작동하도록 만듭니다.</p>
+<p>다섯째, **노이즈 추가(Adding Noise)**입니다. 이미지에 랜덤한 노이즈를 추가하여, 모델이 깨끗한 데이터뿐만 아니라 노이즈가 포함된 데이터도 잘 인식할 수 있도록 학습합니다.</p>
+<p>이러한 데이터 증강 기법들은 이미지 데이터의 다양성을 증가시키고, 모델이 보다 일반적인 특징을 학습하도록 돕는 중요한 역할을 합니다.</p>
+</details>
+
+
+<h1 id="3-Transfer-Learning-전이-학습-이란-무엇이며-이미지-분류-모델에서-어떻게-활용할-수-있나요"><a href="#3-Transfer-Learning-전이-학습-이란-무엇이며-이미지-분류-모델에서-어떻게-활용할-수-있나요" class="headerlink" title="3. Transfer Learning(전이 학습)이란 무엇이며, 이미지 분류 모델에서 어떻게 활용할 수 있나요?"></a>3. Transfer Learning(전이 학습)이란 무엇이며, 이미지 분류 모델에서 어떻게 활용할 수 있나요?</h1><h2 id="전이-학습-Transfer-Learning-이란"><a href="#전이-학습-Transfer-Learning-이란" class="headerlink" title="전이 학습(Transfer Learning)이란?"></a>전이 학습(Transfer Learning)이란?</h2><p>전이 학습은 이미 다른 큰 데이터셋에서 학습된 모델의 지식(가중치와 표현)을 가져와 새로운 과제에 재활용하는 방법이다. 대규모 데이터와 긴 학습 시간을 들여 형성된 “일반적 특징 추출 능력”을 토대로, 우리 과제에 맞게 일부만 추가 학습해 빠르고 안정적으로 좋은 성능을 얻는 것이 핵심.</p>
+<ul>
+<li>기대 효과<ul>
+<li>적은 데이터로도 높은 성능</li>
+<li>학습 시간·비용 절감</li>
+<li>초기 수렴 안정성 및 재현성 향상</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="이미지-분류에서-전이-학습-활용"><a href="#이미지-분류에서-전이-학습-활용" class="headerlink" title="이미지 분류에서 전이 학습 활용"></a>이미지 분류에서 전이 학습 활용</h2><ol>
+<li><p><strong>사전학습된 백본 선택</strong></p>
+<ul>
+<li>ImageNet 등으로 학습된 ResNet, EfficientNet, ConvNeXt, ViT 등에서 시작.</li>
+<li>입력 정규화(평균&#x2F;표준편차)와 해상도 요구사항을 해당 백본에 맞춤</li>
+</ul>
+</li>
+<li><p><strong>헤드 교체(클래스 수 맞추기)</strong></p>
+<ul>
+<li>마지막 분류기(FC 또는 MLP 헤드)를 데이터의 클래스 수에 맞게 교체.</li>
+<li>가중치는 새로 초기화되고, 백본은 사전학습 가중치를 사용</li>
+</ul>
+</li>
+<li><p><strong>학습 전략 결정</strong>: 고정(freeze) vs 미세조정(fine-tune)</p>
+<ul>
+<li>단계 A: 백본 동결 + 헤드만 학습<ul>
+<li>빠르게 수렴 여부를 확인하고, 과적합 위험을 낮춤</li>
+</ul>
+</li>
+<li>단계 B: 상위 블록부터 점진적 해제 + 미세조정<ul>
+<li>데이터가 충분하거나 성능 여지가 보이면, 상위 레이어부터 일부 해제해 낮은 학습률로 파인튜닝</li>
+</ul>
+</li>
+<li>단계 C: 전층 미세조정<ul>
+<li>데이터가 많거나 도메인 차이가 크면 전층 파인튜닝을 고려</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>하이퍼파라미터와 스케줄</strong></p>
+<ul>
+<li>학습률: 헤드는 상대적으로 크게, 백본은 작게(예: 헤드 lr ×5~10, 백본 lr 기본값).</li>
+<li>가중감쇠, 모멘텀&#x2F;옵티마이저(AdamW 등), 러닝레이트 스케줄러(cosine, step)로 안정화</li>
+<li>배치 정규화 통계는 파인튜닝 단계에서 재적응되도록 두는 것이 일반적</li>
+</ul>
+</li>
+<li><p><strong>증강·정규화</strong></p>
+<ul>
+<li>기본 증강(RandomResizedCrop, Flip, ColorJitter 약하게) + 정규화는 사전학습 설정과 일치.</li>
+<li>소량 데이터는 Mixup&#x2F;CutMix·라벨 스무딩이 과적합 완화에 효과적</li>
+</ul>
+</li>
+<li><p><strong>검증과 조기 종료</strong></p>
+<ul>
+<li>검증 지표(Top-1&#x2F;Top-5, F1 등)로 성능 모니터링, 조기 종료와 베스트 체크포인트 저장을 병행.</li>
+</ul>
+</li>
+</ol>
+<br>
+<details>
+<summary>실습해설</summary>
+**전이 학습(Transfer Learning)** 이란 이미 학습된 모델의 가중치를 활용하여 새로운 데이터나 문제에 적용하는 기법입니다. 딥러닝 모델을 처음부터 학습하려면 많은 데이터와 연산 자원이 필요하지만, 전이 학습을 사용하면 기존에 학습된 지식을 재사용하여 적은 데이터로도 좋은 성능을 얻을 수 있습니다.
+
+<p>이미지 분류 모델에서 전이 학습을 활용하는 방법은 크게 두 가지가 있습니다.</p>
+<p>첫 번째는 <strong>특징 추출(Feature Extraction)</strong> 방식입니다. 사전 학습된 모델의 합성곱 층(Convolutional Layers)은 일반적인 이미지 특징(엣지, 패턴, 질감 등)을 잘 학습하고 있기 때문에, 이 부분을 그대로 사용하고 마지막 분류 층(Fully Connected Layer)만 새롭게 학습하는 방법입니다. 예를 들어, ResNet이나 VGG 같은 사전 학습된 모델을 로드한 후, 마지막 출력 층만 교체하고 새로운 데이터셋에 맞춰 학습시키는 방식이 이에 해당합니다.</p>
+<p>두 번째는 <strong>미세 조정(Fine-Tuning)</strong> 방식입니다. 이 방법은 사전 학습된 모델을 일부 수정하여 새로운 데이터에 맞춰 추가 학습하는 방식입니다. 특정 층(예: 상위 몇 개 층)은 고정하고, 나머지 층들은 새로운 데이터에 맞춰 학습할 수 있도록 설정하여 모델이 기존의 일반적인 특징뿐만 아니라 새로운 데이터셋의 특징도 학습할 수 있도록 합니다.</p>
+<p>전이 학습은 특히 <strong>의료 영상 분석, 소규모 데이터셋을 활용한 산업별 특화 모델, 객체 탐지(Object Detection)</strong> 등의 다양한 이미지 분석 분야에서 널리 사용됩니다. 기존의 대규모 데이터셋(예: ImageNet)에서 학습된 모델을 활용함으로써, 학습 시간을 단축하고 일반화 성능을 높이는 데 큰 장점이 있습니다.</p>
+</details></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EA%B0%95/">데이터 증강</a><a class="link-muted mr-2" rel="tag" href="/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/">전이 학습</a><a class="link-muted mr-2" rel="tag" href="/tags/mAP/">mAP</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/08/29/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-8/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 8</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/08/15/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/"><span class="level-item">위클리 페이퍼 6</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/';
+            this.page.identifier = '2025/08/22/위클리-페이퍼-7/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-이미지를-모델에-입력하기-전에-리사이징-Resizing-과-정규화-Normalization-를-하는-이유는-무엇인가요"><span class="level-left"><span class="level-item">1. 이미지를 모델에 입력하기 전에 리사이징(Resizing)과 정규화(Normalization)를 하는 이유는 무엇인가요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-리사이징-Resizing-을-하는-이유"><span class="level-left"><span class="level-item">1) 리사이징(Resizing)을 하는 이유</span></span></a></li><li><a class="level is-mobile" href="#2-정규화-Normalization-를-하는-이유"><span class="level-left"><span class="level-item">2) 정규화(Normalization)를 하는 이유</span></span></a></li><li><a class="level is-mobile" href="#리사이징과-정규화가-학습에-주는-종합-효과"><span class="level-left"><span class="level-item">리사이징과 정규화가 학습에 주는 종합 효과</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-데이터-증강-Data-Augmentation-이란-무엇이며-이미지-데이터에서-주로-사용하는-증강-기법에는-어떤-것들이-있나요"><span class="level-left"><span class="level-item">2. 데이터 증강(Data Augmentation)이란 무엇이며, 이미지 데이터에서 주로 사용하는 증강 기법에는 어떤 것들이 있나요?</span></span></a><ul class="menu-list"><ul class="menu-list"><li><a class="level is-mobile" href="#데이터-증강이란"><span class="level-left"><span class="level-item">데이터 증강이란 ?</span></span></a></li></ul><li><a class="level is-mobile" href="#이미지에서-자주-쓰는-기본-증강-기법"><span class="level-left"><span class="level-item">이미지에서 자주 쓰는 기본 증강 기법</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-Transfer-Learning-전이-학습-이란-무엇이며-이미지-분류-모델에서-어떻게-활용할-수-있나요"><span class="level-left"><span class="level-item">3. Transfer Learning(전이 학습)이란 무엇이며, 이미지 분류 모델에서 어떻게 활용할 수 있나요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#전이-학습-Transfer-Learning-이란"><span class="level-left"><span class="level-item">전이 학습(Transfer Learning)이란?</span></span></a></li><li><a class="level is-mobile" href="#이미지-분류에서-전이-학습-활용"><span class="level-left"><span class="level-item">이미지 분류에서 전이 학습 활용</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

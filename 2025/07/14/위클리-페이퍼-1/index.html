@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>위클리 페이퍼 1 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 선형대수학이란 어떤 학문이며, 왜 머신러닝&amp;#x2F;딥러닝에 필요한지 설명해보세요.선형대수학이란? 벡터와 행렬을 다루는 학문 행렬의 각각이 하나의 벡터가 되어 형성하는 공간을 벡터 공간  “벡터로 형성된 공간, 즉 벡터 공간에서 덧셈이나 상수곱 형태의 연산으로 변환을 하고, 그 공간의 성질에 대해 공부하는 것”"><meta property="og:type" content="article"><meta property="og:title" content="위클리 페이퍼 1"><meta property="og:url" content="https://jinsugyeong.github.io/2025/07/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-1/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="1. 선형대수학이란 어떤 학문이며, 왜 머신러닝&amp;#x2F;딥러닝에 필요한지 설명해보세요.선형대수학이란? 벡터와 행렬을 다루는 학문 행렬의 각각이 하나의 벡터가 되어 형성하는 공간을 벡터 공간  “벡터로 형성된 공간, 즉 벡터 공간에서 덧셈이나 상수곱 형태의 연산으로 변환을 하고, 그 공간의 성질에 대해 공부하는 것”"><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2025-07-13T23:59:00.000Z"><meta property="article:modified_time" content="2026-03-19T14:10:15.440Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="선형대수학"><meta property="article:tag" content="EDA"><meta property="article:tag" content="데이터 전처리"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2025/07/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-1/"},"headline":"위클리 페이퍼 1","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2025-07-13T23:59:00.000Z","dateModified":"2026-03-19T14:10:15.440Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"1. 선형대수학이란 어떤 학문이며, 왜 머신러닝&#x2F;딥러닝에 필요한지 설명해보세요.선형대수학이란? 벡터와 행렬을 다루는 학문 행렬의 각각이 하나의 벡터가 되어 형성하는 공간을 벡터 공간  “벡터로 형성된 공간, 즉 벡터 공간에서 덧셈이나 상수곱 형태의 연산으로 변환을 하고, 그 공간의 성질에 대해 공부하는 것”"}</script><link rel="canonical" href="https://jinsugyeong.github.io/2025/07/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-1/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/new-post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">위클리 페이퍼 1</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2025-07-14 08:59 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Note/">Note</a><span> / </span><a class="link-muted category-link" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/">위클리 페이퍼</a></span></div></div><div class="content"><h1 id="1-선형대수학이란-어떤-학문이며-왜-머신러닝-딥러닝에-필요한지-설명해보세요"><a href="#1-선형대수학이란-어떤-학문이며-왜-머신러닝-딥러닝에-필요한지-설명해보세요" class="headerlink" title="1. 선형대수학이란 어떤 학문이며, 왜 머신러닝&#x2F;딥러닝에 필요한지 설명해보세요."></a>1. 선형대수학이란 어떤 학문이며, 왜 머신러닝&#x2F;딥러닝에 필요한지 설명해보세요.</h1><h2 id="선형대수학이란"><a href="#선형대수학이란" class="headerlink" title="선형대수학이란?"></a>선형대수학이란?</h2><ul>
+<li>벡터와 행렬을 다루는 학문</li>
+<li>행렬의 각각이 하나의 벡터가 되어 형성하는 공간을 벡터 공간</li>
+</ul>
+<p>“벡터로 형성된 공간, 즉 벡터 공간에서 덧셈이나 상수곱 형태의 연산으로 변환을 하고, 그 공간의 성질에 대해 공부하는 것”</p>
+<span id="more"></span>
+
+<h2 id="왜-머신러닝-딥러닝에-필요할까"><a href="#왜-머신러닝-딥러닝에-필요할까" class="headerlink" title="왜 머신러닝&#x2F;딥러닝에 필요할까?"></a>왜 머신러닝&#x2F;딥러닝에 필요할까?</h2><ul>
+<li>우리가 다룰려는 데이터들이 행과 열로 이루어져 있기 때문이다. &gt; 데이터 처리의 기본단위</li>
+</ul>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p><strong>선형대수학이란?</strong></p>
+<p>선형대수학은 벡터, 행렬, 그리고 선형 변환을 다루는 수학 분야입니다. 데이터를 표현하고, 변환하며, 계산하는데 사용되는 도구를 제공합니다. 이 학문은 특히 다차원 공간에서 데이터를 이해하고 다루는 데 적합합니다.</p>
+<p><strong>왜 머신러닝&#x2F;딥러닝에 필요한가요?</strong></p>
+<ol>
+<li>데이터 표현과 구조화</li>
+</ol>
+<ul>
+<li>머신러닝과 딥러닝에서 데이터는 보통 벡터(1차원 배열)나 행렬(2차우너 배열)로 표현됩니다.</li>
+<li>예를 들어, 이미지 데이터는 픽셀 값을 가진 행렬로, 텍스트 데이터는 단어 벡터로 변환됩니다.</li>
+</ul>
+<ol start="2">
+<li>모델 연산의 기초</li>
+</ol>
+<ul>
+<li>행렬 곱셈은 딥러닝 모델의 가중치와 입력 데이터를 결합하는 핵심 연산입니다.</li>
+<li>딥러닝의 기본인 신경망은 여러 층의 행렬 연산과 활성화 함수로 구성됩니다.</li>
+</ul>
+<ol start="3">
+<li>특성 추출과 차원 축소</li>
+</ol>
+<ul>
+<li>고차원 데이터를 효율적으로 다루기 위해 주성분 분석(PCA) 같은 차원 축소 기법을 사용합니다. 이 과정은 선형대수학의 기초 원리를 따릅니다.</li>
+</ul>
+<ol start="4">
+<li>최적화와 학습 알고리즘</li>
+</ol>
+<ul>
+<li>머신러닝 모델은 손실 함수를 최소화하는 방향으로 학습합니다. 이 과정에서 기울기 계산과 같은 작업이 선형대수학 기반으로 이루어집니다.</li>
+<li>딥러닝에서 역전파(backpropagaion)는 선형대수학과 미적분의 결합된 활용입니다.</li>
+</ul>
+</details>
+
+<hr>
+<h1 id="2-EDA-Exploratory-Data-Analysis-란-무엇인가요"><a href="#2-EDA-Exploratory-Data-Analysis-란-무엇인가요" class="headerlink" title="2. EDA(Exploratory Data Analysis)란 무엇인가요?"></a>2. EDA(Exploratory Data Analysis)란 무엇인가요?</h1><ul>
+<li><p>탐색적 데이터 분석</p>
+</li>
+<li><p>데이터를 단순히 수치적으로 처리하거나 모델링을 위한 준비만 하는 것이 아니라, 데이터를 다양한 관점에서 심층적으로 살펴보고 이해하려고 시도하는 과정을 의미합니다.</p>
+</li>
+</ul>
+<h2 id="EDA에서-중요한-요소-4가지"><a href="#EDA에서-중요한-요소-4가지" class="headerlink" title="EDA에서 중요한 요소 4가지"></a>EDA에서 중요한 요소 4가지</h2><table>
+<thead>
+<tr>
+<th>요소</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>특성 파악</td>
+<td>데이터가 연속형인지, 범주형인지 파악하고 변수 간의 관계를 확인</td>
+</tr>
+<tr>
+<td>패턴 탐색</td>
+<td>규칙이나 경향(계절적 변화, 시간에 따른 변화)을 파악</td>
+</tr>
+<tr>
+<td>이상치 탐색</td>
+<td>데이터의 특이값을 찾아내고, 특이값이 중요한 정보인지 오류인지 판단</td>
+</tr>
+<tr>
+<td>변수 간 관계 분석</td>
+<td>변수 간에 어떤 상관 관계나 인과 관계가 있는지 파악</td>
+</tr>
+</tbody></table>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<p><strong>EDA, 즉 탐색적 데이터 분석(Exploratory Data Analysis)</strong> 은 데이터를 이해하고 분석하기 위해 데이터를 탐구하는 과정입니다. 이 과정은 데이터 탐구하는 과정입니다. 이 과정은 데이터를 시각화하거나 요약 통계를 계산하면서 데이터의 구조와 특성을 파악하며 데이터의 구조와 특성을 파악합니다.</p>
+<p>주된 목표는 데이터를 탐구하는 과정입니다. 이 과정은 데이터 탐구를 통해 데이터의 특징과 문제를 찾아내고, 이후 모델링 과제에 적절한 예제 들어, 고차 데이터 분석할 때 연결별 구매 금액의 분포를 확인하는 것이 EDA에 해당합니다.<br>EDA에서는 주로 평균, 분산, 결측치 등의 통계적 특성을 보고, 막대그래프나 산점도 같은 그래프를 이용하여 데이터의 특징과 문제를 찾아내고, 이후 모델링 과제에 적절한 예제 들어, 고객 데이터 분석할 때 연령별 구매 금액의 분포를 확인하는 것이 EDA에 해당합니다.</p>
+</details>
+
+<hr>
+<h1 id="3-대표적인-데이터-전처리-방법인-결측값-중복값-이상치-처리에-대해-각각-설명해-주세요"><a href="#3-대표적인-데이터-전처리-방법인-결측값-중복값-이상치-처리에-대해-각각-설명해-주세요" class="headerlink" title="3. 대표적인 데이터 전처리 방법인 결측값, 중복값, 이상치 처리에 대해 각각 설명해 주세요."></a>3. 대표적인 데이터 전처리 방법인 결측값, 중복값, 이상치 처리에 대해 각각 설명해 주세요.</h1><h3 id="결측값-처리"><a href="#결측값-처리" class="headerlink" title="결측값 처리"></a>결측값 처리</h3><p>- 데이터 셋의 누락된 값을 그대로 두면 모델이 결과를 잘못 예측할 수 있기 때문에 결측값을 추가,삭제 등 다른방법을 사용해 데이터를 보완하는 방법</p>
+<h3 id="중복값-제거"><a href="#중복값-제거" class="headerlink" title="중복값 제거"></a>중복값 제거</h3><p>- 중복된 데이터가 포함될 시 모델의 성능이 저하 될 수 있기 때문에 중복 데이터는 제거하는 것이 정확한 패턴 학습에 도움을 주는 방법</p>
+<h3 id="이상치-처리"><a href="#이상치-처리" class="headerlink" title="이상치 처리"></a>이상치 처리</h3><p>- 데이터에 이상치가 포함되면 모델이 왜곡될 수 있기 때문에 이상치를 찾아내 제거하거나 조정하여 모델의 안정성을 높이는 방법</p>
+<br>
+<details>
+<summary>실습해설</summary>
+
+<ol>
+<li>결측값 처리</li>
+</ol>
+<ul>
+<li>결측값(missing values)은 데이터셋 값이 존재하지 않는 경우입니다.</li>
+<li>결측값 처리 방법에는 다음과 같이 있습니다.</li>
+<li>제거: 결측값이 포함된 행이나 열을 완전히 삭제하거나 열을 원래 삭제하거나 열을 완전히 삭제합니다. <ul>
+<li>예시:<code>data.dropna()</code>, <code>data.dropna(thresh=3)</code> (결측값이 3개 미만인 행만 남김)</li>
+</ul>
+</li>
+<li>대체: 평균&#x2F;중앙값 대체, 최빈값 대체, 예측 값 대체 등의 방법을 활용할 수 있습니다. </li>
+<li>특수 값 할당: 결측값을 특수 값(‘-1’, ‘Unknown’)으로 대체하여 결측 여부 표시합니다.</li>
+</ul>
+<ol start="2">
+<li>중복값 처리</li>
+</ol>
+<ul>
+<li>중복값(duplicate values)은 데이터셋에 동일한 데이터가 여러 번 나타나는 경우입니다. 중복값을 처리하지 않으면 분석 결과가 왜곡될 수 있습니다.</li>
+<li>중복값을 탐지하고 제거를 진행 할 수 있습니다.</li>
+</ul>
+<ol start="3">
+<li>이상점 처리</li>
+</ol>
+<ul>
+<li>이상점(outliers)은 데이터에서 다른 값들과 현저하게 차이가 나는 데이터 포인트입니다.</li>
+<li>이상점을 탐지 (시각화 또는 통계적 방법 적용 등) 후 제거&#x2F;대체&#x2F;변환등의 과정을 거칩니다. </details></li>
+</ul>
+<hr>
+<br>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">df\[df.isna().<span class="built_in">any</span>(axis=<span class="number">1</span>)\] <span class="comment">#이걸로 불린 인덱싱하면 nan값이 있는 행들만 가져올 수 있음  </span></span><br><span class="line">  </span><br><span class="line">df = df.dropna()  &gt; 결측값있는 행 삭제  </span><br><span class="line">df = df.fillna(평균,중간값)  &gt;  결측값 채우기  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">df.duplicated()  &gt;중복값 찾기,불린값 시리즈 반환  </span><br><span class="line">df.duplicated().<span class="built_in">sum</span>() &gt;합계보기  </span><br><span class="line">df\[df.duplicated()\] &gt;불린인덱싱으로 해당 행 보기  </span><br><span class="line">df\[df.duplicated(subset=<span class="string">&#x27;id&#x27;</span>)\] &gt;<span class="built_in">id</span>값만 같아도 중복으로 체크하기  </span><br><span class="line">df\[df.duplicated(subset=<span class="string">&#x27;id&#x27;</span>, keep=<span class="literal">False</span>)\] &gt;겹치는 값 중 모든값을 중복으로 침(기본=<span class="string">&#x27;first&#x27;</span>첫번째건x)  </span><br><span class="line">  </span><br><span class="line">df = df.drop\_duplicates() &gt;중복값 제거  </span><br><span class="line">df = df.drop\_duplicates(subset=<span class="string">&#x27;id&#x27;</span>) &gt; <span class="built_in">id</span>값만 같아도 중복이라 보고 제거  </span><br><span class="line">df = df.drop\_duplicates(subset=<span class="string">&#x27;id&#x27;</span>, keep=<span class="string">&#x27;last&#x27;</span>) &gt; 중복된 값중 마지막 값만 남기고 삭제하고 싶다면  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">q1 = df\[컬럼\].quantile(<span class="number">0.25</span>)  </span><br><span class="line">q3 = df\[컬럼\].quantile(<span class="number">0.75</span>)  </span><br><span class="line">iqr = q3 - q1  </span><br><span class="line">lower\_limit = q1 - <span class="number">1.5</span> \*  iqr  </span><br><span class="line">upper\_limit = q3 +  <span class="number">1.5</span> \*  iqr  </span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>이상점 처리 방법<br>1. 그냥 두기<br>2. 기준점 안으로 두기 &gt; lower_limit , upper_limit  으로 바꿔버리기<br>3. 이상점 삭제해버리기</p>
+</div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%EC%84%A0%ED%98%95%EB%8C%80%EC%88%98%ED%95%99/">선형대수학</a><a class="link-muted mr-2" rel="tag" href="/tags/EDA/">EDA</a><a class="link-muted mr-2" rel="tag" href="/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%B2%98%EB%A6%AC/">데이터 전처리</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2025/07/20/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-2/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">위클리 페이퍼 2</span></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2025/07/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-1/';
+            this.page.identifier = '2025/07/14/위클리-페이퍼-1/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">25</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">65</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-선형대수학이란-어떤-학문이며-왜-머신러닝-딥러닝에-필요한지-설명해보세요"><span class="level-left"><span class="level-item">1. 선형대수학이란 어떤 학문이며, 왜 머신러닝/딥러닝에 필요한지 설명해보세요.</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#선형대수학이란"><span class="level-left"><span class="level-item">선형대수학이란?</span></span></a></li><li><a class="level is-mobile" href="#왜-머신러닝-딥러닝에-필요할까"><span class="level-left"><span class="level-item">왜 머신러닝/딥러닝에 필요할까?</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-EDA-Exploratory-Data-Analysis-란-무엇인가요"><span class="level-left"><span class="level-item">2. EDA(Exploratory Data Analysis)란 무엇인가요?</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#EDA에서-중요한-요소-4가지"><span class="level-left"><span class="level-item">EDA에서 중요한 요소 4가지</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-대표적인-데이터-전처리-방법인-결측값-중복값-이상치-처리에-대해-각각-설명해-주세요"><span class="level-left"><span class="level-item">3. 대표적인 데이터 전처리 방법인 결측값, 중복값, 이상치 처리에 대해 각각 설명해 주세요.</span></span></a><ul class="menu-list"><ul class="menu-list"><li><a class="level is-mobile" href="#결측값-처리"><span class="level-left"><span class="level-item">결측값 처리</span></span></a></li><li><a class="level is-mobile" href="#중복값-제거"><span class="level-left"><span class="level-item">중복값 제거</span></span></a></li><li><a class="level is-mobile" href="#이상치-처리"><span class="level-left"><span class="level-item">이상치 처리</span></span></a></li></ul></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

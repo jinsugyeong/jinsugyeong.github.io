@@ -110,6 +110,7 @@ navbar:
         아카이브: /archives
         카테고리: /categories
         태그: /tags
+        글쓰기: /admin
     # Links to be shown on the right of the navigation bar
     links:
         GitHub:

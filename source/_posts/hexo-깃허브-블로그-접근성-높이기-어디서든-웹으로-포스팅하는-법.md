@@ -2,6 +2,13 @@
 title: "Hexo 깃허브 블로그 접근성 높이기: 어디서든 웹으로 포스팅하는 법"
 date: 2026-03-19 16:26:00
 author: jinsugyeong
+categories:
+  - Infra
+tags:
+  - Github Actions
+  - Hexo
+  - Decab CMS
+  - ""
 ---
 
 

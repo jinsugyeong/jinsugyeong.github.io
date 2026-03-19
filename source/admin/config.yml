@@ -22,7 +22,8 @@ collections:
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Publish Date", name: "date", widget: "datetime", default: "{{now}}", format: "YYYY-MM-DD HH:mm:ss"}
       - {label: "Author", name: "author", widget: "hidden", default: "jinsugyeong"}
-      - {label: "Cover Image", name: "cover", widget: "image", required: false, media_folder: "source/gallery/cover", public_folder: "/gallery/cover"}
+      - {label: "Cover Image", name: "cover", widget: "image", required: false, media_folder: "/source/gallery/cover", public_folder: "/gallery/cover"}
       - {label: "Categories", name: "categories", widget: "list", required: false}
       - {label: "Tags", name: "tags", widget: "list", required: false}
-      - {label: "Body", name: "body", widget: "markdown", default: "\n\n<!-- more -->\n\n", modes: ["raw"]}
+      - {label: "Body", name: "body", widget: "markdown", default: "\n\n<!-- more -->\n\n"}
+      - {label: "Body (Toast)", name: "body_toast", widget: "toast-editor", default: "\n\n<!-- more -->\n\n"}

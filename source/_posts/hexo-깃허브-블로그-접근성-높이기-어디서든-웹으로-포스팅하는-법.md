@@ -2,6 +2,7 @@
 title: "Hexo 깃허브 블로그 접근성 높이기: 어디서든 웹으로 포스팅하는 법"
 date: 2026-03-19 16:26:00
 author: jinsugyeong
+cover: /gallery/cover/decap-로그인.png
 categories:
   - Infra
 tags:
@@ -104,12 +105,12 @@ jobs:
           # _config.yml에 설정된 GITHUB_TOKEN을 Actions의 기본 토큰으로 설정
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "jinsugyeong"
-          git config --global user.email "apr15th@naver.com"
+          git config --global user.name "깃허브이름"
+          git config --global user.email "깃허브메일"
           git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
           cd public
           git init
-          git remote add origin https://github.com/jinsugyeong/jinsugyeong.github.io.git
+          git remote add origin {깃허브 레포 주소}.git
           git fetch origin master
           git reset --soft origin/master
           git add -A

@@ -120,10 +120,6 @@ jobs:
           git push origin master
 ```
 
-
-
-
-
 ## 2.2. GitHub Actions에 쓰기 권한 부여하기
 
 직접 토큰을 발급받지 않고 기본 `GITHUB_TOKEN`을 사용할 때 가장 흔하게 발생하는 에러가 **권한 부족(Permission denied)** 이다. 기본 토큰이 레포지토리에 푸시(Push)할 수 있도록 권한을 열어주어야 한다.
@@ -533,3 +529,9 @@ jobs:
           npx hexo clean
           npx hexo generate --deploy
 ```
+
+
+
+
+
+![](오류-캡쳐.png)

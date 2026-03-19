@@ -14,9 +14,9 @@ tags:
 
 <!-- more -->
 
-처음엔 깃허브에 소스 파일들도 커밋하기, 테마 폴더만 압축해서 외장하드나 클라우드 저장소에 보관하는 방식으로 쉽게 갈려다가 주기적으로 추가되는 게시글과 자잘하게 수정되는 테마 파일 그리고 hexo 명령어 써도 깃허브 액션으로 배포되는것같은데 그럼 웹에서 글쓰기해서 저장버튼 누르는 이 로직만 추가 하는건데 간단하지 않을까? 라는 생각에 배포 방식을 바꾸게 되었다.
+처음엔 깃허브에 소스 파일도 커밋하거나, 압축해서 외장하드나 클라우드 저장소에 보관하는 방식으로 쉽게 해결하려다가 주기적으로 추가되는 게시글과 자잘하게 수정되는 테마 파일 그리고 hexo 명령어를 사용해도 깃허브 액션으로 배포되는것 같은데 그럼 웹에서 글쓰기해서 저장버튼 누르는 로직만 추가 하는건데 간단하지 않을까? 라는 생각에 배포 방식을 바꾸게 되었다.
 
-우선 방법은 여러가지가 있었다.
+우선 찾아본 방법은 여러가지가 있었다.
 
 - GitHub API 활용: 별도 설치 없이 브라우저에서 바로 쓸 수 있는 커스텀 웹앱. 가장 유연하지만 초기 세팅이 조금 필요
 - Decap CMS(Netlify CMS): 검증된 오픈소스 CMS. UI가 깔끔하고 안정적인데 Netlify 계정 필요.
@@ -59,7 +59,6 @@ tags:
 ## 2.1. `.github/workflows/deploy.yml` 작성
 
 Hexo 소스 코드가 있는 최상위 경로에 코드 작성
-
 ```yaml .github/workflows/deploy.yml
 name: Deploy Hexo Blog
 
@@ -79,6 +78,8 @@ jobs:
       # 1. 소스 코드 체크아웃
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 전체 커밋 기록을 가져오기
 
       # 2. Node.js 환경 설정
       - name: Setup Node.js
@@ -91,15 +92,31 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 4. Hexo 빌드 및 배포
+      # 4. Hexo 빌드
+      - name: Build
+        run: |
+          npx hexo clean
+          npx hexo generate
+
+      # 5. GitHub Pages에 배포
       - name: Deploy to GitHub Pages
         env:
           # _config.yml에 설정된 GITHUB_TOKEN을 Actions의 기본 토큰으로 설정
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx hexo clean
-          npx hexo generate --deploy
+          git config --global user.name "jinsugyeong"
+          git config --global user.email "apr15th@naver.com"
+          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+          cd public
+          git init
+          git remote add origin https://github.com/jinsugyeong/jinsugyeong.github.io.git
+          git fetch origin master
+          git reset --soft origin/master
+          git add -A
+          git commit -m "Site updated: $(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M:%S')" || echo "Nothing to commit"
+          git push origin master
 ```
+
 
 ## 2.2. `_config.yml` 수정
 
@@ -477,6 +494,9 @@ v3도... --force가 붙어서 실패
 - actions에 직접 push하기
 커밋 메세지 시간대 UTC로 잡히던 것도 잡기
 
+
+
+
 ```yaml .github/workflows/deploy.yml
 name: Deploy Hexo Blog
 
@@ -496,8 +516,6 @@ jobs:
       # 1. 소스 코드 체크아웃
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # 전체 커밋 기록을 가져오기
 
       # 2. Node.js 환경 설정
       - name: Setup Node.js
@@ -510,27 +528,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 4. Hexo 빌드
-      - name: Build
-        run: |
-          npx hexo clean
-          npx hexo generate
-
-      # 5. GitHub Pages에 배포
+      # 4. Hexo 빌드 및 배포
       - name: Deploy to GitHub Pages
         env:
           # _config.yml에 설정된 GITHUB_TOKEN을 Actions의 기본 토큰으로 설정
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "jinsugyeong"
-          git config --global user.email "apr15th@naver.com"
-          git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-          cd public
-          git init
-          git remote add origin https://github.com/jinsugyeong/jinsugyeong.github.io.git
-          git fetch origin master
-          git reset --soft origin/master
-          git add -A
-          git commit -m "Site updated: $(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M:%S')" || echo "Nothing to commit"
-          git push origin master
+          npx hexo clean
+          npx hexo generate --deploy
 ```

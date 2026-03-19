@@ -4,7 +4,8 @@ backend:
   branch: source # 소스 코드가 있는 브랜치
   base_url: https://my-decap-proxy.vercel.app
   auth_endpoint: /api/auth
-  publish_mode: editorial_workflow
+
+publish_mode: editorial_workflow
 
 media_folder: "source/images" # 이미지 저장 경로
 public_folder: "/images"

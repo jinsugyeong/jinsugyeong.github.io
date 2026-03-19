@@ -125,7 +125,9 @@ jobs:
 1. 깃허브 레포지토리 페이지에서 Settings 탭으로 이동
 2. 왼쪽 사이드바에서 Actions > General을 클릭
 3. 스크롤을 맨 아래로 내려서 Workflow permissions 섹션에서
+
 ![alt text](actions-권한.png)
+
 4. Read and write permissions를 선택하고 \[Save] 버튼 클릭
 
 - - -

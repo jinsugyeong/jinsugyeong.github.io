@@ -255,12 +255,17 @@
     });
   }
 
-  // 마크다운에서 data URL → 파일명으로 교체
+  // 마크다운에서 data URL / raw URL → 파일명으로 교체
   function replaceDataUrlsWithFilenames(markdown) {
     let result = markdown;
     for (const [filename, { base64, mimeType }] of pendingImages) {
       result = result.split(`data:${mimeType};base64,${base64}`).join(filename);
     }
+    // raw URL도 파일명으로 교체
+    result = result.replace(
+      /!\[([^\]]*)\]\(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^/]+\/source\/_drafts\/[^/]+\/([^)]+)\)/g,
+      '![$1]($2)'
+    );
     return result;
   }
 
@@ -338,23 +343,72 @@
     return fm;
   }
 
-  async function githubPut(path, content, message, isBase64) {
-    let sha;
-    try {
-      const check = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+  // GitHub Trees API - 여러 파일을 커밋 1개로 묶기
+  async function githubCommitAll(files, message) {
+    const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+    const apiBase = `https://api.github.com/repos/${REPO}`;
+
+    // 1. 현재 브랜치 HEAD sha 가져오기
+    const refRes = await fetch(`${apiBase}/git/ref/heads/${BRANCH}`, { headers });
+    if (!refRes.ok) throw new Error('브랜치 정보를 가져올 수 없어요');
+    const refData = await refRes.json();
+    const latestCommitSha = refData.object.sha;
+
+    // 2. 현재 tree sha 가져오기
+    const commitRes = await fetch(`${apiBase}/git/commits/${latestCommitSha}`, { headers });
+    const commitData = await commitRes.json();
+    const baseTreeSha = commitData.tree.sha;
+
+    // 3. 각 파일 blob 생성
+    const treeItems = await Promise.all(files.map(async (file) => {
+      const blobRes = await fetch(`${apiBase}/git/blobs`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          content: file.base64,
+          encoding: 'base64'
+        })
       });
-      if (check.ok) { const ex = await check.json(); sha = ex.sha; }
-    } catch(e) {}
-    const body = { message, content: isBase64 ? content : btoa(unescape(encodeURIComponent(content))), branch: BRANCH };
-    if (sha) body.sha = sha;
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      if (!blobRes.ok) throw new Error(`blob 생성 실패: ${file.path}`);
+      const blobData = await blobRes.json();
+      return {
+        path: file.path,
+        mode: '100644',
+        type: 'blob',
+        sha: blobData.sha
+      };
+    }));
+
+    // 4. 새 tree 생성
+    const treeRes = await fetch(`${apiBase}/git/trees`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ base_tree: baseTreeSha, tree: treeItems })
     });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
-    return res.json();
+    if (!treeRes.ok) throw new Error('tree 생성 실패');
+    const treeData = await treeRes.json();
+
+    // 5. 새 commit 생성
+    const newCommitRes = await fetch(`${apiBase}/git/commits`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        message,
+        tree: treeData.sha,
+        parents: [latestCommitSha]
+      })
+    });
+    if (!newCommitRes.ok) throw new Error('commit 생성 실패');
+    const newCommitData = await newCommitRes.json();
+
+    // 6. 브랜치 ref 업데이트
+    const updateRes = await fetch(`${apiBase}/git/refs/heads/${BRANCH}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ sha: newCommitData.sha })
+    });
+    if (!updateRes.ok) throw new Error('브랜치 업데이트 실패');
+    return newCommitData;
   }
 
   function blobToBase64(blob) {
@@ -373,19 +427,30 @@
     try {
       const slug = generateSlug(title);
       const date = document.getElementById('date-input').value;
+      const files = [];
+
+      // 커버 이미지 (메모리에서 가져옴)
       let coverPath = '';
       if (coverBase64 && coverFile) {
         const ext = coverFile.name.split('.').pop();
-        await githubPut(`source/gallery/cover/${slug}.${ext}`, coverBase64, `Upload cover: ${slug}`, true);
+        files.push({ path: `source/gallery/cover/${slug}.${ext}`, base64: coverBase64 });
         coverPath = `/gallery/cover/${slug}.${ext}`;
       }
+
+      // 본문 이미지들 (메모리에서 가져옴)
       for (const [filename, { base64 }] of pendingImages) {
-        await githubPut(`source/_drafts/${slug}/${filename}`, base64, `Upload image: ${filename}`, true);
+        files.push({ path: `source/_drafts/${slug}/${filename}`, base64 });
       }
+
+      // .md 파일
       const markdown = replaceDataUrlsWithFilenames(editor.getMarkdown());
-      const content = buildFrontMatter(title, date, coverPath) + markdown;
-      await githubPut(`source/_drafts/${slug}.md`, content, `Draft: ${title}`, false);
+      const mdContent = buildFrontMatter(title, date, coverPath) + markdown;
+      files.push({ path: `source/_drafts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
+
+      // 한 번에 커밋
+      await githubCommitAll(files, `Draft: ${title}`);
       pendingImages.clear();
+
       document.getElementById('btn-save-draft').disabled = true;
       const now = new Date();
       const p = n => String(n).padStart(2, '0');
@@ -404,18 +469,28 @@
     try {
       const slug = generateSlug(title);
       const date = document.getElementById('date-input').value;
+      const files = [];
+
+      // 커버 이미지
       let coverPath = '';
       if (coverBase64 && coverFile) {
         const ext = coverFile.name.split('.').pop();
-        await githubPut(`source/gallery/cover/${slug}.${ext}`, coverBase64, `Upload cover: ${slug}`, true);
+        files.push({ path: `source/gallery/cover/${slug}.${ext}`, base64: coverBase64 });
         coverPath = `/gallery/cover/${slug}.${ext}`;
       }
+
+      // 본문 이미지들
       for (const [filename, { base64 }] of pendingImages) {
-        await githubPut(`source/_posts/${slug}/${filename}`, base64, `Upload image: ${filename}`, true);
+        files.push({ path: `source/_posts/${slug}/${filename}`, base64 });
       }
+
+      // .md 파일
       const markdown = replaceDataUrlsWithFilenames(editor.getMarkdown());
-      const content = buildFrontMatter(title, date, coverPath) + markdown;
-      await githubPut(`source/_posts/${slug}.md`, content, `Create Post "${title}"`, false);
+      const mdContent = buildFrontMatter(title, date, coverPath) + markdown;
+      files.push({ path: `source/_posts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
+
+      // 한 번에 커밋
+      await githubCommitAll(files, `Create Post "${title}"`);
       pendingImages.clear();
       showToast('발행 완료', 'success');
       setStatus('발행됨');
@@ -487,7 +562,16 @@
           tagMatch[1].match(/  - (.+)/g)?.forEach(t => tags.push(t.replace('  - ', '').trim()));
           renderChips('tag-wrap', tags, 'tag-input');
         }
-        editor.setMarkdown(body);
+        // 이미지 파일명 → GitHub raw URL로 교체해서 에디터에서 보이게
+        const slug = path.replace('source/_drafts/', '').replace('.md', '');
+        const bodyWithUrls = body.replace(
+          /!\[([^\]]*)\]\(([^)]+)\)/g,
+          function(match, alt, filename) {
+            if (filename.startsWith('http')) return match;
+            return `![${alt}](https://raw.githubusercontent.com/${REPO}/${BRANCH}/source/_drafts/${slug}/${filename})`;
+          }
+        );
+        editor.setMarkdown(bodyWithUrls);
       }
       document.getElementById('draft-modal').classList.remove('show');
       setStatus('임시저장에서 불러옴');

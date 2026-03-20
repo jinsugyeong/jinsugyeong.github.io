@@ -4,14 +4,12 @@ name: Deploy Hexo Blog
 on:
   push:
     branches:
-      - source # 'source' 브랜치에 푸시될 때 실행됩니다.
+      - source 
+    paths:
+      - 'source/_posts/**' # '_posts' 폴더 내의 파일이 변경될 때만 실행
 
 jobs:
   build-and-deploy:
-    if: |
-      startsWith(github.event.head_commit.message, 'Create Post') ||
-      startsWith(github.event.head_commit.message, 'Update Post') ||
-      startsWith(github.event.head_commit.message, 'Delete Post')
     runs-on: ubuntu-latest # 실행 환경
     permissions:
       contents: write # master 브랜치에 배포(push)하기 위해 쓰기 권한을 부여합니다.

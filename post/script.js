@@ -12,55 +12,6 @@ let currentDraftBranch = null;
 let originalPostSlug = null;
 const pendingImages = new Map();
 
-// ── 세션 저장/복원 ───────────────────────────────────────────
-
-function saveSession() {
-    if (!editor) return;
-    const state = {
-        currentDraftBranch,
-        editSlug: originalPostSlug,
-        title: document.getElementById('title-input').value,
-        date: document.getElementById('date-input').value,
-        categories: [...categories],
-        tags: [...tags],
-        body: editor.getMarkdown()
-    };
-    sessionStorage.setItem('editor_state', JSON.stringify(state));
-}
-
-async function restoreSession() {
-    const saved = sessionStorage.getItem('editor_state');
-    if (!saved) return false;
-    const state = JSON.parse(saved);
-
-    if (state.editSlug) {
-        await loadPost(state.editSlug);
-        return true;
-    }
-
-    if (state.currentDraftBranch || state.title) {
-        if (state.currentDraftBranch) currentDraftBranch = state.currentDraftBranch;
-
-        document.getElementById('title-input').value = state.title || '';
-        document.getElementById('date-input').value = state.date || '';
-
-        categories.length = 0;
-        (state.categories || []).forEach(c => categories.push(c));
-        renderChips('cat-wrap', categories, 'cat-input');
-
-        tags.length = 0;
-        (state.tags || []).forEach(t => tags.push(t));
-        renderChips('tag-wrap', tags, 'tag-input');
-
-        if (editor && state.body) editor.setMarkdown(state.body);
-        return true;
-    }
-    return false;
-}
-
-function clearSession() {
-    sessionStorage.removeItem('editor_state');
-}
 
 // ── 초기화 ──────────────────────────────────────────────────
 
@@ -83,7 +34,6 @@ window.onload = async function () {
 
     document.getElementById('title-input').addEventListener('input', function () {
         document.getElementById('btn-save-draft').disabled = false;
-        saveSession();
     });
 
     // Ctrl+S 임시저장
@@ -104,10 +54,7 @@ window.onload = async function () {
         const editSlug = urlParams.get('edit');
         if (editSlug) {
             await loadPost(editSlug);
-        } else {
-            // 세션 복원 시도
-            await restoreSession();
-        }
+        } 
     }
 };
 
@@ -145,7 +92,6 @@ function initEditor() {
     });
     editor.on('change', function () {
         document.getElementById('btn-save-draft').disabled = false;
-        saveSession();
     });
 }
 
@@ -299,7 +245,6 @@ function handleCover(e) {
             document.getElementById('cover-modal').classList.add('show');
         };
         document.getElementById('cover-remove-btn').style.display = 'inline-block';
-        saveSession();
     };
     reader.readAsDataURL(file);
 }
@@ -312,7 +257,6 @@ function removeCover() {
     nameEl.onclick = null;
     document.getElementById('cover-remove-btn').style.display = 'none';
     document.getElementById('cover-file').value = '';
-    saveSession();
 }
 
 function generateSlug(title) {
@@ -373,7 +317,6 @@ async function saveDraft() {
 
         await githubCommitAll(files, `Draft: ${title}`, currentDraftBranch);
         pendingImages.clear();
-        saveSession();
 
         document.getElementById('btn-save-draft').disabled = true;
         const now = new Date();
@@ -423,7 +366,6 @@ async function publishPost() {
         }
 
         pendingImages.clear();
-        clearSession();
         showToast('발행 완료', 'success');
         setStatus('발행됨');
         setTimeout(() => setStatus(''), 4000);
@@ -577,7 +519,6 @@ async function loadDraft(branchName, mdPath) {
         }
 
         currentDraftBranch = branchName;
-        saveSession();
         document.getElementById('draft-modal').classList.remove('show');
         setStatus('임시저장에서 불러옴');
         setTimeout(() => setStatus(''), 4000);
@@ -594,7 +535,6 @@ async function deleteDraft(e, branchName) {
         await deleteBranch(branchName);
         if (currentDraftBranch === branchName) {
             currentDraftBranch = null;
-            clearSession();
         }
         showToast('삭제됐어요', '');
         openDraftModal();
@@ -681,7 +621,6 @@ async function loadPost(slug) {
         }
 
         originalPostSlug = slug;
-        saveSession();
 
         const publishBtn = document.querySelector('.btn-publish');
         publishBtn.textContent = '수정하기';
@@ -739,7 +678,6 @@ async function updatePost(originalSlug) {
         pendingImages.clear();
 
         originalPostSlug = newSlug;
-        saveSession();
 
         document.querySelector('.btn-publish').onclick = () => updatePost(newSlug);
 

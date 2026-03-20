@@ -453,21 +453,23 @@ async function openDraftModal() {
 
         const items = await Promise.all(draftBranches.map(async (b) => {
             try {
-                const fileRes = await fetch(`https://api.github.com/repos/${REPO}/contents/source/_posts?ref=${b.name}`, {
+                // source 브랜치와 diff 비교
+                const compareRes = await fetch(`https://api.github.com/repos/${REPO}/compare/${BRANCH}...${b.name}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if (!fileRes.ok) return null;
-                const files = await fileRes.json();
-                const md = files.find(f => f.name.endsWith('.md'));
+                if (!compareRes.ok) return null;
+                const compareData = await compareRes.json();
+                // 새로 추가된 .md 파일만 찾기
+                const md = compareData.files?.find(f => f.filename.endsWith('.md') && f.status === 'added');
                 if (!md) return null;
-
-                const contentRes = await fetch(md.url, {
+                
+                const contentRes = await fetch(md.contents_url, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const contentData = await contentRes.json();
                 const content = decodeURIComponent(escape(atob(contentData.content.replace(/\n/g, ''))));
                 const titleMatch = content.match(/^title:\s*"?(.+?)"?\s*$/m);
-                const title = titleMatch ? titleMatch[1].trim() : md.name.replace('.md', '');
+                const title = titleMatch ? titleMatch[1].trim() : md.filename.replace('.md', '');
 
                 return { branch: b.name, mdPath: md.path, title };
             } catch (e) {

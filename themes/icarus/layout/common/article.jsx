@@ -86,7 +86,7 @@ module.exports = class extends Component {
                             })}
                         </div>
                         <div id="article-actions" style="display:none;">
-                            <a class="button is-small is-light mr-2" href={`/new-post?edit=${page.slug}`}>
+                            <a class="button is-small is-light mr-2" href={`/post?edit=${page.slug}`}>
                                 <span class="icon is-small"><i class="fas fa-edit"></i></span>
                                 <span>수정</span>
                             </a>

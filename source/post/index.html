@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>Train.Jin() - 글쓰기</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="robots" content="noindex"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0 }</style><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#6ac1f9;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" href="/post/style.css" /></head>
+<body class="is-1-column">
+<nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item is-active" href="/post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav>
+
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column order-2 column-main is-12">
+        <div class="card">
+          <article class="card-content article" role="article">
+            <div class="content" style="margin-top: 0;">
+
+              <div id="login-section">
+                <p>글을 쓰려면 GitHub 계정으로 로그인하세요</p>
+                <button class="btn-github" onclick="loginWithGitHub()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                  GitHub으로 로그인
+                </button>
+              </div>
+
+              <div id="editor-section">
+                <input type="text" id="title-input" placeholder="제목을 입력하세요" />
+                <div class="meta-row">
+                  <div class="meta-field">
+                    <label>날짜</label>
+                    <input type="datetime-local" id="date-input" class="meta-input" />
+                  </div>
+                  <div class="meta-field">
+                    <label>카테고리</label>
+                    <div class="tags-wrap" id="cat-wrap" onclick="document.getElementById('cat-input').focus()">
+                      <input type="text" id="cat-input" class="tag-input-inline" placeholder="입력 후 Enter" />
+                    </div>
+                  </div>
+                  <div class="meta-field">
+                    <label>태그</label>
+                    <div class="tags-wrap" id="tag-wrap" onclick="document.getElementById('tag-input').focus()">
+                      <input type="text" id="tag-input" class="tag-input-inline" placeholder="입력 후 Enter" />
+                    </div>
+                  </div>
+                </div>
+                <div class="cover-row">
+                  <label>커버 이미지</label>
+                  <button class="cover-btn" onclick="document.getElementById('cover-file').click()">파일 선택</button>
+                  <input type="file" id="cover-file" accept="image/*" style="display:none" onchange="handleCover(event)" />
+                  <span id="cover-name">선택된 파일 없음</span>
+                  <button class="cover-btn" id="cover-remove-btn" onclick="removeCover()" style="display:none; color:#ff3860; border-color:#ff3860">✕ 제거</button>
+                </div>
+                <div id="toast-editor"></div>
+                <div class="action-row">
+                  <span id="status-msg"></span>
+                  <button class="btn-list" onclick="openDraftModal()">임시저장 목록</button>
+                  <button id="btn-save-draft" class="btn-draft" onclick="saveDraft()" disabled>임시저장</button>
+                  <button class="btn-publish" onclick="publishPost()">발행하기</button>
+                </div>
+              </div>
+
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="draft-modal" onclick="closeDraftModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>임시저장 목록</h3>
+      <button class="modal-close" onclick="closeDraftModal()">×</button>
+    </div>
+    <div class="modal-body" id="draft-list">
+      <div class="modal-empty">불러오는 중...</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cover-modal" onclick="document.getElementById('cover-modal').classList.remove('show')">
+  <div style="max-width:80vw; max-height:80vh;">
+    <img id="cover-modal-img" style="max-width:100%; max-height:80vh; border-radius:6px;" />
+  </div>
+</div>
+
+<footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("ko");</script>
+<script src="/js/column.js"></script>
+<script src="/js/animation.js"></script>
+<a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a>
+<script src="/js/back_to_top.js" defer></script>
+<script src="/js/main.js" defer></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<div id="toast-msg"></div>
+<div id="loading"><div class="spinner"></div><div id="loading-msg">처리 중...</div></div>
+<script src="/post/script.js"></script>
+
+<div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div>
+<script src="/js/insight.js" defer></script>
+<script defer>document.addEventListener('DOMContentLoaded', function () {
+  loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+});</script>
+</body></html>

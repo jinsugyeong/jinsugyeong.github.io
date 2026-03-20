@@ -1,0 +1,98 @@
+  #login-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+  }
+  #login-section p { color: #7a7a7a; font-size: 15px; }
+  .btn-github {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: #24292e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: inherit;
+  }
+  .btn-github:hover { background: #1a1e22; }
+  #editor-section { display: none; padding: 0 0 8px 0; }
+  #title-input {
+    width: 100%;
+    padding: 0 0 12px 0;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    border: none;
+    border-bottom: 2px solid #dbdbdb;
+    outline: none;
+    color: #363636;
+    margin-bottom: 16px;
+    background: transparent;
+  }
+  #title-input::placeholder { color: #bbb; }
+  #title-input:focus { border-bottom-color: #6ac1f9; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; align-items: center; }
+  .meta-field { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .meta-field label { color: #7a7a7a; font-weight: 500; white-space: nowrap; }
+  .meta-input { padding: 5px 10px; border: 1px solid #dbdbdb; border-radius: 4px; font-size: 13px; font-family: inherit; outline: none; color: #363636; }
+  .meta-input:focus { border-color: #6ac1f9; }
+  .tags-wrap { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding: 4px 8px; border: 1px solid #dbdbdb; border-radius: 4px; min-width: 160px; cursor: text; }
+  .tags-wrap:focus-within { border-color: #6ac1f9; }
+  .tag-chip { display: inline-flex; align-items: center; gap: 3px; background: #e8f0fe; color: #00a9ff; padding: 2px 8px; border-radius: 20px; font-size: 12px; }
+  .tag-chip button { background: none; border: none; cursor: pointer; color: #00a9ff; font-size: 13px; padding: 0; line-height: 1; }
+  .tag-input-inline { border: none; outline: none; font-size: 13px; font-family: inherit; min-width: 80px; background: transparent; }
+  .cover-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 13px; }
+  .cover-row label { color: #7a7a7a; font-weight: 500; }
+  .cover-btn { padding: 5px 12px; border: 1px solid #dbdbdb; border-radius: 4px; background: white; font-size: 13px; cursor: pointer; font-family: inherit; }
+  .cover-btn:hover { border-color: #6ac1f9; color: #6ac1f9; }
+  #cover-name { color: #7a7a7a; font-size: 12px; text-decoration: none; }
+  #cover-name.has-cover {cursor: pointer; color: #6ac1f9;text-decoration: underline;}
+  #cover-name.has-cover:hover {color: #00a9ff;}
+  #toast-editor { margin-bottom: 16px; }
+  .toastui-editor-defaultUI { border: 1px solid #dbdbdb !important; border-radius: 4px !important; }
+  .action-row { display: flex; gap: 8px; justify-content: flex-end; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+  .btn-list { padding: 8px 10px; border: 1px solid #dbdbdb; border-radius: 4px; background: white; font-size: 14px; cursor: pointer; font-family: inherit; color: #363636; transition: all 0.15s; }
+  .btn-list:hover { border-color: #6ac1f9; color: #6ac1f9; }
+  .btn-draft { padding: 8px 20px; border: 1px solid #dbdbdb; border-radius: 4px; background: white; font-size: 14px; cursor: pointer; font-family: inherit; color: #363636; transition: all 0.15s; }
+  .btn-draft:hover { border-color: #363636; }
+  .btn-publish { padding: 8px 20px; border: none; border-radius: 4px; background: #6ac1f9; color: white; font-size: 14px; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .btn-publish:hover { background: #00a9ff; }
+  .btn-publish:disabled, .btn-draft:disabled { opacity: 0.5; cursor: not-allowed; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 500; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal-box { background: white; border-radius: 6px; width: 480px; max-width: 90vw; max-height: 70vh; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+  .modal-header h3 { font-size: 15px; font-weight: 700; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #7a7a7a; line-height: 1; }
+  .modal-close:hover { color: #363636; }
+  .modal-body { overflow-y: auto; padding: 8px 0; flex: 1; }
+  .draft-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; cursor: pointer; transition: background 0.1s; border-bottom: 1px solid #f9f9f9; }
+  .draft-item:hover { background: #f8f9ff; }
+  .draft-item-title { font-size: 14px; color: #363636; font-weight: 500; }
+  .draft-item-meta { font-size: 12px; color: #7a7a7a; margin-top: 2px; }
+  .draft-item-del { background: none; border: none; color: #dbdbdb; cursor: pointer; font-size: 16px; padding: 4px; flex-shrink: 0; }
+  .draft-item-del:hover { color: #ff3860; }
+  .modal-empty { padding: 40px 20px; text-align: center; color: #7a7a7a; font-size: 14px; }
+  #status-msg { font-size: 13px; color: #7a7a7a; margin-right: auto; align-self: center; }
+  #toast-msg { position: fixed; top: 24px; right: 24px; background: #363636; color: white; padding: 12px 20px; border-radius: 4px; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 9999; }
+  #toast-msg.show { transform: translateY(0); opacity: 1; }
+  #toast-msg.success { background: #74b574; }
+  #toast-msg.error { background: #ca5e59; }
+  #loading { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.75); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid #dbdbdb; border-top-color: #6ac1f9; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading-msg { font-size: 14px; color: #7a7a7a; }
+  /*데스크탑 에디터 영역 넓게*/
+  .section {padding-top: 1rem !important;}
+  @media screen and (min-width: 1440px) {
+    .container { max-width: calc(100vw - 6rem) !important; width: calc(100vw - 6rem) !important; }
+  }
+  /*에디터 폰트 크기*/
+  .ProseMirror, .toastui-editor-contents { font-family:'Pretendard' !important; font-size: 15px !important; line-height: 160% !important; }

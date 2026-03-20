@@ -110,7 +110,7 @@ navbar:
         아카이브: /archives
         카테고리: /categories
         태그: /tags
-        글쓰기: /new-post
+        글쓰기: /post
     # Links to be shown on the right of the navigation bar
     links:
         GitHub:
@@ -153,7 +153,7 @@ article:
 search:
     type: insight
     # Whether to include pages in the search results
-    index_pages: true
+    index_pages: false
 # Comment plugin configurations
 # https://ppoffice.github.io/hexo-theme-icarus/categories/Plugins/Comment/
 comment:

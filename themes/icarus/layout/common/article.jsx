@@ -77,12 +77,24 @@ module.exports = class extends Component {
                     {/* Licensing block */}
                     {!index && article && article.licenses && Object.keys(article.licenses)
                         ? <ArticleLicensing.Cacheable page={page} config={config} helper={helper} /> : null}
-                    {/* Tags */}
-                    {!index && page.tags && page.tags.length ? <div class="article-tags is-size-7 mb-4">
-                        <span class="mr-2">#</span>
-                        {page.tags.map(tag => {
-                            return <a class="link-muted mr-2" rel="tag" href={url_for(tag.path)}>{tag.name}</a>;
-                        })}
+                    {/* 태그 + 수정/삭제 버튼 */}
+                    {!index && page.tags && page.tags.length ? <div class="article-tags is-size-7 mb-4" style="display:flex; align-items:flex-start; justify-content:space-between;">
+                        <div style="flex:1;">
+                            <span class="mr-2">#</span>
+                            {page.tags.map(tag => {
+                                return <a class="link-muted mr-2" rel="tag" href={url_for(tag.path)}>{tag.name}</a>;
+                            })}
+                        </div>
+                        <div id="article-actions" style="display:none;">
+                            <a class="button is-small is-light mr-2" href={`/new-post?edit=${page.slug}`}>
+                                <span class="icon is-small"><i class="fas fa-edit"></i></span>
+                                <span>수정</span>
+                            </a>
+                            <button class="button is-small is-light has-text-danger" id="btn-delete-post" data-slug={page.slug} data-path={page.source}>
+                                <span class="icon is-small"><i class="fas fa-trash"></i></span>
+                                <span>삭제</span>
+                            </button>
+                        </div>
                     </div> : null}
                     {/* "Read more" button */}
                     {index && page.excerpt ? <a class="article-more button is-small is-size-7" href={`${url_for(page.link || page.path)}#more`}>{__('article.more')}</a> : null}

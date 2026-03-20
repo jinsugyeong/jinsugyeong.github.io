@@ -8,7 +8,10 @@ on:
 
 jobs:
   build-and-deploy:
-    if: "startsWith(github.event.head_commit.message, 'Create Post')" # 커밋 메시지가 'Create Post'로 시작하는 경우에만 실행
+    if: |
+      startsWith(github.event.head_commit.message, 'Create Post') ||
+      startsWith(github.event.head_commit.message, 'Update Post') ||
+      startsWith(github.event.head_commit.message, 'Delete Post')
     runs-on: ubuntu-latest # 실행 환경
     permissions:
       contents: write # master 브랜치에 배포(push)하기 위해 쓰기 권한을 부여합니다.

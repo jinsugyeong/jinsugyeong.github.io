@@ -1,5 +1,5 @@
 ---
-title: hexo 깃허브 블로그 접근성 높이기: 어디서든 웹으로 포스팅하는 법
+title: "hexo 깃허브 블로그 접근성 높이기: 어디서든 웹으로 포스팅하는 법"
 date: 2026-03-20 00:12:00
 author: jinsugyeong
 cover: /gallery/cover/hexo-깃허브-블로그-접근성-높이기-어디서든-웹으로-포스팅하는-법.png

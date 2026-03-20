@@ -215,7 +215,122 @@
     document.getElementById('title-input').addEventListener('input', function() {
       document.getElementById('btn-save-draft').disabled = false;
     });
+
+    // URL 파라미터에 edit 있으면 기존 글 불러오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const editSlug = urlParams.get('edit');
+    if (editSlug && token) {
+      loadPost(editSlug);
+    }
   };
+
+  async function loadPost(slug) {
+    showLoading('글 불러오는 중...');
+    try {
+      const path = `source/_posts/${slug}.md`;
+      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('글을 찾을 수 없어요');
+      const data = await res.json();
+      const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+
+      const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n\n?([\s\S]*)$/);
+      if (fmMatch) {
+        const fm = fmMatch[1];
+        const body = fmMatch[2];
+
+        const titleMatch = fm.match(/^title:\s*"?(.+?)"?\s*$/m);
+        if (titleMatch) document.getElementById('title-input').value = titleMatch[1].trim();
+
+        const dateMatch = fm.match(/^date:\s*(.+)$/m);
+        if (dateMatch) {
+          const d = new Date(dateMatch[1].trim());
+          d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+          document.getElementById('date-input').value = d.toISOString().slice(0, 16);
+        }
+
+        const catMatch = fm.match(/^categories:\n((?:  - .+\n?)*)/m);
+        if (catMatch) {
+          categories.length = 0;
+          catMatch[1].match(/  - (.+)/g)?.forEach(c => categories.push(c.replace('  - ', '').trim()));
+          renderChips('cat-wrap', categories, 'cat-input');
+        }
+
+        const tagMatch = fm.match(/^tags:\n((?:  - .+\n?)*)/m);
+        if (tagMatch) {
+          tags.length = 0;
+          tagMatch[1].match(/  - (.+)/g)?.forEach(t => tags.push(t.replace('  - ', '').trim()));
+          renderChips('tag-wrap', tags, 'tag-input');
+        }
+
+        const coverMatch = fm.match(/^cover:\s*(.+)$/m);
+        if (coverMatch) {
+          const coverPath = coverMatch[1].trim();
+          document.getElementById('cover-name').textContent = coverPath.split('/').pop();
+          document.getElementById('cover-remove-btn').style.display = 'inline-block';
+          const rawUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/source${coverPath}`;
+          const imgRes = await fetch(rawUrl);
+          const imgBlob = await imgRes.blob();
+          coverBase64 = await blobToBase64(imgBlob);
+          coverFile = { name: coverPath.split('/').pop() };
+        }
+
+        const bodyWithUrls = body.replace(
+          /!\[([^\]]*)\]\(([^)]+)\)/g,
+          function(match, alt, filename) {
+            if (filename.startsWith('http')) return match;
+            return `![${alt}](https://raw.githubusercontent.com/${REPO}/${BRANCH}/source/_posts/${slug}/${filename})`;
+          }
+        );
+        editor.setMarkdown(bodyWithUrls);
+      }
+
+      // 발행하기 버튼 → 수정하기로 변경
+      const publishBtn = document.querySelector('.btn-publish');
+      publishBtn.textContent = '수정하기';
+      publishBtn.onclick = () => updatePost(slug);
+
+      setStatus('글 불러옴');
+      setTimeout(() => setStatus(''), 4000);
+    } catch(e) {
+      showToast('불러오기 실패: ' + e.message, 'error');
+    } finally { hideLoading(); }
+  }
+
+  async function updatePost(slug) {
+    const title = document.getElementById('title-input').value.trim();
+    if (!title) { showToast('제목을 입력하세요', 'error'); return; }
+    showLoading('수정 중...');
+    try {
+      const date = document.getElementById('date-input').value;
+      const files = [];
+
+      let coverPath = '';
+      if (coverBase64 && coverFile) {
+        const ext = coverFile.name.split('.').pop();
+        files.push({ path: `source/gallery/cover/${slug}.${ext}`, base64: coverBase64 });
+        coverPath = `/gallery/cover/${slug}.${ext}`;
+      }
+
+      for (const [filename, { base64 }] of pendingImages) {
+        files.push({ path: `source/_posts/${slug}/${filename}`, base64 });
+      }
+
+      const markdown = replaceDataUrlsWithFilenames(editor.getMarkdown());
+      const mdContent = buildFrontMatter(title, date, coverPath) + markdown;
+      files.push({ path: `source/_posts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
+
+      await githubCommitAll(files, `Update Post "${title}"`);
+      pendingImages.clear();
+      showToast('수정 완료', 'success');
+      setStatus('수정됨');
+      setTimeout(() => setStatus(''), 4000);
+    } catch(e) {
+      showToast('수정 실패: ' + e.message, 'error');
+    } finally { hideLoading(); }
+  }
+
 
   function loginWithGitHub() {
     window.open(OAUTH_BASE + '/api/auth?provider=github&scope=repo', 'github-oauth', 'width=600,height=700,left=200,top=100');
@@ -333,7 +448,7 @@
 
   function buildFrontMatter(title, date, cover) {
     let fm = '---\n';
-    fm += `title: ${title}\n`;
+    fm += `title: "${title}"\n`;
     fm += `date: ${formatDate(date)}\n`;
     fm += `author: jinsugyeong\n`;
     if (cover) fm += `cover: ${cover}\n`;

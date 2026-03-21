@@ -80,7 +80,8 @@ function initEditor() {
                     const filename = `${Date.now()}.${ext}`;
                     const base64 = await blobToBase64(blob);
                     pendingImages.set(filename, { base64, mimeType: blob.type });
-                    callback(`data:${blob.type};base64,${base64}`, filename.replace(/\.[^.]+$/, ''));
+                    // alt에 파일명 저장 → replaceDataUrlsWithFilenames에서 교체할 때 사용
+                    callback(`data:${blob.type};base64,${base64}`, filename);
                 } catch (e) {
                     showToast('이미지 처리 실패: ' + e.message, 'error');
                 }
@@ -210,12 +211,12 @@ async function applyFrontMatter(fm, body, branchForImages, slugForImages) {
     renderChips('tag-wrap', tags, 'tag-input');
     coverBase64 = null;
     coverFile = null;
+    pendingImages.clear();
     const nameEl = document.getElementById('cover-name');
     nameEl.textContent = '선택된 파일 없음';
     nameEl.classList.remove('has-cover');
     nameEl.onclick = null;
     document.getElementById('cover-remove-btn').style.display = 'none';
-    pendingImages.clear();
 
     const titleMatch = fm.match(/^title:\s*"?(.+?)"?\s*$/m);
     if (titleMatch) document.getElementById('title-input').value = titleMatch[1].trim();
@@ -255,19 +256,18 @@ async function applyFrontMatter(fm, body, branchForImages, slugForImages) {
         coverFile = { name: coverPath.split('/').pop() };
     }
 
-    // 이미지 raw URL로 교체
+    // 이미지 raw URL로 교체 (저장된 파일명은 파일명 그대로, asset_img는 raw URL로)
     const bodyWithUrls = body
-        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (match, alt, filename) {
-            if (filename.startsWith('http')) return match;
-            return `![${alt}](https://raw.githubusercontent.com/${REPO}/${branchForImages}/source/_posts/${slugForImages}/${filename})`;
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function (match, alt, src) {
+            if (src.startsWith('http')) return match;
+            return `![${alt}](https://raw.githubusercontent.com/${REPO}/${branchForImages}/source/_posts/${slugForImages}/${src})`;
         })
         .replace(/\{%\s*asset_img\s+"?([^"\s%]+)"?\s*"?([^"%]*?)"?\s*%\}/g, function (match, filename, alt) {
-            return `![${alt}](https://raw.githubusercontent.com/${REPO}/${branchForImages}/source/_posts/${slugForImages}/${filename})`;
+            return `![${alt.trim()}](https://raw.githubusercontent.com/${REPO}/${branchForImages}/source/_posts/${slugForImages}/${filename})`;
         });
     editor.setMarkdown(bodyWithUrls);
 
-
-    // setMarkdown이 change 이벤트 발생시키므로 다시 초기화
+    // setMarkdown이 change 이벤트 발생시키므로 dirty 플래그 초기화
     setTimeout(() => {
         isDirty = false;
         document.getElementById('btn-save-draft').disabled = true;
@@ -275,7 +275,7 @@ async function applyFrontMatter(fm, body, branchForImages, slugForImages) {
 }
 
 // 커버+이미지 파일 목록 빌드
-function buildFileList(slug, postDir) {
+function buildFileList(slug) {
     const files = [];
     let coverPath = '';
 
@@ -296,16 +296,28 @@ function buildFileList(slug, postDir) {
     return { files, coverPath, markdown };
 }
 
+// data URL → 파일명 교체
+// addImageBlobHook에서 alt에 파일명을 저장했으므로 alt 기반으로 교체
 function replaceDataUrlsWithFilenames(markdown) {
     let result = markdown;
-    for (const [filename, { base64, mimeType }] of pendingImages) {
-        result = result.split(`data:${mimeType};base64,${base64}`).join(filename);
-    }
-    // raw URL → 파일명 (drafts, posts, draft 브랜치 모두 처리)
+
+    // ![파일명](data:...) → ![파일명](파일명) 교체
+    result = result.replace(
+        /!\[([^\]]+)\]\(data:image\/[^;]+;base64,[^)]+\)/g,
+        function (match, alt) {
+            if (pendingImages.has(alt)) {
+                return `![${alt}](${alt})`;
+            }
+            return match;
+        }
+    );
+
+    // raw URL → 파일명
     result = result.replace(
         /!\[([^\]]*)\]\(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^/\s]+\/source\/_?posts\/[^/]+\/([^)\s]+)\)/g,
         '![$1]($2)'
     );
+
     return result;
 }
 
@@ -453,7 +465,7 @@ async function publishPost() {
         isDirty = false;
         hideLoading();
         showToast('발행 완료! 배포 대기 중...', 'success');
-        await waitForDeploy(slug, document.getElementById('date-input').value);
+        await waitForDeploy(slug, date);
     } catch (e) {
         showToast('발행 실패: ' + e.message, 'error');
     } finally { hideLoading(); }
@@ -551,7 +563,6 @@ async function loadDraft(branchName, mdPath) {
 
         currentDraftBranch = branchName;
         originalPostSlug = null;
-        isDirty = false;
         document.getElementById('draft-modal').classList.remove('show');
         const publishBtn = document.querySelector('.btn-publish');
         publishBtn.textContent = '발행하기';
@@ -597,7 +608,6 @@ async function loadPost(slug) {
 
         originalPostSlug = slug;
         currentDraftBranch = null;
-        isDirty = false;
         const publishBtn = document.querySelector('.btn-publish');
         publishBtn.textContent = '수정하기';
         publishBtn.onclick = () => updatePost(slug);
@@ -639,10 +649,11 @@ async function updatePost(originalSlug) {
         pendingImages.clear();
         isDirty = false;
 
+        // 수정 후 버튼 업데이트
         document.querySelector('.btn-publish').onclick = () => updatePost(newSlug);
         hideLoading();
         showToast('수정 완료! 배포 대기 중...', 'success');
-        await waitForDeploy(newSlug, document.getElementById('date-input').value);
+        await waitForDeploy(newSlug, date);
     } catch (e) {
         showToast('수정 실패: ' + e.message, 'error');
     } finally { hideLoading(); }
@@ -651,47 +662,58 @@ async function updatePost(originalSlug) {
 // ── 배포 대기 ────────────────────────────────────────────────
 
 async function waitForDeploy(slug, dateVal) {
-    setStatus('배포 대기 중...');
-    await new Promise(r => setTimeout(r, 3000)); // Actions 트리거 딜레이
+    showLoading('배포 중...');
+    document.getElementById('loading-sub').textContent = '배포가 완료되면 발행된 글로 이동합니다';
+    await new Promise(r => setTimeout(r, 3000));
 
     const headers = { 'Authorization': `Bearer ${token}` };
     const maxTries = 24; // 최대 2분
 
     for (let i = 0; i < maxTries; i++) {
-        const res = await fetch(
-            `https://api.github.com/repos/${REPO}/actions/runs?branch=${BRANCH}&per_page=1`,
-            { headers }
-        );
-        const data = await res.json();
-        const run = data.workflow_runs?.[0];
+        try {
+            const res = await fetch(
+                `https://api.github.com/repos/${REPO}/actions/runs?branch=${BRANCH}&per_page=1`,
+                { headers }
+            );
+            const data = await res.json();
+            const run = data.workflow_runs?.[0];
 
-        if (run) {
-            if (run.status === 'completed' && run.conclusion === 'success') {
-                setStatus('배포 완료! 이동 중...');
-                const d = new Date(dateVal);
-                const p = n => String(n).padStart(2, '0');
-                const datePath = `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
-                window.location.href = `https://jinsugyeong.github.io/${datePath}/${slug}/`;
-                return;
-            } else if (run.status === 'completed' && run.conclusion !== 'success') {
-                showToast('배포 실패 😢 Actions를 확인해주세요', 'error');
-                setStatus('');
-                return;
+            if (run) {
+                if (run.status === 'completed' && run.conclusion === 'success') {
+                    document.getElementById('loading-msg').textContent = '배포 완료! 이동 중...';
+                    document.getElementById('loading-sub').textContent = '';
+                    const d = new Date(dateVal);
+                    const p = n => String(n).padStart(2, '0');
+                    const datePath = `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
+                    window.location.href = `https://jinsugyeong.github.io/${datePath}/${slug}/`;
+                    return;
+                } else if (run.status === 'completed' && run.conclusion !== 'success') {
+                    hideLoading();
+                    showToast('배포 실패 😢 Actions를 확인해주세요', 'error');
+                    return;
+                }
             }
-        }
+        } catch (e) { /* 네트워크 일시 오류는 무시하고 계속 polling */ }
 
-        setStatus(`배포 중... (${(i+1)*5}초)`);
+        document.getElementById('loading-msg').textContent = `배포 중... (${(i+1)*5}초)`;
         await new Promise(r => setTimeout(r, 5000));
     }
 
+    hideLoading();
     showToast('배포 시간이 너무 걸려요. 직접 확인해주세요!', 'error');
-    setStatus('');
 }
 
 // ── UI 헬퍼 ─────────────────────────────────────────────────
 
-function showLoading(msg) { document.getElementById('loading-msg').textContent = msg; document.getElementById('loading').style.display = 'flex'; }
-function hideLoading() { document.getElementById('loading').style.display = 'none'; }
+function showLoading(msg) {
+    document.getElementById('loading-msg').textContent = msg;
+    document.getElementById('loading-sub').textContent = '';
+    document.getElementById('loading').style.display = 'flex';
+}
+function hideLoading() {
+    document.getElementById('loading-sub').textContent = '';
+    document.getElementById('loading').style.display = 'none';
+}
 function setStatus(msg) { document.getElementById('status-msg').textContent = msg; }
 function showToast(msg, type) {
     const el = document.getElementById('toast-msg');

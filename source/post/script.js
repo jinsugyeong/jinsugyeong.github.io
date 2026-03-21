@@ -742,7 +742,7 @@ async function waitForDeploy(slug, dateVal) {
     for (let i = 0; i < maxTries; i++) {
         try {
             const res = await fetch(
-                `https://api.github.com/repos/${REPO}/actions/runs?branch=${BRANCH}&per_page=5`,
+                `https://api.github.com/repos/${REPO}/actions/runs?per_page=5`,
                 { headers }
             );
             const data = await res.json();
@@ -750,8 +750,8 @@ async function waitForDeploy(slug, dateVal) {
 
             // 발행 시점 이후에 생성된 run과 'pages build and deployment' 찾기
             const run = runs.find(r => 
-                r.name === 'pages build and deployment' &&
-                new Date(r.created_at).getTime() > deployStartTime - 10000);
+                new Date(r.created_at).getTime() > deployStartTime - 10000) &&
+                r.name === 'pages build and deployment';
 
             if (run) {
                 if (run.status === 'completed' && run.conclusion === 'success') {
@@ -762,7 +762,7 @@ async function waitForDeploy(slug, dateVal) {
                     const datePath = `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
                     const url = `https://jinsugyeong.github.io/${datePath}/${slug}/`;
                     location.href = url;
-                    setTimeout(() => location.reload(), 500);
+                    setTimeout(() => location.reload(true), 500);
                     return;
                 } else if (run.status === 'completed' && run.conclusion !== 'success') {
                     hideLoading();

@@ -261,10 +261,17 @@ async function applyFrontMatter(fm, body, branchForImages, slugForImages) {
             if (filename.startsWith('http')) return match;
             return `![${alt}](https://raw.githubusercontent.com/${REPO}/${branchForImages}/source/_posts/${slugForImages}/${filename})`;
         })
-        .replace(/\{%\s*asset_img\s+"([^"]+)"\s*"?([^"%]*)"?\s*%\}/g, function (match, filename, alt) {
+        .replace(/\{%\s*asset_img\s+"?([^"\s%]+)"?\s*"?([^"%]*?)"?\s*%\}/g, function (match, filename, alt) {
             return `![${alt}](https://raw.githubusercontent.com/${REPO}/${branchForImages}/source/_posts/${slugForImages}/${filename})`;
         });
     editor.setMarkdown(bodyWithUrls);
+
+
+    // setMarkdown이 change 이벤트 발생시키므로 다시 초기화
+    setTimeout(() => {
+        isDirty = false;
+        document.getElementById('btn-save-draft').disabled = true;
+    }, 0);
 }
 
 // 커버+이미지 파일 목록 빌드
@@ -464,7 +471,7 @@ async function refreshDraftList() {
     listEl.innerHTML = '<div class="modal-empty">불러오는 중...</div>';
     try {
         const res = await fetch(`https://api.github.com/repos/${REPO}/branches?per_page=100`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 'Authorization': `Bearer ${token}`, 'Cache-Control': 'no-cache' }
         });
         if (!res.ok) throw new Error('목록을 불러올 수 없어요');
         const draftBranches = (await res.json()).filter(b => b.name.startsWith('draft/'));
@@ -478,7 +485,7 @@ async function refreshDraftList() {
             try {
                 const compareRes = await fetch(
                     `https://api.github.com/repos/${REPO}/compare/${BRANCH}...${b.name}`,
-                    { headers: { 'Authorization': `Bearer ${token}` } }
+                    { headers: { 'Authorization': `Bearer ${token}`, 'Cache-Control': 'no-cache' } }
                 );
                 if (!compareRes.ok) return null;
                 const compareData = await compareRes.json();
@@ -564,6 +571,7 @@ async function deleteDraft(e, branchName) {
         await deleteBranch(branchName);
         if (currentDraftBranch === branchName) currentDraftBranch = null;
         showToast('삭제됐어요', '');
+        document.getElementById('draft-modal').classList.add('show');
         await refreshDraftList();
     } catch (e) {
         showToast('삭제 실패: ' + e.message, 'error');

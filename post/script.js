@@ -477,6 +477,19 @@ async function loadDraft(branchName, mdPath) {
         const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
         const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n\n?([\s\S]*)$/);
         if (fmMatch) {
+            // front matter 파싱 전에 항상 초기화
+            categories.length = 0;
+            renderChips('cat-wrap', categories, 'cat-input');
+            tags.length = 0;
+            renderChips('tag-wrap', tags, 'tag-input');
+            coverBase64 = null;
+            coverFile = null;
+            document.getElementById('cover-name').textContent = '선택된 파일 없음';
+            document.getElementById('cover-name').classList.remove('has-cover');
+            document.getElementById('cover-name').onclick = null;
+            document.getElementById('cover-remove-btn').style.display = 'none';
+            pendingImages.clear();
+
             const fm = fmMatch[1];
             const body = fmMatch[2];
 
@@ -579,6 +592,19 @@ async function loadPost(slug) {
 
         const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n\n?([\s\S]*)$/);
         if (fmMatch) {
+            // front matter 파싱 전에 항상 초기화
+            categories.length = 0;
+            renderChips('cat-wrap', categories, 'cat-input');
+            tags.length = 0;
+            renderChips('tag-wrap', tags, 'tag-input');
+            coverBase64 = null;
+            coverFile = null;
+            document.getElementById('cover-name').textContent = '선택된 파일 없음';
+            document.getElementById('cover-name').classList.remove('has-cover');
+            document.getElementById('cover-name').onclick = null;
+            document.getElementById('cover-remove-btn').style.display = 'none';
+            pendingImages.clear();
+
             const fm = fmMatch[1];
             const body = fmMatch[2];
 

@@ -11,24 +11,6 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2026/02/19/%EC%9C%88%EB%8F%84%EC%9A%B0-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD-%EC%84%A4%EC%A0%95/</loc>
-    
-    <lastmod>2026-03-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2026/03/21/%ED%85%8C%EC%8A%A4%ED%8A%B8/</loc>
-    
-    <lastmod>2026-03-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/categories/index.html</loc>
     
     <lastmod>2026-03-21</lastmod>
@@ -47,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2025/08/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/</loc>
+    <loc>https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/</loc>
     
     <lastmod>2026-03-21</lastmod>
     
@@ -56,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/</loc>
+    <loc>https://jinsugyeong.github.io/2025/08/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/</loc>
     
     <lastmod>2026-03-21</lastmod>
     
@@ -83,6 +65,15 @@
   </url>
   
   <url>
+    <loc>https://jinsugyeong.github.io/2026/02/19/%EC%9C%88%EB%8F%84%EC%9A%B0-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD-%EC%84%A4%EC%A0%95/</loc>
+    
+    <lastmod>2026-03-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://jinsugyeong.github.io/2025/09/06/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/</loc>
     
     <lastmod>2026-03-21</lastmod>
@@ -92,34 +83,7 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2026/02/20/%EB%8B%A4%EC%9D%8C%EC%B9%B4%ED%8E%98-%EB%8C%93%EA%B8%80-%ED%81%AC%EB%A1%A4%EB%A7%81-%EC%82%BD%EC%A7%88%EA%B8%B0-Selenium%EC%9C%BC%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8%EB%B6%80%ED%84%B0-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%84%A4%EC%9D%B4%EC%85%98%EA%B9%8C%EC%A7%80/</loc>
-    
-    <lastmod>2026-03-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2026/02/21/%EC%95%8C%EC%9E%98%EB%94%B1%EA%B9%94%EC%84%BC-%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%ED%98%84%EC%9D%84-%EC%9C%84%ED%95%9C-%EA%B3%B5%EB%B6%80/</loc>
-    
-    <lastmod>2026-03-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2025/07/13/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-1/</loc>
-    
-    <lastmod>2026-03-21</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2025/10/18/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-11/</loc>
+    <loc>https://jinsugyeong.github.io/2026/03/21/%ED%85%8C%EC%8A%A4%ED%8A%B8/</loc>
     
     <lastmod>2026-03-21</lastmod>
     
@@ -164,7 +128,34 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2026/02/28/%EA%B5%AC%EA%B8%80-Oauth-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84/</loc>
+    <loc>https://jinsugyeong.github.io/2026/02/20/%EB%8B%A4%EC%9D%8C%EC%B9%B4%ED%8E%98-%EB%8C%93%EA%B8%80-%ED%81%AC%EB%A1%A4%EB%A7%81-%EC%82%BD%EC%A7%88%EA%B8%B0-Selenium%EC%9C%BC%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8%EB%B6%80%ED%84%B0-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%84%A4%EC%9D%B4%EC%85%98%EA%B9%8C%EC%A7%80/</loc>
+    
+    <lastmod>2026-03-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2026/02/21/%EC%95%8C%EC%9E%98%EB%94%B1%EA%B9%94%EC%84%BC-%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%ED%98%84%EC%9D%84-%EC%9C%84%ED%95%9C-%EA%B3%B5%EB%B6%80/</loc>
+    
+    <lastmod>2026-03-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2025/07/13/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-1/</loc>
+    
+    <lastmod>2026-03-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2025/10/18/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-11/</loc>
     
     <lastmod>2026-03-21</lastmod>
     
@@ -174,6 +165,15 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/2026/02/18/OpenSearch-%EC%98%A4%ED%94%88-%EC%86%8C%EC%8A%A4-%EA%B2%80%EC%83%89-%EB%B0%8F-%EB%B6%84%EC%84%9D-%EC%84%9C%EB%B9%84%EC%8A%A4/</loc>
+    
+    <lastmod>2026-03-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2026/02/28/%EA%B5%AC%EA%B8%80-Oauth-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84/</loc>
     
     <lastmod>2026-03-21</lastmod>
     
@@ -410,41 +410,6 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/tags/NLP/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/FastText/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Word2Vec/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Attention/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Transformer/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/tags/BERT/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -453,6 +418,13 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/GPT/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Transformer/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -488,6 +460,34 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/PEFT/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/NLP/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/FastText/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Word2Vec/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Attention/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -599,20 +599,6 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/tags/CNN/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Auto-Encoder/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/tags/PyTorch/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -635,6 +621,20 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/NumPy/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/CNN/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Auto-Encoder/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -676,6 +676,13 @@
   </url>
   
   <url>
+    <loc>https://jinsugyeong.github.io/tags/%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD/</loc>
+    <lastmod>2026-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://jinsugyeong.github.io/tags/FCN/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -684,13 +691,6 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/GAN/</loc>
-    <lastmod>2026-03-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD/</loc>
     <lastmod>2026-03-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

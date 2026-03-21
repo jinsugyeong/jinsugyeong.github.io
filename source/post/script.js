@@ -324,13 +324,15 @@ function convertToAssetImg(markdown) {
     return markdown.replace(
         /!\[([^\]]*)\]\(([^)]+)\)/g,
         function (match, alt, path) {
+            const filename = path.split('/').pop();
+            const altText = alt.split('.')[0] || alt;
             if (path.startsWith('http://') || path.startsWith('https://')) {
                 if (path.includes('raw.githubusercontent.com')) {
-                    return `{% asset_img "${path.split('/').pop()}" "${alt}" %}`;
+                    return `{% asset_img ${filename} ${altText} %}`;
                 }
                 return match;
             }
-            return `{% asset_img "${path.split('/').pop()}" "${alt}" %}`;
+            return `{% asset_img ${filename} ${altText} %}`;
         }
     );
 }
@@ -757,7 +759,8 @@ async function waitForDeploy(slug, dateVal) {
                     const d = new Date(dateVal);
                     const p = n => String(n).padStart(2, '0');
                     const datePath = `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
-                    window.location.href = `https://jinsugyeong.github.io/${datePath}/${slug}/`;
+                    const url = `https://jinsugyeong.github.io/${datePath}/${slug}/`;
+                    window.location.replace(url);
                     return;
                 } else if (run.status === 'completed' && run.conclusion !== 'success') {
                     hideLoading();

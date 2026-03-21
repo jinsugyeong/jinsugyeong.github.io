@@ -470,8 +470,8 @@ async function refreshDraftList() {
     const listEl = document.getElementById('draft-list');
     listEl.innerHTML = '<div class="modal-empty">불러오는 중...</div>';
     try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/branches?per_page=100`, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Cache-Control': 'no-cache' }
+        const res = await fetch(`https://api.github.com/repos/${REPO}/branches?per_page=100&_=${Date.now()}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('목록을 불러올 수 없어요');
         const draftBranches = (await res.json()).filter(b => b.name.startsWith('draft/'));
@@ -484,8 +484,8 @@ async function refreshDraftList() {
         const items = await Promise.all(draftBranches.map(async (b) => {
             try {
                 const compareRes = await fetch(
-                    `https://api.github.com/repos/${REPO}/compare/${BRANCH}...${b.name}`,
-                    { headers: { 'Authorization': `Bearer ${token}`, 'Cache-Control': 'no-cache' } }
+                    `https://api.github.com/repos/${REPO}/compare/${BRANCH}...${b.name}?_=${Date.now()}`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
                 );
                 if (!compareRes.ok) return null;
                 const compareData = await compareRes.json();

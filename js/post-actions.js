@@ -10,16 +10,22 @@
     el.id = 'pa-toast';
     el.textContent = msg;
     el.style.cssText = `
-      position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-      padding:10px 20px;border-radius:6px;font-size:14px;z-index:10000;
-      color:#fff;opacity:0;transition:opacity 0.3s;
-      background:${type === 'error' ? '#ca5e59' : '#74b574'};
+        position:fixed;top:24px;right:24px;
+        background:${type === 'error' ? '#ca5e59' : type === 'success' ? '#74b574' : '#363636'};
+        color:white;padding:12px 20px;border-radius:4px;font-size:14px;
+        box-shadow:0 4px 16px rgba(0,0,0,0.2);
+        transform:translateY(80px);opacity:0;
+        transition:all 0.3s;z-index:9999;
     `;
     document.body.appendChild(el);
-    requestAnimationFrame(() => { el.style.opacity = '1'; });
+    requestAnimationFrame(() => {
+        el.style.transform = 'translateY(0)';
+        el.style.opacity = '1';
+    });
     setTimeout(() => {
-      el.style.opacity = '0';
-      setTimeout(() => el.remove(), 300);
+        el.style.transform = 'translateY(80px)';
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
     }, 3000);
   }
 
@@ -60,14 +66,14 @@
     for (let i = 0; i < maxTries; i++) {
       try {
         const res = await fetch(
-          `https://api.github.com/repos/${REPO}/actions/runs?branch=${BRANCH}&per_page=5`,
+          `https://api.github.com/repos/${REPO}/actions/runs?per_page=5`,
           { headers }
         );
         const data = await res.json();
         const runs = data.workflow_runs || [];
         const run = runs.find(r => 
-          r.name === 'pages build and deployment' &&
-          new Date(r.created_at).getTime() > deployStartTime - 10000);
+          new Date(r.created_at).getTime() > deployStartTime - 10000) &&
+          r.name === 'pages build and deployment';
 
         if (run) {
           if (run.status === 'completed' && run.conclusion === 'success') {
@@ -80,7 +86,7 @@
               document.body.appendChild(a);
               a.click();
               document.body.removeChild(a);
-              setTimeout(() => location.reload(), 300);
+              setTimeout(() => location.reload(true), 300);
             }, 500);
             return;
           } else if (run.status === 'completed' && run.conclusion !== 'success') {

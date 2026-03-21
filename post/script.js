@@ -748,8 +748,10 @@ async function waitForDeploy(slug, dateVal) {
             const data = await res.json();
             const runs = data.workflow_runs || [];
 
-            // 발행 시점 이후에 생성된 run만 체크
-            const run = runs.find(r => new Date(r.created_at).getTime() > deployStartTime - 10000);
+            // 발행 시점 이후에 생성된 run과 'pages build and deployment' 찾기
+            const run = runs.find(r => 
+                r.name === 'pages build and deployment' &&
+                new Date(r.created_at).getTime() > deployStartTime - 10000);
 
             if (run) {
                 if (run.status === 'completed' && run.conclusion === 'success') {

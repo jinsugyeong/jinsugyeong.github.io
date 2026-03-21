@@ -659,9 +659,9 @@ async function loadPost(slug) {
                     }
                 )
                 .replace(
-                    /\{%\s*asset_img\s+"([^"]+)"\s*"?([^"%]*)"?\s*%\}/g,
+                    /\{%\s*asset_img\s+"?([^"\s%]+)"?\s*"?([^"%]*?)"?\s*%\}/g,
                     function (match, filename, alt) {
-                        return `![${alt}](https://raw.githubusercontent.com/${REPO}/${BRANCH}/source/_posts/${slug}/${filename})`;
+                        return `![${alt.trim()}](https://raw.githubusercontent.com/${REPO}/${BRANCH}/source/_posts/${slug}/${filename})`;
                     }
                 );
             editor.setMarkdown(bodyWithUrls);

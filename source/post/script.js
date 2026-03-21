@@ -314,11 +314,31 @@ function replaceDataUrlsWithFilenames(markdown) {
 
     // raw URL → 파일명
     result = result.replace(
-        /!\[([^\]]*)\]\(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^/\s]+\/source\/_?posts\/[^/]+\/([^)\s]+)\)/g,
+        /!\[([^\]]*)\]\(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^?\s)]+\/source\/_?posts\/[^/]+\/([^)\s]+)\)/g,
         '![$1]($2)'
     );
 
     return result;
+}
+
+// 마크다운에서 이미지 태그를 asset_img로 변환
+function convertToAssetImg(markdown) {
+    return markdown.replace(
+        /!\[([^\]]*)\]\(([^)]+)\)/g,
+        function(match, alt, path) {
+            // 외부 링크는 그대로
+            if (path.startsWith('http://') || path.startsWith('https://')) {
+                // raw.githubusercontent.com은 파일명 추출해서 변환
+                if (path.includes('raw.githubusercontent.com')) {
+                    const fileName = path.split('/').pop();
+                    return `{% asset_img "${fileName}" "${alt}" %}`;
+                }
+                return match;
+            }
+            const fileName = path.split('/').pop();
+            return `{% asset_img "${fileName}" "${alt}" %}`;
+        }
+    );
 }
 
 function setupTagInput(inputId, wrapId, arr) {
@@ -422,7 +442,7 @@ async function saveDraft() {
         }
 
         const { files, coverPath, markdown } = buildFileList(slug);
-        const mdContent = buildFrontMatter(title, date, coverPath) + markdown;
+        const mdContent = buildFrontMatter(title, date, coverPath) + convertToAssetImg(markdown);
         files.push({ path: `source/_posts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
 
         await githubCommitAll(files, `Draft: ${title}`, currentDraftBranch);
@@ -451,7 +471,7 @@ async function publishPost() {
         const date = document.getElementById('date-input').value;
 
         const { files, coverPath, markdown } = buildFileList(slug);
-        const mdContent = buildFrontMatter(title, date, coverPath) + markdown;
+        const mdContent = buildFrontMatter(title, date, coverPath) + convertToAssetImg(markdown);
         files.push({ path: `source/_posts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
 
         await githubCommitAll(files, `Create Post "${title}"`);
@@ -642,7 +662,7 @@ async function updatePost(originalSlug) {
             files.push({ path: `source/_posts/${originalSlug}.md`, sha: null });
         }
 
-        const mdContent = buildFrontMatter(title, date, coverPath) + markdown;
+        const mdContent = buildFrontMatter(title, date, coverPath) + convertToAssetImg(markdown);
         files.push({ path: `source/_posts/${newSlug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
 
         await githubCommitAll(files, `Update Post "${title}"`);

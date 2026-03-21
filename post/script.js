@@ -422,7 +422,7 @@ async function refreshDraftList() {
                 const md = compareData.files?.find(f =>
                     f.filename.endsWith('.md') &&
                     f.filename.startsWith('source/_posts/') &&
-                    f.status === 'added'
+                    (f.status === 'added' || f.status === 'modified')
                 );
                 if (!md) return null;
 

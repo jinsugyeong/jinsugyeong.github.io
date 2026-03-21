@@ -10,8 +10,8 @@ let coverBase64 = null;
 let coverFile = null;
 let currentDraftBranch = null;
 let originalPostSlug = null;
+let isDirty = false; // 변경사항 있는지 체크
 const pendingImages = new Map();
-
 
 // ── 초기화 ──────────────────────────────────────────────────
 
@@ -34,6 +34,15 @@ window.onload = async function () {
 
     document.getElementById('title-input').addEventListener('input', function () {
         document.getElementById('btn-save-draft').disabled = false;
+        isDirty = true;
+    });
+
+    // 페이지 벗어날 때 경고
+    window.addEventListener('beforeunload', function (e) {
+        if (isDirty) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
     });
 
     // Ctrl+S 임시저장
@@ -48,13 +57,11 @@ window.onload = async function () {
 
     if (token) {
         showEditor();
-
-        // URL 파라미터에 edit 있으면 기존 글 불러오기
         const urlParams = new URLSearchParams(window.location.search);
         const editSlug = urlParams.get('edit');
         if (editSlug) {
             await loadPost(editSlug);
-        } 
+        }
     }
 };
 
@@ -92,6 +99,7 @@ function initEditor() {
     });
     editor.on('change', function () {
         document.getElementById('btn-save-draft').disabled = false;
+        isDirty = true;
     });
 }
 
@@ -245,6 +253,7 @@ function handleCover(e) {
             document.getElementById('cover-modal').classList.add('show');
         };
         document.getElementById('cover-remove-btn').style.display = 'inline-block';
+        isDirty = true;
     };
     reader.readAsDataURL(file);
 }
@@ -257,6 +266,7 @@ function removeCover() {
     nameEl.onclick = null;
     document.getElementById('cover-remove-btn').style.display = 'none';
     document.getElementById('cover-file').value = '';
+    isDirty = true;
 }
 
 function generateSlug(title) {
@@ -317,6 +327,7 @@ async function saveDraft() {
 
         await githubCommitAll(files, `Draft: ${title}`, currentDraftBranch);
         pendingImages.clear();
+        isDirty = false;
 
         document.getElementById('btn-save-draft').disabled = true;
         const now = new Date();
@@ -366,6 +377,7 @@ async function publishPost() {
         }
 
         pendingImages.clear();
+        isDirty = false;
         showToast('발행 완료', 'success');
         setStatus('발행됨');
         setTimeout(() => setStatus(''), 4000);
@@ -378,6 +390,10 @@ async function publishPost() {
 
 async function openDraftModal() {
     document.getElementById('draft-modal').classList.add('show');
+    await refreshDraftList();
+}
+
+async function refreshDraftList() {
     const listEl = document.getElementById('draft-list');
     listEl.innerHTML = '<div class="modal-empty">불러오는 중...</div>';
     try {
@@ -395,25 +411,30 @@ async function openDraftModal() {
 
         const items = await Promise.all(draftBranches.map(async (b) => {
             try {
-                // source 브랜치와 diff 비교
-                const compareRes = await fetch(`https://api.github.com/repos/${REPO}/compare/${BRANCH}...${b.name}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                // source 브랜치와 비교해서 새로 추가된 .md 파일만 찾기
+                const compareRes = await fetch(
+                    `https://api.github.com/repos/${REPO}/compare/${BRANCH}...${b.name}`,
+                    { headers: { 'Authorization': `Bearer ${token}` } }
+                );
                 if (!compareRes.ok) return null;
                 const compareData = await compareRes.json();
-                // 새로 추가된 .md 파일만 찾기
-                const md = compareData.files?.find(f => f.filename.endsWith('.md') && f.status === 'added');
+
+                const md = compareData.files?.find(f =>
+                    f.filename.endsWith('.md') &&
+                    f.filename.startsWith('source/_posts/') &&
+                    f.status === 'added'
+                );
                 if (!md) return null;
-                
+
                 const contentRes = await fetch(md.contents_url, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const contentData = await contentRes.json();
                 const content = decodeURIComponent(escape(atob(contentData.content.replace(/\n/g, ''))));
                 const titleMatch = content.match(/^title:\s*"?(.+?)"?\s*$/m);
-                const title = titleMatch ? titleMatch[1].trim() : md.filename.replace('.md', '');
+                const title = titleMatch ? titleMatch[1].trim() : md.filename.split('/').pop().replace('.md', '');
 
-                return { branch: b.name, mdPath: md.path, title };
+                return { branch: b.name, mdPath: md.filename, title };
             } catch (e) {
                 return null;
             }
@@ -451,6 +472,7 @@ async function loadDraft(branchName, mdPath) {
         const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${mdPath}?ref=${branchName}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (!res.ok) throw new Error('파일을 가져올 수 없어요');
         const data = await res.json();
         const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
         const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n\n?([\s\S]*)$/);
@@ -519,6 +541,7 @@ async function loadDraft(branchName, mdPath) {
         }
 
         currentDraftBranch = branchName;
+        isDirty = false;
         document.getElementById('draft-modal').classList.remove('show');
         setStatus('임시저장에서 불러옴');
         setTimeout(() => setStatus(''), 4000);
@@ -533,11 +556,9 @@ async function deleteDraft(e, branchName) {
     if (!confirm('임시저장을 삭제할까요?')) return;
     try {
         await deleteBranch(branchName);
-        if (currentDraftBranch === branchName) {
-            currentDraftBranch = null;
-        }
+        if (currentDraftBranch === branchName) currentDraftBranch = null;
         showToast('삭제됐어요', '');
-        openDraftModal();
+        await refreshDraftList(); // 즉시 목록 갱신
     } catch (e) {
         showToast('삭제 실패: ' + e.message, 'error');
     }
@@ -621,7 +642,7 @@ async function loadPost(slug) {
         }
 
         originalPostSlug = slug;
-
+        isDirty = false;
         const publishBtn = document.querySelector('.btn-publish');
         publishBtn.textContent = '수정하기';
         publishBtn.onclick = () => updatePost(slug);
@@ -676,8 +697,7 @@ async function updatePost(originalSlug) {
 
         await githubCommitAll(files, `Update Post "${title}"`);
         pendingImages.clear();
-
-        originalPostSlug = newSlug;
+        isDirty = false;
 
         document.querySelector('.btn-publish').onclick = () => updatePost(newSlug);
 

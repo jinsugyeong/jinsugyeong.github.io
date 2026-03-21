@@ -87,6 +87,7 @@
   #toast-msg.error { background: #ca5e59; }
   #loading { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.75); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 12px; }
   .spinner { width: 32px; height: 32px; border: 3px solid #dbdbdb; border-top-color: #6ac1f9; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  #loading-sub {font-size:12px; color:#aaa; margin-top:8px;}
   @keyframes spin { to { transform: rotate(360deg); } }
   #loading-msg { font-size: 14px; color: #7a7a7a; }
   /*데스크탑 에디터 영역 넓게*/

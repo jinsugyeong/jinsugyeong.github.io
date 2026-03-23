@@ -750,8 +750,9 @@ async function waitForDeploy(slug, dateVal) {
 
             // 발행 시점 이후에 생성된 run과 'pages build and deployment' 찾기
             const run = runs.find(r => 
-                new Date(r.created_at).getTime() > deployStartTime - 10000) &&
-                r.name === 'pages build and deployment';
+                r.name === 'pages build and deployment' &&
+                new Date(r.created_at).getTime() > deployStartTime - 10000
+            );
 
             if (run) {
                 if (run.status === 'completed' && run.conclusion === 'success') {

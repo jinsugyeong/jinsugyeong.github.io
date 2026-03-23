@@ -20,43 +20,7 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/</loc>
-    
-    <lastmod>2026-03-23</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2025/08/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/</loc>
-    
-    <lastmod>2026-03-23</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/2025/08/29/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-8/</loc>
-    
-    <lastmod>2026-03-23</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/</loc>
-    
-    <lastmod>2026-03-23</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/2025/09/06/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/</loc>
     
     <lastmod>2026-03-23</lastmod>
     
@@ -74,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2025/07/30/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/</loc>
+    <loc>https://jinsugyeong.github.io/2025/09/06/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-9/</loc>
     
     <lastmod>2026-03-23</lastmod>
     
@@ -128,15 +92,6 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/</loc>
-    
-    <lastmod>2026-03-23</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/2025/07/20/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-2/</loc>
     
     <lastmod>2026-03-23</lastmod>
@@ -146,7 +101,52 @@
   </url>
   
   <url>
+    <loc>https://jinsugyeong.github.io/2025/12/23/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-17/</loc>
+    
+    <lastmod>2026-03-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://jinsugyeong.github.io/2025/07/25/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-3/</loc>
+    
+    <lastmod>2026-03-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2025/07/30/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-4/</loc>
+    
+    <lastmod>2026-03-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2025/08/08/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-5/</loc>
+    
+    <lastmod>2026-03-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2025/08/22/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-7/</loc>
+    
+    <lastmod>2026-03-23</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/2025/08/14/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC-6/</loc>
     
     <lastmod>2026-03-23</lastmod>
     
@@ -438,41 +438,6 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/tags/NLP/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/FastText/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Word2Vec/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Attention/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/Transformer/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/tags/BERT/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -481,6 +446,13 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/GPT/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Transformer/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -516,6 +488,34 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/PEFT/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/NLP/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/FastText/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Word2Vec/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/Attention/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -564,13 +564,6 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://jinsugyeong.github.io/tags/%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -586,6 +579,13 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/%EC%86%90%EC%8B%A4%ED%95%A8%EC%88%98/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/%EB%94%A5%EB%9F%AC%EB%8B%9D/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -655,6 +655,27 @@
   </url>
   
   <url>
+    <loc>https://jinsugyeong.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EA%B0%95/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://jinsugyeong.github.io/tags/mAP/</loc>
+    <lastmod>2026-03-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://jinsugyeong.github.io/tags/CNN/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -683,21 +704,7 @@
   </url>
   
   <url>
-    <loc>https://jinsugyeong.github.io/tags/mAP/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EA%B0%95/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/%EC%A0%84%EC%9D%B4-%ED%95%99%EC%8A%B5/</loc>
+    <loc>https://jinsugyeong.github.io/tags/%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -712,13 +719,6 @@
   
   <url>
     <loc>https://jinsugyeong.github.io/tags/GAN/</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://jinsugyeong.github.io/tags/%EA%B0%80%EC%83%81%ED%99%98%EA%B2%BD/</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

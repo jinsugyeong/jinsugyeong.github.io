@@ -72,8 +72,9 @@
         const data = await res.json();
         const runs = data.workflow_runs || [];
         const run = runs.find(r => 
-          new Date(r.created_at).getTime() > deployStartTime - 10000) &&
-          r.name === 'pages build and deployment';
+          r.name === 'pages build and deployment' &&
+          new Date(r.created_at).getTime() > deployStartTime - 10000
+        );
 
         if (run) {
           if (run.status === 'completed' && run.conclusion === 'success') {

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="google-site-verification" content="ZxGUfAqSy8KGyGxrkIcid_KMZH1DrgVCqcjgeueDDoE"><meta><title>Git 커밋 메시지 규칙 &amp; 자주 쓰는 명령어 - Train.Jin()</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Train.Jin()"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Train.Jin()"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="매번 커밋할때 마다  “이게 feat이었나 chore였나…” 헷갈려서 찾아보고, 에러 날 때마다 과거의 내가 검색했던걸 또 검색하고있는 내 자신을 위해 아예 블로그에 박제해두기로 했다."><meta property="og:type" content="article"><meta property="og:title" content="Git 커밋 메시지 규칙 &amp; 자주 쓰는 명령어"><meta property="og:url" content="https://jinsugyeong.github.io/2026/06/05/Git-%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B7%9C%EC%B9%99--%EC%9E%90%EC%A3%BC-%EC%93%B0%EB%8A%94-%EB%AA%85%EB%A0%B9%EC%96%B4/"><meta property="og:site_name" content="Train.Jin()"><meta property="og:description" content="매번 커밋할때 마다  “이게 feat이었나 chore였나…” 헷갈려서 찾아보고, 에러 날 때마다 과거의 내가 검색했던걸 또 검색하고있는 내 자신을 위해 아예 블로그에 박제해두기로 했다."><meta property="og:locale" content="ko_KR"><meta property="og:image" content="https://jinsugyeong.github.io/img/og_image.png"><meta property="article:published_time" content="2026-06-05T00:33:00.000Z"><meta property="article:modified_time" content="2026-06-05T04:52:31.916Z"><meta property="article:author" content="jinsugyeong"><meta property="article:tag" content="Git"><meta property="article:tag" content="Github"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://jinsugyeong.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://jinsugyeong.github.io/2026/06/05/Git-%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B7%9C%EC%B9%99--%EC%9E%90%EC%A3%BC-%EC%93%B0%EB%8A%94-%EB%AA%85%EB%A0%B9%EC%96%B4/"},"headline":"Git 커밋 메시지 규칙 & 자주 쓰는 명령어","image":["https://jinsugyeong.github.io/img/og_image.png"],"datePublished":"2026-06-05T00:33:00.000Z","dateModified":"2026-06-05T04:52:31.916Z","author":{"@type":"Person","name":"jinsugyeong"},"publisher":{"@type":"Organization","name":"Train.Jin()","logo":{"@type":"ImageObject","url":"https://jinsugyeong.github.io/img/logo.svg"}},"description":"매번 커밋할때 마다  “이게 feat이었나 chore였나…” 헷갈려서 찾아보고, 에러 날 때마다 과거의 내가 검색했던걸 또 검색하고있는 내 자신을 위해 아예 블로그에 박제해두기로 했다."}</script><link rel="canonical" href="https://jinsugyeong.github.io/2026/06/05/Git-%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B7%9C%EC%B9%99--%EC%9E%90%EC%A3%BC-%EC%93%B0%EB%8A%94-%EB%AA%85%EB%A0%B9%EC%96%B4/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/foundation.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DRHYJEY1VB');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><script async src="https://www.googletagmanager.com/gtag/js?id=G-DRHYJEY1VB"></script><script>
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-DRHYJEY1VB');
+                    </script><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/archives">아카이브</a><a class="navbar-item" href="/categories">카테고리</a><a class="navbar-item" href="/tags">태그</a><a class="navbar-item" href="/post">글쓰기</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/jinsugyeong"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="목차" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="검색" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-9-tablet is-9-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><h1 class="title is-2 is-size-3-mobile" style="margin-bottom: 0.25rem !important;">Git 커밋 메시지 규칙 &amp; 자주 쓰는 명령어</h1><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">2026-06-05 09:33 </span><span class="level-item"><a class="link-muted category-link" href="/categories/Git-Github/">Git/Github</a></span></div></div><div class="content"><p>매번 커밋할때 마다  “이게 <code>feat</code>이었나 <code>chore</code>였나…” 헷갈려서 찾아보고, 에러 날 때마다 과거의 내가 검색했던걸 또 검색하고있는 내 자신을 위해 아예 블로그에 박제해두기로 했다.</p>
+<span id="more"></span>
+
+<p>자주 참고하는 커밋 메시지 규칙과, Git 작업하면 항상 검색하게 되는 명령어를 정리해 보았다.<br>커밋 메세지 규칙은 <a target="_blank" rel="noopener" href="https://velog.io/@chojs28/Git-%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B7%9C%EC%B9%99">Git 커밋 메시지 규칙</a>  이라는 북마크해두고 항상 던 블로그를 참고했고<br>명령어들은 지피티와 제미나이의 내역들을 참고했다 ^_^</p>
+<h1 id="1-Git-커밋-메시지-컨벤션-규칙"><a href="#1-Git-커밋-메시지-컨벤션-규칙" class="headerlink" title="1. Git 커밋 메시지 컨벤션 (규칙)"></a>1. Git 커밋 메시지 컨벤션 (규칙)</h1><p>커밋 메세지는 보통 <code>[타입]:[제목]</code> 형태로 작성한다. 가장 대중적인 규칙(AngularJS 컨벤션)을 요약하자면 다음과 같다. 솔직히 처음보면 헷갈리고 지금도 이건 어디에 들어가야하지 하고 ai한테 물어볼때가 많아서 예시를 같이 써두겠다.</p>
+<h2 id="1-1-커밋-타입-Type"><a href="#1-1-커밋-타입-Type" class="headerlink" title="1-1. 커밋 타입 (Type)"></a>1-1. 커밋 타입 (Type)</h2><table>
+<thead>
+<tr>
+<th align="center">타입 이름</th>
+<th>내용</th>
+<th align="left">예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>feat</code></td>
+<td><strong>새로운 기능 추가</strong></td>
+<td align="left">feat: google oauth 로그인 기능 추가</td>
+</tr>
+<tr>
+<td align="center"><code>fix</code></td>
+<td><strong>버그 수정</strong></td>
+<td align="left">fix: 모바일에서 결제 버튼 안 눌리는 현상 수정</td>
+</tr>
+<tr>
+<td align="center"><code>docs</code></td>
+<td><strong>문서 수</strong></td>
+<td align="left">docs: README.md에 프로젝트 실행 방법 추가</td>
+</tr>
+<tr>
+<td align="center"><code>style</code></td>
+<td><strong>코드 자체의 로직 변경 없이 포맷팅, 세미콜론 누락, 들여쓰기 수정 등</strong></td>
+<td align="left">style: Prettier tab width 2 &gt; 4 변경 후 적용, <br> style: 불필요한 console.log 삭제</td>
+</tr>
+<tr>
+<td align="center"><code>test</code></td>
+<td><strong>테스트 코드 추가 및 수정</strong></td>
+<td align="left">test: 로그인 예외 처리 테스트 코드 추가</td>
+</tr>
+<tr>
+<td align="center"><code>ci</code></td>
+<td><strong>CI&#x2F;CD (GitHub Actions 등) 관련 설정 수정</strong></td>
+<td align="left">ci: GitHub Actions 자동 배포 스크립트 수정</td>
+</tr>
+<tr>
+<td align="center"><code>refactor</code></td>
+<td><strong>기능이나 성능의 변화는 없지만, 코드의 구조나 가독성 개선</strong></td>
+<td align="left">refactor: 로그인 로직을 별도의 함수로 분리</td>
+</tr>
+<tr>
+<td align="center"><code>perf</code></td>
+<td><strong>성능(속도, 메모리 등) 향상</strong></td>
+<td align="left">perf: 렌더링 반복문 최적화로 로딩 속도 개선</td>
+</tr>
+<tr>
+<td align="center"><code>chore</code></td>
+<td><strong>프로덕션 코드나 빌드와 무관한 기타 작업</strong></td>
+<td align="left">chore: .gitignore 파일에 .env 추가, chore: 이미지 에셋 폴더명 변경</td>
+</tr>
+<tr>
+<td align="center"><code>build</code></td>
+<td><strong>프로젝트 빌드 시스템(Webpack, Vite)이나 패키지 매니저, 라이브러리 설치 등 빌드&#x2F;의존성 관리</strong></td>
+<td align="left">build: package.json에 axios 라이브러리 추가, <br> build: Webpack 번들링 설정 변경</td>
+</tr>
+</tbody></table>
+<br>
+
+<h2 id="1-2-커밋-메시지-규칙"><a href="#1-2-커밋-메시지-규칙" class="headerlink" title="1-2. 커밋 메시지 규칙"></a>1-2. 커밋 메시지 규칙</h2><ul>
+<li>제목은 <strong>명령문</strong>으로 작성하고, 끝에 마침표(<code>.</code>)를 찍지 않는다.</li>
+<li>제목과 본문 사이에는 <strong>한 줄 띄워</strong> 분리한다.</li>
+<li>본문은 ‘어떻게’ 변경했는지보다 <strong>‘무엇을’, ‘왜’</strong> 변경했는지 설명한다.</li>
+</ul>
+<p>이건 딴말인데 영어로 작성하는걸 권고하는데 나는 영어를 못해서 그냥 한글로 작성한다… 어차피 ai 시대에 라고… 생각해보기..</p>
+<br>
+
+<h2 id="1-3-커밋-메시지-구조"><a href="#1-3-커밋-메시지-구조" class="headerlink" title="1-3. 커밋 메시지 구조"></a>1-3. 커밋 메시지 구조</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">타입: 제목</span><br><span class="line"></span><br><span class="line">- 여기에</span><br><span class="line">- 보통</span><br><span class="line">- 자세하게 적으면</span><br></pre></td></tr></table></figure>
+
+
+<p>이렇게 나온다</p>
+<br>
+
+<h1 id="2-자주-쓰는-Git-명령어-모음"><a href="#2-자주-쓰는-Git-명령어-모음" class="headerlink" title="2. 자주 쓰는 Git 명령어 모음"></a>2. 자주 쓰는 Git 명령어 모음</h1><h2 id="1-로컬에서-작업하다가-깃허브에-레포-파서-아카이브-할-때-초기화"><a href="#1-로컬에서-작업하다가-깃허브에-레포-파서-아카이브-할-때-초기화" class="headerlink" title="(1) 로컬에서 작업하다가 깃허브에 레포 파서 아카이브 할 때 (초기화)"></a>(1) 로컬에서 작업하다가 깃허브에 레포 파서 아카이브 할 때 (초기화)</h2><p>보통 로컬에서 한참 작업하다가 어느정도 완성되면 깃허브에 올리는 편이라 항상 검색하게 된다<br>깃허브 한번 연결되면 오류날때 빼곤 vscode gui로 거의 하는편인데 그걸 처음에 연결하는게 문제. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;first commit&quot;</span></span><br><span class="line">git branch -M main</span><br><span class="line">git remote add origin &lt;깃허브 레포지토리 주소.git&gt;</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="2-커밋하려는데-user-name-user-email-설정-안-돼서-오류-날-때"><a href="#2-커밋하려는데-user-name-user-email-설정-안-돼서-오류-날-때" class="headerlink" title="(2) 커밋하려는데 user.name, user.email 설정 안 돼서 오류 날 때"></a>(2) 커밋하려는데 <code>user.name</code>, <code>user.email</code> 설정 안 돼서 오류 날 때</h2><p>새로 포맷했거나 다른 컴퓨터에서 작업할 때 무조건 뜨는 에러. 내 정보부터 등록해 줘야 커밋이 된다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 전역 설정 (앞으로 이 컴퓨터의 모든 프로젝트에 적용)</span></span><br><span class="line">git config --global user.name <span class="string">&quot;내 이름(또는 닉네임)&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;내 깃허브 이메일&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 설정된 config 확인(전역/로컬 중 어디서 가져오는지까지 표시)</span></span><br><span class="line">git config --list --show-origin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 전역 설정 삭제</span></span><br><span class="line">git config --global --<span class="built_in">unset</span> user.name</span><br><span class="line">git config --global --<span class="built_in">unset</span> user.email</span><br><span class="line"></span><br><span class="line"><span class="comment"># 현재 프로젝트에만 적용하고 싶다면 --global을 빼면 됨</span></span><br><span class="line">git config user.name <span class="string">&quot;내 이름&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 현재 프로젝트에만 적용하고 싶다면 --global을 빼면 됨</span></span><br><span class="line">git config user.name <span class="string">&quot;내 이름&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 확인</span></span><br><span class="line">git config --<span class="built_in">local</span> --list</span><br><span class="line">git config user.name</span><br><span class="line">git config user.email</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="3-깃허브-원격-에서-지운-브랜치-로컬에-동기화하기"><a href="#3-깃허브-원격-에서-지운-브랜치-로컬에-동기화하기" class="headerlink" title="(3) 깃허브(원격)에서 지운 브랜치, 로컬에 동기화하기"></a>(3) 깃허브(원격)에서 지운 브랜치, 로컬에 동기화하기</h2><p>깃허브 사이트에서 PR 머지하고 브랜치를 싹 지웠는데, 로컬 터미널에서 <code>git branch -a</code>를 쳐보면 옛날 브랜치들이 지저분하게 남아있다. </p>
+<p>이때 원격 저장소의 상태를 로컬에 동기화해주는 명령어다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git fetch --prune</span><br><span class="line"><span class="comment"># 또는</span></span><br><span class="line">git remote prune origin</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="4-커밋-리셋하기-feat-윈도우-PowerShell-주의점"><a href="#4-커밋-리셋하기-feat-윈도우-PowerShell-주의점" class="headerlink" title="(4) 커밋 리셋하기 (feat. 윈도우 PowerShell 주의점)"></a>(4) 커밋 리셋하기 (feat. 윈도우 PowerShell 주의점)</h2><p>방금 한 커밋을 취소하고 싶을 때 보통 <code>git reset HEAD^</code>를 쓰라고 나온다. </p>
+<p><strong>하지만 윈도우 PowerShell에서는 <code>^</code> 기호를 특수문자로 인식해서 에러가 난다!</strong> </p>
+<p>윈도우 유저라면 무조건 아래처럼 <code>~</code> 기호를 써야 한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 가장 최근 커밋 1개 취소 (파일 변경사항은 남겨둠)</span></span><br><span class="line">git reset HEAD~1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 최근 커밋 2개 취소하고 싶다면?</span></span><br><span class="line">git reset HEAD~2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 커밋 취소하고 변경된 파일들까지 싹 날려버리고 싶다면 (--hard)</span></span><br><span class="line">git reset --hard HEAD~1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 적용</span></span><br><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="5-실수로-올린-환경변수-파일-커밋-내역까지-없애기"><a href="#5-실수로-올린-환경변수-파일-커밋-내역까지-없애기" class="headerlink" title="(5) 실수로 올린 환경변수 파일 커밋 내역까지 없애기"></a>(5) 실수로 올린 환경변수 파일 커밋 내역까지 없애기</h2><p>환경변수나 API 키가 담긴 <code>.env</code>를 실수로 깃허브에 올려버렸을 때. 그냥 파일을 지우고 푸시하면 <strong>커밋 히스토리에 파일 내용이 그대로 남아서 누구나 털어갈 수 있다.</strong> 히스토리 전체를 뒤져서 해당 파일을 완전히 도려내는 명령어다.</p>
+<p>사실 가장 먼저 해야할건 새로운 값들을 발급받는것이 먼저임!</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .env 파일을 히스토리에서 완전히 삭제</span></span><br><span class="line">git filter-branch --force --index-filter <span class="string">&quot;git rm --cached --ignore-unmatch .env&quot;</span> --prune-empty --tag-name-filter <span class="built_in">cat</span> -- --all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 원격 저장소에 강제로 덮어쓰기 (강제 푸시)</span></span><br><span class="line">git push origin --force --all</span><br></pre></td></tr></table></figure>
+
+<p><em>(💡 위 명령어 실행 후 깃허브에서 내역이 사라진 것을 꼭 확인하자!)</em></p>
+<br>
+
+<h2 id="6-커밋-내역-완전-초기화하기"><a href="#6-커밋-내역-완전-초기화하기" class="headerlink" title="(6) 커밋 내역 완전 초기화하기"></a>(6) 커밋 내역 완전 초기화하기</h2><p>프로젝트를 진행하다가 커밋 내역이 너무 지저분해서 그냥 처음부터 다시 시작하고 싶을 때가 있다.<br>레포를 새로 파지 않고 현재 코드를 유지한 채 첫 커밋으로 리셋하는 제일 무식하고 편한 방법.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 로컬의 .git 폴더 삭제 (모든 Git 기록 날아감)</span></span><br><span class="line"><span class="built_in">rm</span> -rf .git  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 다시 Git 초기화 및 커밋</span></span><br><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 원격 저장소 연결 후 강제 푸시 (원격 내역도 덮어씌워짐)</span></span><br><span class="line">git remote add origin &lt;깃허브 레포지토리 주소.git&gt;</span><br><span class="line">git push -u origin main --force</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="7-gitignore에-뒤늦게-넣었는데-계속-파일이-추적-Tracking-될-때"><a href="#7-gitignore에-뒤늦게-넣었는데-계속-파일이-추적-Tracking-될-때" class="headerlink" title="(7) .gitignore에 뒤늦게 넣었는데 계속 파일이 추적(Tracking)될 때"></a>(7) <code>.gitignore</code>에 뒤늦게 넣었는데 계속 파일이 추적(Tracking)될 때</h2><p>깃허브에 한 번 올라간 파일은 나중에 <code>.gitignore</code> 파일에 추가해도 소용이 없다. </p>
+<p>이미 깃이 추적을 시작했기 때문이다. 이때는 <strong>Git에 저장된 캐시를 싹 지워주고</strong> 다시 올려야 한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 원격의 Git 캐시를 싹 지운다 (로컬 파일은 안 지워짐!)</span></span><br><span class="line">git <span class="built_in">rm</span> -r --cached .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 다시 전체 추가 (이때 gitignore가 제대로 적용됨)</span></span><br><span class="line">git add .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 커밋 후 푸시</span></span><br><span class="line">git commit -m <span class="string">&quot;chore: gitignore 적용 (캐시 삭제)&quot;</span></span><br><span class="line">git push origin main</span><br></pre></td></tr></table></figure>
+</div><div class="article-tags is-size-7 mb-4" style="display:flex; align-items:flex-start; justify-content:space-between;"><div style="flex:1;"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Git/">Git</a><a class="link-muted mr-2" rel="tag" href="/tags/Github/">Github</a></div><div id="article-actions" style="display:none;"><a class="button is-small is-light mr-2" href="/post?edit=Git-커밋-메시지-규칙--자주-쓰는-명령어"><span class="icon is-small"><i class="fas fa-edit"></i></span><span>수정</span></a><button class="button is-small is-light has-text-danger" id="btn-delete-post" data-slug="Git-커밋-메시지-규칙--자주-쓰는-명령어" data-path="_posts/Git-커밋-메시지-규칙--자주-쓰는-명령어.md"><span class="icon is-small"><i class="fas fa-trash"></i></span><span>삭제</span></button></div></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/03/23/hexo-%EA%B9%83%ED%97%88%EB%B8%8C-%EB%B8%94%EB%A1%9C%EA%B7%B8-%EC%A0%91%EA%B7%BC%EC%84%B1-%EB%86%92%EC%9D%B4%EA%B8%B0---%EC%96%B4%EB%94%94%EC%84%9C%EB%93%A0-%EC%9B%B9%EC%9C%BC%EB%A1%9C-%ED%8F%AC%EC%8A%A4%ED%8C%85%ED%95%98%EB%8A%94-%EB%B2%95/"><span class="level-item">hexo 깃허브 블로그 접근성 높이기 - 어디서든 웹으로 포스팅하는 법</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">댓글</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://jinsugyeong.github.io/2026/06/05/Git-%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B7%9C%EC%B9%99--%EC%9E%90%EC%A3%BC-%EC%93%B0%EB%8A%94-%EB%AA%85%EB%A0%B9%EC%96%B4/';
+            this.page.identifier = '2026/06/05/Git-커밋-메시지-규칙--자주-쓰는-명령어/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'train-jin' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-3-tablet is-3-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/img/avatar.png" alt="수경"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">수경</p><p class="is-size-6 is-block">장래희망: AI 엔지니어</p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">포스트</p><a href="/archives/"><p class="title">27</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">카테고리</p><a href="/categories/"><p class="title">7</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">태그</p><a href="/tags/"><p class="title">66</p></a></div></div></nav></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">목차</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-Git-커밋-메시지-컨벤션-규칙"><span class="level-left"><span class="level-item">1. Git 커밋 메시지 컨벤션 (규칙)</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-1-커밋-타입-Type"><span class="level-left"><span class="level-item">1-1. 커밋 타입 (Type)</span></span></a></li><li><a class="level is-mobile" href="#1-2-커밋-메시지-규칙"><span class="level-left"><span class="level-item">1-2. 커밋 메시지 규칙</span></span></a></li><li><a class="level is-mobile" href="#1-3-커밋-메시지-구조"><span class="level-left"><span class="level-item">1-3. 커밋 메시지 구조</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-자주-쓰는-Git-명령어-모음"><span class="level-left"><span class="level-item">2. 자주 쓰는 Git 명령어 모음</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-로컬에서-작업하다가-깃허브에-레포-파서-아카이브-할-때-초기화"><span class="level-left"><span class="level-item">(1) 로컬에서 작업하다가 깃허브에 레포 파서 아카이브 할 때 (초기화)</span></span></a></li><li><a class="level is-mobile" href="#2-커밋하려는데-user-name-user-email-설정-안-돼서-오류-날-때"><span class="level-left"><span class="level-item">(2) 커밋하려는데 user.name, user.email 설정 안 돼서 오류 날 때</span></span></a></li><li><a class="level is-mobile" href="#3-깃허브-원격-에서-지운-브랜치-로컬에-동기화하기"><span class="level-left"><span class="level-item">(3) 깃허브(원격)에서 지운 브랜치, 로컬에 동기화하기</span></span></a></li><li><a class="level is-mobile" href="#4-커밋-리셋하기-feat-윈도우-PowerShell-주의점"><span class="level-left"><span class="level-item">(4) 커밋 리셋하기 (feat. 윈도우 PowerShell 주의점)</span></span></a></li><li><a class="level is-mobile" href="#5-실수로-올린-환경변수-파일-커밋-내역까지-없애기"><span class="level-left"><span class="level-item">(5) 실수로 올린 환경변수 파일 커밋 내역까지 없애기</span></span></a></li><li><a class="level is-mobile" href="#6-커밋-내역-완전-초기화하기"><span class="level-left"><span class="level-item">(6) 커밋 내역 완전 초기화하기</span></span></a></li><li><a class="level is-mobile" href="#7-gitignore에-뒤늦게-넣었는데-계속-파일이-추적-Tracking-될-때"><span class="level-left"><span class="level-item">(7) .gitignore에 뒤늦게 넣었는데 계속 파일이 추적(Tracking)될 때</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">카테고리</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/AI/"><span class="level-start"><span class="level-item">AI</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Backend/"><span class="level-start"><span class="level-item">Backend</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Git-Github/"><span class="level-start"><span class="level-item">Git/Github</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/Infra/"><span class="level-start"><span class="level-item">Infra</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/Note/"><span class="level-start"><span class="level-item">Note</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/Note/%EC%9C%84%ED%81%B4%EB%A6%AC-%ED%8E%98%EC%9D%B4%ED%8D%BC/"><span class="level-start"><span class="level-item">위클리 페이퍼</span></span><span class="level-end"><span class="level-item tag">17</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%EA%B8%B0%EB%A1%9D/"><span class="level-start"><span class="level-item">기록</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Train.Jin()" height="28"></a><p class="is-size-7"><span>&copy; 2026 jinsugyeong</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("ko");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="맨 위로" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "이 웹 사이트는 귀하의 경험을 향상시키기 위해 Cookie를 사용합니다.",
+          dismiss: "무시",
+          allow: "허용",
+          deny: "거부",
+          link: "더 알아보기",
+          policy: "Cookie 정책",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><script src="/js/post-actions.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="입력 하세요..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"입력 하세요...","untitled":"(제목 없음)","posts":"포스트","pages":"페이지","categories":"카테고리","tags":"태그"});
+        });</script></body></html>

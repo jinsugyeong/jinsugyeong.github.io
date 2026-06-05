@@ -6,11 +6,11 @@ categories:
   - Infra
 tags:
   - Github
-  - Github Aictions
   - Decap CMS
   - Github Oauth
   - Vercel
   - Hexo
+  - Github Actions
 ---
 
 현재 hexo icarus 테마를 사용해서 깃허브 블로그를 사용하고 있는데 항상 내 노트북에서만 vscode를 실행시켜서 글을 쓰다보니 접근성이 너무 떨어지고 소스 파일들은 백업이 따로 안돼서 '다른 블로그 플랫폼들처럼 바로 웹브라우저나 다른 기기에서도 쉽게 작성하고 배포할 수 없나?' 라는 생각에 배포 방식을 바꾸게 되었다.

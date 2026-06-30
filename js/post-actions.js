@@ -1,6 +1,7 @@
 (function() {
   const REPO = 'jinsugyeong/jinsugyeong.github.io';
   const BRANCH = 'source';
+  const DEPLOY_WORKFLOW_NAME = 'Deploy Hexo Blog';
 
   // 토스트 알림
   function showToast(msg, type) {
@@ -53,10 +54,10 @@
     if (el) el.textContent = msg;
   }
 
-  async function waitForDeployThenRedirect(redirectUrl, subMsg) {
+  async function waitForDeployThenRedirect(redirectUrl, subMsg, commitSha) {
     showDeployLoading(subMsg);
 
-    const deployStartTime = Date.now();
+    const deployStartTime = Date.now() - 60000;
     await new Promise(r => setTimeout(r, 3000));
 
     const token = localStorage.getItem('gh_token');
@@ -66,15 +67,16 @@
     for (let i = 0; i < maxTries; i++) {
       try {
         const res = await fetch(
-          `https://api.github.com/repos/${REPO}/actions/runs?per_page=5`,
+          `https://api.github.com/repos/${REPO}/actions/runs?branch=${encodeURIComponent(BRANCH)}&event=push&per_page=20`,
           { headers }
         );
         const data = await res.json();
         const runs = data.workflow_runs || [];
-        const run = runs.find(r => 
-          r.name === 'pages build and deployment' &&
-          new Date(r.created_at).getTime() > deployStartTime - 10000
-        );
+        const run = runs.find(r => {
+          const workflowMatches = r.name === DEPLOY_WORKFLOW_NAME || (r.path || '').endsWith('/deploy.yml');
+          const commitMatches = commitSha ? r.head_sha === commitSha : new Date(r.created_at).getTime() > deployStartTime;
+          return workflowMatches && commitMatches;
+        });
 
         if (run) {
           if (run.status === 'completed' && run.conclusion === 'success') {
@@ -132,8 +134,9 @@
             body: JSON.stringify({ message: `Delete Post "${slug}"`, sha: data.sha, branch: BRANCH })
           });
           if (!delRes.ok) throw new Error('삭제 실패');
+          const delData = await delRes.json();
           showToast('삭제됐어요! 배포 대기 중...', 'success');
-          await waitForDeployThenRedirect('https://jinsugyeong.github.io/', '배포가 완료되면 메인화면으로 이동합니다');
+          await waitForDeployThenRedirect('https://jinsugyeong.github.io/', '배포가 완료되면 메인화면으로 이동합니다', delData.commit && delData.commit.sha);
         } catch(e) {
           showToast('삭제 실패: ' + e.message, 'error');
         }

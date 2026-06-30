@@ -1,6 +1,8 @@
 const REPO = 'jinsugyeong/jinsugyeong.github.io';
 const BRANCH = 'source';
 const OAUTH_BASE = 'https://my-decap-proxy.vercel.app';
+const DEPLOY_WORKFLOW_NAME = 'Deploy Hexo Blog';
+const SITE_URL = 'https://jinsugyeong.github.io';
 
 let token = localStorage.getItem('gh_token') || null;
 let editor = null;
@@ -170,6 +172,95 @@ function blobToBase64(blob) {
     });
 }
 
+function getImageExtension(mimeType) {
+    const map = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/gif': 'gif',
+        'image/webp': 'webp',
+        'image/svg+xml': 'svg',
+        'image/avif': 'avif'
+    };
+    return map[mimeType] || (mimeType || '').split('/')[1] || 'png';
+}
+
+function hasImageExtension(filename) {
+    return /\.(png|jpe?g|gif|webp|svg|avif)$/i.test(filename);
+}
+
+function sanitizeImageFilename(filename, mimeType) {
+    const ext = getImageExtension(mimeType);
+    let name = filename || '';
+    try { name = decodeURIComponent(name); } catch (e) { /* ignore malformed names */ }
+    name = name.split(/[\\/]/).pop().split('?')[0].split('#')[0].trim();
+    name = name.replace(/\s+/g, '-').replace(/[^\w.\-\uAC00-\uD7A3가-힣]/g, '');
+    if (!name || name === '.' || name === '..') name = `image-${Date.now()}.${ext}`;
+    if (!hasImageExtension(name)) name += `.${ext}`;
+    return name;
+}
+
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function parseOwnRawPostImageUrl(src) {
+    try {
+        const url = new URL(src);
+        if (url.hostname !== 'raw.githubusercontent.com') return null;
+
+        const [owner, repoName] = REPO.split('/');
+        const parts = url.pathname.split('/').filter(Boolean).map(part => {
+            try { return decodeURIComponent(part); } catch (e) { return part; }
+        });
+        if (parts[0] !== owner || parts[1] !== repoName) return null;
+
+        const sourceIndex = parts.findIndex((part, index) =>
+            index >= 2 && part === 'source' && parts[index + 1] === '_posts'
+        );
+        if (sourceIndex === -1 || parts.length < sourceIndex + 4) return null;
+
+        return {
+            branch: parts.slice(2, sourceIndex).join('/'),
+            postSlug: parts[sourceIndex + 2],
+            filename: parts.slice(sourceIndex + 3).join('/')
+        };
+    } catch (e) {
+        return null;
+    }
+}
+
+async function replaceAsync(str, regex, replacer) {
+    const matches = [];
+    str.replace(regex, (...args) => {
+        matches.push(args);
+        return args[0];
+    });
+
+    let result = '';
+    let lastIndex = 0;
+    for (const args of matches) {
+        const match = args[0];
+        const offset = args[args.length - 2];
+        result += str.slice(lastIndex, offset);
+        result += await replacer(...args.slice(0, -2));
+        lastIndex = offset + match.length;
+    }
+    return result + str.slice(lastIndex);
+}
+
+async function fetchImageAsBase64(src) {
+    const res = await fetch(src, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`이미지를 가져올 수 없어요: ${src}`);
+    const blob = await res.blob();
+    if (blob.type && !blob.type.startsWith('image/')) {
+        throw new Error(`이미지 파일이 아니에요: ${src}`);
+    }
+    return {
+        base64: await blobToBase64(blob),
+        mimeType: blob.type || 'image/png'
+    };
+}
+
 // ── 유틸 ────────────────────────────────────────────────────
 
 // 에디터 상태 초기화
@@ -275,21 +366,59 @@ async function applyFrontMatter(fm, body, branchForImages, slugForImages) {
 }
 
 // 커버+이미지 파일 목록 빌드
-function buildFileList(slug) {
+async function buildFileList(slug) {
     const files = [];
+    const filePaths = new Set();
     let coverPath = '';
+
+    function pushFile(file) {
+        if (filePaths.has(file.path)) return;
+        files.push(file);
+        filePaths.add(file.path);
+    }
+
+    function pushPostImage(filename, base64, mimeType) {
+        const cleanName = sanitizeImageFilename(filename, mimeType);
+        pushFile({ path: `source/_posts/${slug}/${cleanName}`, base64 });
+        return cleanName;
+    }
 
     if (coverBase64 && coverFile) {
         const ext = coverFile.name.split('.').pop();
-        files.push({ path: `source/gallery/cover/${slug}.${ext}`, base64: coverBase64 });
+        pushFile({ path: `source/gallery/cover/${slug}.${ext}`, base64: coverBase64 });
         coverPath = `/gallery/cover/${slug}.${ext}`;
     }
 
-    const markdown = replaceDataUrlsWithFilenames(editor.getMarkdown());
+    let markdown = editor.getMarkdown();
+
+    // 에디터 훅을 거치지 않은 data URL도 실제 파일로 올린다.
+    markdown = markdown.replace(
+        /!\[([^\]]*)\]\(data:(image\/[^;]+);base64,([^)]+)\)/g,
+        function (match, alt, mimeType, base64) {
+            const pending = pendingImages.get(alt);
+            const filename = pushPostImage(alt, pending ? pending.base64 : base64, pending ? pending.mimeType : mimeType);
+            return `![${alt || filename}](${filename})`;
+        }
+    );
+
+    // 기존 글/임시저장에서 raw URL로 표시된 이미지는 발행 대상 폴더로 다시 커밋한다.
+    markdown = await replaceAsync(
+        markdown,
+        /!\[([^\]]*)\]\((https:\/\/raw\.githubusercontent\.com\/[^)\s]+)\)/g,
+        async function (match, alt, src) {
+            const info = parseOwnRawPostImageUrl(src);
+            if (!info) return match;
+
+            const fetched = await fetchImageAsBase64(src);
+            const filename = pushPostImage(info.filename, fetched.base64, fetched.mimeType);
+            return `![${alt || filename}](${filename})`;
+        }
+    );
 
     for (const [filename, { base64 }] of pendingImages) {
-        if (markdown.includes(filename)) {
-            files.push({ path: `source/_posts/${slug}/${filename}`, base64 });
+        const filenamePattern = new RegExp(`(\\]\\((?:\\.\\/)?${escapeRegExp(filename)}\\)|asset_img\\s+"?${escapeRegExp(filename)}"?)`);
+        if (filenamePattern.test(markdown)) {
+            pushPostImage(filename, base64);
         }
     }
 
@@ -326,11 +455,9 @@ function convertToAssetImg(markdown) {
         function (match, alt, path) {
             const filename = path.split('/').pop();
             if (path.startsWith('http://') || path.startsWith('https://')) {
-                if (path.includes('raw.githubusercontent.com')) {
-                    return `{% asset_img ${filename} "${alt}" %}`;
-                }
                 return match;
             }
+            if (path.startsWith('data:')) return match;
             return `{% asset_img ${filename} "${alt}" %}`;
         }
     );
@@ -437,7 +564,7 @@ async function saveDraft() {
             await createBranch(currentDraftBranch);
         }
 
-        const { files, coverPath, markdown } = buildFileList(slug);
+        const { files, coverPath, markdown } = await buildFileList(slug);
         const mdContent = buildFrontMatter(title, date, coverPath, originalPostSlug) + convertToAssetImg(markdown);
         files.push({ path: `source/_posts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
 
@@ -466,7 +593,7 @@ async function publishPost() {
         const slug = generateSlug(title);
         const date = document.getElementById('date-input').value;
 
-        const { files, coverPath, markdown } = buildFileList(slug);
+        const { files, coverPath, markdown } = await buildFileList(slug);
 
         // 임시저장 후 발행 시 draft 브랜치에 있는 이미지를 source로 복사
         if (currentDraftBranch) {
@@ -486,7 +613,7 @@ async function publishPost() {
         const mdContent = buildFrontMatter(title, date, coverPath) + convertToAssetImg(markdown);
         files.push({ path: `source/_posts/${slug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
 
-        await githubCommitAll(files, `Create Post "${title}"`);
+        const commit = await githubCommitAll(files, `Create Post "${title}"`);
 
         if (currentDraftBranch) {
             await deleteBranch(currentDraftBranch);
@@ -497,7 +624,7 @@ async function publishPost() {
         isDirty = false;
         hideLoading();
         showToast('발행 완료! 배포 대기 중...', 'success');
-        await waitForDeploy(slug, date);
+        await waitForDeploy(slug, date, commit.sha);
     } catch (e) {
         showToast('발행 실패: ' + e.message, 'error');
     } finally { hideLoading(); }
@@ -675,7 +802,7 @@ async function updatePost(originalSlug) {
         const newSlug = generateSlug(title);
         const date = document.getElementById('date-input').value;
 
-        const { files, coverPath, markdown } = buildFileList(newSlug);
+        const { files, coverPath, markdown } = await buildFileList(newSlug);
 
         if (originalSlug !== newSlug) {
             const folderRes = await fetch(`https://api.github.com/repos/${REPO}/contents/source/_posts/${originalSlug}?ref=${BRANCH}`, {
@@ -683,7 +810,9 @@ async function updatePost(originalSlug) {
             });
             if (folderRes.ok) {
                 (await folderRes.json()).forEach(f => {
-                    files.push({ path: `source/_posts/${newSlug}/${f.name}`, sha: f.sha });
+                    if (!files.some(existing => existing.path === `source/_posts/${newSlug}/${f.name}`)) {
+                        files.push({ path: `source/_posts/${newSlug}/${f.name}`, sha: f.sha });
+                    }
                     files.push({ path: `source/_posts/${originalSlug}/${f.name}`, sha: null });
                 });
             }
@@ -708,7 +837,7 @@ async function updatePost(originalSlug) {
         const mdContent = buildFrontMatter(title, date, coverPath) + convertToAssetImg(markdown);
         files.push({ path: `source/_posts/${newSlug}.md`, base64: btoa(unescape(encodeURIComponent(mdContent))) });
 
-        await githubCommitAll(files, `Update Post "${title}"`);
+        const commit = await githubCommitAll(files, `Update Post "${title}"`);
         pendingImages.clear();
         isDirty = false;
 
@@ -720,7 +849,7 @@ async function updatePost(originalSlug) {
         document.querySelector('.btn-publish').onclick = () => updatePost(newSlug);
         hideLoading();
         showToast('수정 완료! 배포 대기 중...', 'success');
-        await waitForDeploy(newSlug, date);
+        await waitForDeploy(newSlug, date, commit.sha);
     } catch (e) {
         showToast('수정 실패: ' + e.message, 'error');
     } finally { hideLoading(); }
@@ -728,12 +857,40 @@ async function updatePost(originalSlug) {
 
 // ── 배포 대기 ────────────────────────────────────────────────
 
-async function waitForDeploy(slug, dateVal) {
+function buildPostUrl(slug, dateVal) {
+    const d = new Date(dateVal);
+    const p = n => String(n).padStart(2, '0');
+    const datePath = `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
+    return `${SITE_URL}/${datePath}/${slug}/`;
+}
+
+async function waitForPublishedUrl(url) {
+    for (let i = 0; i < 12; i++) {
+        try {
+            const res = await fetch(`${url}?_=${Date.now()}`, { cache: 'no-store' });
+            if (res.ok) return true;
+        } catch (e) { /* 배포 직후 일시 오류 무시 */ }
+        document.getElementById('loading-msg').textContent = `글 페이지 확인 중... (${(i+1)*5}초)`;
+        await new Promise(r => setTimeout(r, 5000));
+    }
+    return false;
+}
+
+async function redirectToPostWhenReady(slug, dateVal) {
+    const url = buildPostUrl(slug, dateVal);
+    document.getElementById('loading-msg').textContent = '배포 완료! 글 페이지 확인 중...';
+    document.getElementById('loading-sub').textContent = '';
+    await waitForPublishedUrl(url);
+    location.href = url;
+    setTimeout(() => location.reload(true), 500);
+}
+
+async function waitForDeploy(slug, dateVal, commitSha = null) {
     showLoading('배포 중...');
     document.getElementById('loading-sub').textContent = '배포가 완료되면 발행된 글로 이동합니다';
 
-    // 발행 시점 기록 (이 이후에 생성된 run만 감지)
-    const deployStartTime = Date.now();
+    // commit 후 호출되므로 약간 이전 run도 감지한다.
+    const deployStartTime = Date.now() - 60000;
     await new Promise(r => setTimeout(r, 3000));
 
     const headers = { 'Authorization': `Bearer ${token}` };
@@ -742,28 +899,21 @@ async function waitForDeploy(slug, dateVal) {
     for (let i = 0; i < maxTries; i++) {
         try {
             const res = await fetch(
-                `https://api.github.com/repos/${REPO}/actions/runs?per_page=5`,
+                `https://api.github.com/repos/${REPO}/actions/runs?branch=${encodeURIComponent(BRANCH)}&event=push&per_page=20`,
                 { headers }
             );
             const data = await res.json();
             const runs = data.workflow_runs || [];
 
-            // 발행 시점 이후에 생성된 run과 'pages build and deployment' 찾기
-            const run = runs.find(r => 
-                r.name === 'pages build and deployment' &&
-                new Date(r.created_at).getTime() > deployStartTime - 10000
-            );
+            const run = runs.find(r => {
+                const workflowMatches = r.name === DEPLOY_WORKFLOW_NAME || (r.path || '').endsWith('/deploy.yml');
+                const commitMatches = commitSha ? r.head_sha === commitSha : new Date(r.created_at).getTime() > deployStartTime;
+                return workflowMatches && commitMatches;
+            });
 
             if (run) {
                 if (run.status === 'completed' && run.conclusion === 'success') {
-                    document.getElementById('loading-msg').textContent = '배포 완료! 이동 중...';
-                    document.getElementById('loading-sub').textContent = '';
-                    const d = new Date(dateVal);
-                    const p = n => String(n).padStart(2, '0');
-                    const datePath = `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
-                    const url = `https://jinsugyeong.github.io/${datePath}/${slug}/`;
-                    location.href = url;
-                    setTimeout(() => location.reload(true), 500);
+                    await redirectToPostWhenReady(slug, dateVal);
                     return;
                 } else if (run.status === 'completed' && run.conclusion !== 'success') {
                     hideLoading();
@@ -776,6 +926,14 @@ async function waitForDeploy(slug, dateVal) {
 
         document.getElementById('loading-msg').textContent = `배포 중... (${(i+1)*5}초)`;
         await new Promise(r => setTimeout(r, 5000));
+    }
+
+    const url = buildPostUrl(slug, dateVal);
+    if (await waitForPublishedUrl(url)) {
+        document.getElementById('loading-msg').textContent = '글 페이지 확인 완료! 이동 중...';
+        location.href = url;
+        setTimeout(() => location.reload(true), 500);
+        return;
     }
 
     hideLoading();

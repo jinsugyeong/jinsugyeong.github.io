@@ -76,6 +76,8 @@ meta_generator: true
 # Sitemap 설정
 sitemap:
   path: sitemap.xml
+  tags: false
+  categories: false
   #template: ./node_modules/hexo-generator-sitemap/sitemap.xml # 생략 가능
   #rel: false # 전체 주소를 생성할지 여부
 

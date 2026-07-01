@@ -11,6 +11,7 @@ tags:
   - AWS
   - EC2
 date: 2026-03-17 20:03:54
+sitemap: true
 ---
 
 현재 상황

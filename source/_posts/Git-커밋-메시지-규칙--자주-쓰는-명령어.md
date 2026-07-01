@@ -7,6 +7,7 @@ categories:
 tags:
   - Git
   - Github
+sitemap: true
 ---
 
 매번 커밋할때 마다  "이게 `feat`이었나 `chore`였나..." 헷갈려서 찾아보고, 에러 날 때마다 과거의 내가 검색했던걸 또 검색하고있는 내 자신을 위해 아예 블로그에 박제해두기로 했다.
@@ -29,7 +30,7 @@ tags:
 | :---:| --- | :-- |
 | `feat` |  **새로운 기능 추가** | feat: google oauth 로그인 기능 추가 |
 | `fix` |  **버그 수정** |  fix: 모바일에서 결제 버튼 안 눌리는 현상 수정 |
-| `docs` | **문서 수** | docs: README.md에 프로젝트 실행 방법 추가 |
+| `docs` | **문서 수정** | docs: README.md에 프로젝트 실행 방법 추가 |
 | `style` | **코드 자체의 로직 변경 없이 포맷팅, 세미콜론 누락, 들여쓰기 수정 등** | style: Prettier tab width 2 > 4 변경 후 적용, <br> style: 불필요한 console.log 삭제 |
 | `test` | **테스트 코드 추가 및 수정** | test: 로그인 예외 처리 테스트 코드 추가 |
 | `ci` | **CI/CD (GitHub Actions 등) 관련 설정 수정** | ci: GitHub Actions 자동 배포 스크립트 수정 |

@@ -8,6 +8,7 @@ categories:
 tags:
   - OpenSearch
   - RAG
+sitemap: true
 ---
 
 이 글은 완벽한 OpenSearch 정의가 아니라, 공부하면서 내가 이해한 것들을 정리한 글이다.

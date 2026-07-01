@@ -8,6 +8,7 @@ tags:
   - FastAPI
   - Python
 date: 2026-02-28 23:01:00
+sitemap: true
 ---
 
 최근 Next.js(프론트엔드), FastAPI(백엔드), 그리고 Docker 환경에서 서비스 개발을 진행하며 구글 OAuth 2.0(Google OAuth)을 이용해 소셜 로그인 기능을 구현했다.

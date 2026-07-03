@@ -11,8 +11,11 @@ tags:
   - CUDA
   - Transformers
   - 멀티모달
-sitemap: true
 ---
+
++260703  추가
+이거 vllm 0.21.0 버전 써서 그럼 0.24.0 버전으로 업그레이드하니깐 됐어염ㅎ
+
 
 최근 vLLM 환경에 Gemma-4-12B-it(Vision-Language Model)를 올리면서 진짜 별의별 에러를 다 만났다. 단순히 모델 하나 띄우는 거였는데 이기종 어텐션 구조부터 CUDA Graph 캡처, 멀티모달 배치 처리까지 곳곳에 지뢰가 깔려있었다.
 

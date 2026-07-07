@@ -7,7 +7,6 @@ categories:
 tags:
   - Git
   - Github
-sitemap: true
 ---
 
 매번 커밋할때 마다  "이게 `feat`이었나 `chore`였나..." 헷갈려서 찾아보고, 에러 날 때마다 과거의 내가 검색했던걸 또 검색하고있는 내 자신을 위해 아예 블로그에 박제해두기로 했다.
@@ -60,7 +59,7 @@ sitemap: true
 - 자세하게 적으면
 ```
 
-{% asset_img H4Vr8bvPVatlAAAAAElFTkSuQmCC "1780625595208.png" %}
+![1780625595208.png](https://jinsugyeong.github.io/2026/06/05/Git-%EC%BB%A4%EB%B0%8B-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B7%9C%EC%B9%99--%EC%9E%90%EC%A3%BC-%EC%93%B0%EB%8A%94-%EB%AA%85%EB%A0%B9%EC%96%B4/1780625595208.png)
 이렇게 나온다
 
 <br>
@@ -208,3 +207,25 @@ git add .
 git commit -m "chore: gitignore 적용 (캐시 삭제)"
 git push origin main
 ```
+
+
+
+
+
+## (8) git changes에 파일 잔뜩있는데 개발 브랜치 최신 pull 땡겨와야할때
+```bash
+# 1. 수정사항 및 추적되지 않는 새 파일들 까지 모두 stash에 임시 저장
+git stash -u
+
+# 2. 원격 저장소의 최신 내용 가져오기
+git fetch origin
+
+# 3. 최신 dev 브랜치 내용을 바탕으로 현재 브랜치 rebase
+git revase origin/dev
+
+# 4. 아까 넣어두었던 수정사항 다시 꺼내서 적용하기
+git stash pop
+```
+
+다들 충돌없는 개발생활 되시길...
+보통  내 개발 dev 브랜치에 pr > 머지하고 그거 로컬에 가져오고 다시 pull하다가 충돌날때 많음...

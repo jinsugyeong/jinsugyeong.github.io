@@ -221,7 +221,7 @@ git stash -u
 git fetch origin
 
 # 3. 최신 dev 브랜치 내용을 바탕으로 현재 브랜치 rebase
-git revase origin/dev
+git rebase origin/dev
 
 # 4. 아까 넣어두었던 수정사항 다시 꺼내서 적용하기
 git stash pop
